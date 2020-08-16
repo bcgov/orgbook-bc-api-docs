@@ -2,8 +2,8 @@
 {
   "compileOnSave": false,
   "compilerOptions": {
-    "baseUrl": "./",
-    "outDir": "./dist/out-tsc",
+    "baseUrl": "./src",
+    "outDir": "./dist/orgbook-autocomplete",
     "sourceMap": true,
     "declaration": false,
     "downlevelIteration": true,
@@ -15,6 +15,9 @@
     "lib": [
       "es2018",
       "dom"
-    ]
+    ],
+    "paths": {
+      "@app": ["app/*"]
+    }
   }
 }
