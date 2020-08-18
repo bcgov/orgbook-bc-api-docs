@@ -1,5 +1,7 @@
 import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
+import { SharedModule } from '@app/shared/shared.module';
+
 import { SearchComponent } from './components/search/search.component';
 
 
@@ -9,7 +11,7 @@ import { SearchComponent } from './components/search/search.component';
     SearchComponent
   ],
   imports: [
-    CommonModule
+    SharedModule
   ],
   exports: [
     SearchComponent

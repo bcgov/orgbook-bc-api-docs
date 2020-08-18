@@ -1,1 +1,8 @@
 <p>OrgBook API Search</p>
+<input type="text" #search name="search" id="search" placeholder="Enter an organization name"
+    (input)="autocomplete(search.value)">
+<ul>
+    <li *ngFor="let entry of autocompleteList">
+        {{ entry | json }}
+    </li>
+</ul>

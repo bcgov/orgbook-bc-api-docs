@@ -2,8 +2,8 @@
 {
   "compileOnSave": false,
   "compilerOptions": {
-    "baseUrl": "./src",
-    "outDir": "./dist/orgbook-autocomplete",
+    "baseUrl": "./",
+    "outDir": "./dist/out-tsc",
     "sourceMap": true,
     "declaration": false,
     "downlevelIteration": true,
@@ -17,7 +17,8 @@
       "dom"
     ],
     "paths": {
-      "@app": ["app/*"]
+      "@app/*": [ "src/app/*" ],
+      "@env/*": [ "src/environments/*" ]
     }
   }
 }

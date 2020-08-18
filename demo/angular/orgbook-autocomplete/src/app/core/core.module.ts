@@ -1,13 +1,15 @@
 import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { HttpClientModule } from '@angular/common/http';
+
+import { SharedModule } from '@app/shared/shared.module';
 
 import { httpInterceptorProviders } from './http-interceptors';
 
 
 @NgModule({
-  declarations: [],
   imports: [
-    CommonModule
+    HttpClientModule,
+    SharedModule
   ],
   providers: [
     httpInterceptorProviders
