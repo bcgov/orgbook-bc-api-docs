@@ -1,5 +1,4 @@
 import { Component } from '@angular/core';
-import { HttpParams } from '@angular/common/http';
 
 import { SearchService } from '@app/search/services/search.service';
 
@@ -12,6 +11,8 @@ import { AggregateAutocomplete } from '@app/search/interfaces/aggregate-autocomp
   styleUrls: ['./search.component.scss']
 })
 export class SearchComponent {
+  label = 'Registered BC Corporation Search';
+  placeholder = 'Start typing to search the OrgBook database';
   autocompleteList: AggregateAutocomplete[];
 
   constructor(private searchService: SearchService) { }
