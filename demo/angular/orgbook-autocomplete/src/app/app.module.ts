@@ -6,6 +6,7 @@ import { AppComponent } from './app.component';
 
 import { CoreModule } from './core/core.module';
 import { SearchModule } from './search/search.module';
+import { LayoutModule } from './layout/layout.module';
 
 
 @NgModule({
@@ -17,6 +18,7 @@ import { SearchModule } from './search/search.module';
     BrowserAnimationsModule,
     CoreModule,
     SearchModule,
+    LayoutModule,
   ],
   bootstrap: [AppComponent]
 })
