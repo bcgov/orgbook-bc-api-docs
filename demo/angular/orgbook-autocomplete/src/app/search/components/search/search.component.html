@@ -1,24 +1,27 @@
 <mat-form-field class="search" appearance="outline">
     <mat-label>{{ label }}</mat-label>
     <mat-icon matPrefix>search</mat-icon>
-    <input type="text" name="search" id="search" [placeholder]="placeholder"
-        (input)="onAutocomplete(search?.value)" (keyup.enter)="onSearch(search?.value)" matInput
-        [matAutocomplete]="auto" [(ngModel)]="search.value">
+    <input type="text" name="search" id="search" [placeholder]="placeholder" (input)="onAutocomplete(search?.value)"
+        (keyup.enter)="onSearch(search?.value)" matInput [matAutocomplete]="auto" [(ngModel)]="search.value">
     <button *ngIf="search?.value" mat-button matSuffix mat-icon-button aria-label="Clear" (click)="onClearSearch()">
         <mat-icon>close</mat-icon>
     </button>
 </mat-form-field>
 <mat-autocomplete #auto="matAutocomplete">
-    <mat-option *ngFor="let entry of autocompleteResponse?.results" [value]="entry.value"
-        (onSelectionChange)="onSearch(search?.value)">
-        {{ entry?.value }}
-    </mat-option>
+    <ng-container *ngIf="autocomplete$ | async as autocompleteResponse">
+        <mat-option *ngFor="let entry of autocompleteResponse?.results" [value]="entry.value"
+            (onSelectionChange)="onSearch(entry?.value)">
+            {{ entry?.value }}
+        </mat-option>
+    </ng-container>
 </mat-autocomplete>
-<ob-search-help-card *ngIf="topicResponse?.total === 0"></ob-search-help-card>
 
 <!-- Temporary -->
-<ul *ngIf="topicResponse?.results?.length">
-    <li *ngFor="let entry of topicResponse?.results">
-        {{ entry | json }}
-    </li>
-</ul>
+<ng-container *ngIf="topic$ | async as topicResponse">
+    <ob-search-help-card *ngIf="topicResponse?.total === 0"></ob-search-help-card>
+    <ul *ngIf="topicResponse?.results?.length">
+        <li *ngFor="let entry of topicResponse?.results">
+            {{ entry | json }}
+        </li>
+    </ul>
+</ng-container>
