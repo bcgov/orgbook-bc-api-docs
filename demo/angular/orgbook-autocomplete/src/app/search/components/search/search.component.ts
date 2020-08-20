@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 
 import { Subject, of } from 'rxjs';
-import { switchMap, debounceTime, distinctUntilChanged } from 'rxjs/operators';
+import { switchMap, debounceTime, distinctUntilChanged, tap } from 'rxjs/operators';
 
 import { SearchService } from '@app/search/services/search.service';
 
@@ -15,7 +15,9 @@ import { TopicResponse } from '@app/search/interfaces/topic-response';
 })
 export class SearchComponent {
   private autocompleteSearch$ = new Subject<string>();
+  private autocompletePending$ = new Subject<boolean>();
   private topicSearch$ = new Subject<string>();
+  private topicPending$ = new Subject<boolean>();
 
   label = 'Registered BC Corporation Search';
   placeholder = 'Start typing to search the OrgBook database';
@@ -26,25 +28,33 @@ export class SearchComponent {
     .pipe(
       debounceTime(300),
       distinctUntilChanged(),
+      tap(() => this.autocompletePending$.next(true)),
       switchMap(q => {
         if (!q) {
           return of({ } as AggregateAutocompleteResponse);
         }
         return this.searchService.getAggregateAutocomplete(q);
-      })
+      }),
+      tap(() => this.autocompletePending$.next(false)),
     );
+
+  autocompleteLoading$ = this.autocompletePending$.asObservable();
 
   topic$ = this.topicSearch$
     .pipe(
       debounceTime(300),
       distinctUntilChanged(),
+      tap(() => this.topicPending$.next(true)),
       switchMap(name => {
         if (!name) {
           return of({ } as TopicResponse);
         }
         return this.searchService.getTopic(name);
-      })
+      }),
+      tap(() => this.topicPending$.next(false)),
     );
+
+  topicLoading$ = this.topicPending$.asObservable();
 
   constructor(private searchService: SearchService) { }
 
