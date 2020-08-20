@@ -1,4 +1,4 @@
-import { AggregateAutocomplete } from "./aggregate-autocomplete";
+import { AggregateAutocomplete } from './aggregate-autocomplete';
 
 export interface AggregateAutocompleteResponse {
     total: number;

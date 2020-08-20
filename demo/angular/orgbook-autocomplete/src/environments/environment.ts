@@ -4,7 +4,7 @@
 
 export const environment = {
   production: false,
-  apiUrl: "https://orgbook-test.pathfinder.gov.bc.ca/api/v3"
+  apiUrl: 'https://orgbook-test.pathfinder.gov.bc.ca/api/v3'
 };
 
 /*

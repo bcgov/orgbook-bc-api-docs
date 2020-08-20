@@ -1,5 +1,5 @@
 export interface TopicResponse {
-    total: number
+    total: number;
     page_size: number;
     page: number;
     first_index: number;

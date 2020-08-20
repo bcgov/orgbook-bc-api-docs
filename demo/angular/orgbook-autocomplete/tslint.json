@@ -25,7 +25,7 @@
     "component-selector": [
       true,
       "element",
-      "app",
+      "ob",
       "kebab-case"
     ],
     "eofline": true,

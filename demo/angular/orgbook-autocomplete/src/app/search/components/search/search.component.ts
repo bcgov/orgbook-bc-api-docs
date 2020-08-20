@@ -1,13 +1,13 @@
 import { Component } from '@angular/core';
 
-import { SearchService } from '@app/search/services/search.service';
-
 import { Subject, of } from 'rxjs';
-import { switchMap, map, debounceTime, distinctUntilChanged } from 'rxjs/operators';
+import { switchMap, debounceTime, distinctUntilChanged } from 'rxjs/operators';
+
+import { SearchService } from '@app/search/services/search.service';
 
 import { AggregateAutocompleteResponse } from '@app/search/interfaces/aggregate-autocomplete-response';
 import { TopicResponse } from '@app/search/interfaces/topic-response';
- 
+
 @Component({
   selector: 'ob-search',
   templateUrl: './search.component.html',
@@ -20,7 +20,7 @@ export class SearchComponent {
   label = 'Registered BC Corporation Search';
   placeholder = 'Start typing to search the OrgBook database';
 
-  search: any = {};
+  search: any = { };
 
   autocomplete$ = this.autocompleteSearch$
     .pipe(
@@ -48,17 +48,15 @@ export class SearchComponent {
 
   constructor(private searchService: SearchService) { }
 
-  onAutocomplete(q: string) {
-    q = q.trim();
-    this.autocompleteSearch$.next(q);
+  onAutocomplete(q: string): void {
+    this.autocompleteSearch$.next(q.trim());
   }
 
-  onSearch(name: string) {
-    name = name.trim();
-    this.topicSearch$.next(name);
+  onSearch(name: string): void {
+    this.topicSearch$.next(name.trim());
   }
 
-  onClearSearch() {
+  onClearSearch(): void {
     this.search.value = '';
     this.autocompleteSearch$.next('');
     this.topicSearch$.next('');
