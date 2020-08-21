@@ -6,6 +6,7 @@ import { SearchComponent } from './components/search/search.component';
 import { SearchHelpCardComponent } from './components/search-help-card/search-help-card.component';
 import { SearchTopicListComponent } from './components/search-topic-list/search-topic-list.component';
 import { SearchInputComponent } from './components/search-input/search-input.component';
+import { SearchTopicComponent } from './components/search-topic/search-topic.component';
 
 
 
@@ -14,7 +15,8 @@ import { SearchInputComponent } from './components/search-input/search-input.com
     SearchComponent,
     SearchHelpCardComponent,
     SearchTopicListComponent,
-    SearchInputComponent
+    SearchInputComponent,
+    SearchTopicComponent
   ],
   imports: [
     SharedModule
