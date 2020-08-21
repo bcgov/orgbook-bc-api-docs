@@ -1,0 +1,11 @@
+<div class="topic">
+    <mat-progress-bar mode="indeterminate" *ngIf="topicLoading$ | async"></mat-progress-bar>
+    <ng-container *ngIf="topic$ | async as topicResponse">
+        <ob-search-help-card *ngIf="topicResponse?.total === 0"></ob-search-help-card>
+        <ul *ngIf="topicResponse?.results?.length">
+            <li *ngFor="let entry of topicResponse?.results">
+                {{ entry | json }}
+            </li>
+        </ul>
+    </ng-container>
+</div>

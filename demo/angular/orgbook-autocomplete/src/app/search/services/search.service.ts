@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
-import { Observable } from 'rxjs';
+
+import { Observable, Subject } from 'rxjs';
 
 import { AggregateAutocompleteResponse } from '../interfaces/aggregate-autocomplete-response';
 import { TopicResponse } from '../interfaces/topic-response';
@@ -9,8 +10,35 @@ import { TopicResponse } from '../interfaces/topic-response';
   providedIn: 'root'
 })
 export class SearchService {
+  private autocompleteSearchTerm$ = new Subject<string>();
+  private topicSearchTerm$ = new Subject<string>();
+
+  autocompleteSearch$ = this.autocompleteSearchTerm$.asObservable();
+  topicSearch$ = this.topicSearchTerm$.asObservable();
 
   constructor(private http: HttpClient) { }
+
+  /**
+   * autocomplete
+   */
+  public autocomplete(term: string) {
+    this.autocompleteSearchTerm$.next(term.trim());
+  }
+
+  /**
+   * search
+   */
+  public search(term: string) {
+    this.topicSearchTerm$.next(term.trim());
+  }
+
+  /**
+   * clearSearch
+   */
+  public clearSearch() {
+    this.autocompleteSearchTerm$.next('');
+    this.topicSearchTerm$.next('');
+  }
 
   /**
    * getAggregateAutocomplete
