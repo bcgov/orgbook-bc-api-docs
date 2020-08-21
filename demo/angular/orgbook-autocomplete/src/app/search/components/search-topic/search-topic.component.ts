@@ -8,5 +8,5 @@ import { CredentialTopicExt } from '@app/credential/interfaces/credential-topic-
   styleUrls: ['./search-topic.component.scss']
 })
 export class SearchTopicComponent {
-  @Input() topic: CredentialTopicExt;  
+  @Input() topic: CredentialTopicExt;
 }

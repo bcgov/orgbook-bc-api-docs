@@ -1,4 +1,4 @@
-import { CredentialName } from './credential-name'
+import { CredentialName } from './credential-name';
 
 export interface CredentialNamedTopic {
     id: number;

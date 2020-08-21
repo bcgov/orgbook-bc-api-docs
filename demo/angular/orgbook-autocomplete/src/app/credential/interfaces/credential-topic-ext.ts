@@ -1,4 +1,4 @@
-import { CredentialName } from './credential-name'
+import { CredentialName } from './credential-name';
 import { CredentialAddress } from './credential-address';
 import { TopicAttribute } from '@app/topic/interfaces/topic-attribute';
 
@@ -11,6 +11,6 @@ export interface CredentialTopicExt {
     names: CredentialName[];
     local_name: CredentialName;
     remote_name: CredentialName;
-    addresses: CredentialAddress[]
-    attributes: TopicAttribute[]
+    addresses: CredentialAddress[];
+    attributes: TopicAttribute[];
 }

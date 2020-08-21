@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 
-import { of, Subject } from 'rxjs';
-import { debounceTime, distinctUntilChanged, tap, switchMap } from 'rxjs/operators';
+import { of, merge, combineLatest, BehaviorSubject } from 'rxjs';
+import { debounceTime, distinctUntilChanged, tap, switchMap, map } from 'rxjs/operators';
 
 import { TopicResponse } from '@app/search/interfaces/topic-response';
 
@@ -13,9 +13,11 @@ import { SearchService } from '@app/search/services/search.service';
   styleUrls: ['./search-topic-list.component.scss']
 })
 export class SearchTopicListComponent {
-  private topicPending$ = new Subject<boolean>();
+  private topicPending$ = new BehaviorSubject<boolean>(false);
 
-  topic$ = this.searchService.topicSearch$
+  topicLoading$ = this.topicPending$.asObservable();
+
+  topic$ = this.searchService.topicSearchAction$
     .pipe(
       debounceTime(300),
       distinctUntilChanged(),
@@ -29,7 +31,22 @@ export class SearchTopicListComponent {
       tap(() => this.topicPending$.next(false)),
     );
 
-  topicLoading$ = this.topicPending$.asObservable();
+  topicPage$ = this.searchService.topicPageAction$
+    .pipe(
+      tap(() => this.topicPending$.next(true)),
+      switchMap(url => {
+        if (!url) {
+          return of({} as TopicResponse);
+        }
+        return this.searchService.getTopicPage(url);
+      }),
+      tap(() => this.topicPending$.next(false)),
+    );
+
+  vm$ = combineLatest([ this.topicLoading$, merge(this.topic$, this.topicPage$) ])
+    .pipe(
+      map(([ loading, topicResponse ]) => ({ loading, topicResponse }))
+    );
 
   constructor(private searchService: SearchService) { }
 

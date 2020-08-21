@@ -18,7 +18,7 @@ export class SearchInputComponent {
   label = 'Registered BC Corporation Search';
   placeholder = 'Start typing to search the OrgBook database';
 
-  autocomplete$ = this.searchService.autocompleteSearch$
+  autocomplete$ = this.searchService.autocompleteSearchAction$
     .pipe(
       debounceTime(300),
       distinctUntilChanged(),

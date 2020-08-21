@@ -2,19 +2,18 @@ import { Component, Input } from '@angular/core';
 
 import { TopicResponse } from '@app/search/interfaces/topic-response';
 
+import { SearchService } from '@app/search/services/search.service';
+
 @Component({
   selector: 'ob-search-topic-list-nav',
   templateUrl: './search-topic-list-nav.component.html',
   styleUrls: ['./search-topic-list-nav.component.scss']
 })
 export class SearchTopicListNavComponent {
-  @Input() topicResponse: TopicResponse
+  @Input() topicResponse: TopicResponse;
+  @Input() loading: boolean;
 
-  constructor() { }
-
-  private get page(): number {
-    return this.topicResponse && this.topicResponse.page || 0;
-  }
+  constructor(private searchService: SearchService) { }
 
   private get firstIndex(): number {
     return this.topicResponse && this.topicResponse.first_index || 0;
@@ -29,11 +28,31 @@ export class SearchTopicListNavComponent {
   }
 
   public get first(): number {
-    return this.page * this.firstIndex;
+    return this.firstIndex;
   }
 
   public get last(): number {
-    return this.page * this.lastIndex;
+    return this.lastIndex;
+  }
+
+  /**
+   * onPreviousPage
+   */
+  public onPreviousPage(url: string): void {
+    if (!url) {
+      return;
+    }
+    this.searchService.page(url);
+  }
+
+  /**
+   * onNextPage
+   */
+  public onNextPage(url: string): void {
+    if (!url) {
+      return;
+    }
+    this.searchService.page(url);
   }
 
 }
