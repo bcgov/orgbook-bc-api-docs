@@ -12,7 +12,7 @@ export class OrgbookApiInterceptorService implements HttpInterceptor {
 
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
     const orgbookApiReq = req.clone({
-      url: env.apiUrl + req.url.replace(env.apiUrl, '')
+      url: (req.url.includes('/assets/i18n') ? '' : env.apiUrl) + req.url.replace(env.apiUrl, '')
     });
 
     return next.handle(orgbookApiReq);

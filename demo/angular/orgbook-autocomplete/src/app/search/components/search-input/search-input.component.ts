@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 
-import { Subject, of } from 'rxjs';
-import { debounceTime, distinctUntilChanged, tap, switchMap } from 'rxjs/operators';
+import { Subject, of, combineLatest } from 'rxjs';
+import { debounceTime, distinctUntilChanged, tap, switchMap, map } from 'rxjs/operators';
 
 import { AggregateAutocompleteResponse } from '@app/search/interfaces/aggregate-autocomplete-response';
 
@@ -33,6 +33,11 @@ export class SearchInputComponent {
     );
 
   autocompleteLoading$ = this.autocompletePending$.asObservable();
+
+  vm$ = combineLatest([this.autocompleteLoading$, this.autocomplete$])
+    .pipe(
+      map(([loading, autocompleteResponse]) => ({ loading, autocompleteResponse }))
+    );
 
   search: any = {};
 

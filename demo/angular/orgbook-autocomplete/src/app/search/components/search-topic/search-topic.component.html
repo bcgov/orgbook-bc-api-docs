@@ -1,1 +1,29 @@
-<mat-card>{{ topic?.attributes | json }}</mat-card>
+<mat-card (click)="detail(topic)">
+    <mat-card-header>
+        <mat-card-title>{{ topic?.names[0]?.text }}</mat-card-title>
+        <mat-card-subtitle>
+            <span>
+                {{ topic?.attributes | credentialAttributeTag:'entity_type' | translate }}
+            </span>
+            <span>&nbsp;-&nbsp;</span>
+            <span class="entity-status">
+                <span>{{ topic?.attributes | credentialAttributeTag:'entity_status' | translate }}</span>
+                <span>&nbsp;since&nbsp;</span>
+                <span>{{ topic?.attributes | credentialAttributeValue:'entity_status_effective' | date }}</span>
+            </span>
+        </mat-card-subtitle>
+    </mat-card-header>
+    <mat-card-content>
+        <div class="credential-status">
+            <div>
+                <mat-icon>account_balance</mat-icon>
+                <span>Issued by&nbsp;</span>
+                <span>{{ topic?.credential_type?.issuer?.name }}</span>
+            </div>
+            <div>
+                <span>Credential effective since&nbsp;</span>
+                <span>{{ topic?.effective_date | date }}</span>
+            </div>
+        </div>
+    </mat-card-content>
+</mat-card>

@@ -1,20 +1,21 @@
-<mat-form-field appearance="outline">
-    <mat-label>{{ label }}</mat-label>
-    <mat-spinner matPrefix [diameter]=24 *ngIf="autocompleteLoading$ | async else autocompleteReady"></mat-spinner>
-    <ng-template #autocompleteReady>
-        <mat-icon matPrefix>search</mat-icon>
-    </ng-template>
-    <input type="text" name="search" id="search" [placeholder]="placeholder" (input)="onAutocomplete(search?.value)"
-        (keyup.enter)="onSearch(search?.value)" matInput [matAutocomplete]="auto" [(ngModel)]="search.value">
-    <button *ngIf="search?.value" mat-button matSuffix mat-icon-button aria-label="Clear" (click)="onClearSearch()">
-        <mat-icon>close</mat-icon>
-    </button>
-</mat-form-field>
-<mat-autocomplete #auto="matAutocomplete">
-    <ng-container *ngIf="autocomplete$ | async as autocompleteResponse">
-        <mat-option *ngFor="let entry of autocompleteResponse?.results" [value]="entry.value"
-            (onSelectionChange)="onSearch(entry?.value)">
-            {{ entry?.value }}
-        </mat-option>
-    </ng-container>
-</mat-autocomplete>
+<ng-container *ngIf="vm$ | async as vm">
+    <mat-form-field appearance="outline">
+        <mat-label>{{ label }}</mat-label>
+        <mat-spinner matPrefix [diameter]=24 *ngIf="vm?.loading else autocompleteReady"></mat-spinner>
+        <ng-template #autocompleteReady>
+            <mat-icon matPrefix>search</mat-icon>
+        </ng-template>
+        <input type="text" name="search" id="search" [placeholder]="placeholder" (input)="onAutocomplete(search?.value)"
+            (keyup.enter)="onSearch(search?.value)" matInput [matAutocomplete]="auto" [(ngModel)]="search.value">
+        <button *ngIf="search?.value" mat-button matSuffix mat-icon-button aria-label="Clear" (click)="onClearSearch()">
+            <mat-icon>close</mat-icon>
+        </button>
+    </mat-form-field>
+    <mat-autocomplete #auto="matAutocomplete" (optionSelected)="onSearch($event?.option?.value)">
+        <ng-container *ngIf="vm?.autocompleteResponse">
+            <mat-option *ngFor="let entry of vm?.autocompleteResponse?.results" [value]="entry.value">
+                {{ entry?.value }}
+            </mat-option>
+        </ng-container>
+    </mat-autocomplete>
+</ng-container>

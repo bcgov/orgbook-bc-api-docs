@@ -1,6 +1,9 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { NgModule } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+
+import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
 
 import { AppComponent } from './app.component';
 
@@ -12,7 +15,12 @@ import { CredentialTypeModule } from './credential-type/credential-type.module';
 import { IssuerModule } from './issuer/issuer.module';
 import { SchemaModule } from './schema/schema.module';
 import { TopicModule } from './topic/topic.module';
+import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 
+
+export function HttpLoaderFactory(http: HttpClient): TranslateHttpLoader {
+  return new TranslateHttpLoader(http);
+}
 
 @NgModule({
   declarations: [
@@ -29,6 +37,14 @@ import { TopicModule } from './topic/topic.module';
     IssuerModule,
     SchemaModule,
     TopicModule,
+    TranslateModule.forRoot({
+      defaultLanguage: 'en',
+      loader: {
+        provide: TranslateLoader,
+        useFactory: HttpLoaderFactory,
+        deps: [HttpClient]
+      }
+    })
   ],
   bootstrap: [AppComponent]
 })

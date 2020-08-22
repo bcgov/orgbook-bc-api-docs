@@ -1,6 +1,6 @@
 import { Component, Input } from '@angular/core';
 
-import { CredentialTopicExt } from '@app/credential/interfaces/credential-topic-ext';
+import { CredentialTopicSearch } from '@app/credential/interfaces/credential-topic-search';
 
 @Component({
   selector: 'ob-search-topic',
@@ -8,5 +8,14 @@ import { CredentialTopicExt } from '@app/credential/interfaces/credential-topic-
   styleUrls: ['./search-topic.component.scss']
 })
 export class SearchTopicComponent {
-  @Input() topic: CredentialTopicExt;
+  @Input() topic: CredentialTopicSearch;
+
+  /**
+   * detail
+   */
+  public detail(topic: CredentialTopicSearch): void {
+    console.log(topic);
+    throw new Error('Method has not been implemented yet!');
+
+  }
 }
