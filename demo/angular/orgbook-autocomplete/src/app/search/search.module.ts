@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 
 import { SharedModule } from '@app/shared/shared.module';
+import { SearchRoutingModule } from '@app/search/search-routing.module';
 
 import { SearchComponent } from './components/search/search.component';
 import { SearchHelpCardComponent } from './components/search-help-card/search-help-card.component';
@@ -21,7 +22,8 @@ import { SearchTopicListNavComponent } from './components/search-topic-list-nav/
     SearchTopicListNavComponent
   ],
   imports: [
-    SharedModule
+    SharedModule,
+    SearchRoutingModule
   ],
   exports: [
     SearchComponent

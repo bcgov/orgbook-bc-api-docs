@@ -4,18 +4,18 @@ import { NgModule } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 
 import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
+import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 
 import { AppComponent } from './app.component';
 
 import { CoreModule } from './core/core.module';
-import { SearchModule } from './search/search.module';
 import { LayoutModule } from './layout/layout.module';
 import { CredentialModule } from './credential/credential.module';
 import { CredentialTypeModule } from './credential-type/credential-type.module';
 import { IssuerModule } from './issuer/issuer.module';
 import { SchemaModule } from './schema/schema.module';
-import { TopicModule } from './topic/topic.module';
-import { TranslateHttpLoader } from '@ngx-translate/http-loader';
+import { AppRoutingModule } from './app-routing.module';
+
 
 
 export function HttpLoaderFactory(http: HttpClient): TranslateHttpLoader {
@@ -30,13 +30,11 @@ export function HttpLoaderFactory(http: HttpClient): TranslateHttpLoader {
     BrowserModule,
     BrowserAnimationsModule,
     CoreModule,
-    SearchModule,
     LayoutModule,
     CredentialModule,
     CredentialTypeModule,
     IssuerModule,
     SchemaModule,
-    TopicModule,
     TranslateModule.forRoot({
       defaultLanguage: 'en',
       loader: {
@@ -44,7 +42,8 @@ export function HttpLoaderFactory(http: HttpClient): TranslateHttpLoader {
         useFactory: HttpLoaderFactory,
         deps: [HttpClient]
       }
-    })
+    }),
+    AppRoutingModule
   ],
   bootstrap: [AppComponent]
 })
