@@ -1,11 +1,11 @@
-import { Component } from '@angular/core';
+import { Component, EventEmitter, Output } from '@angular/core';
 
-import { Subject, of, combineLatest } from 'rxjs';
-import { debounceTime, distinctUntilChanged, tap, switchMap, map } from 'rxjs/operators';
-
-import { AggregateAutocompleteResponse } from '@app/search/interfaces/aggregate-autocomplete-response';
+import { combineLatest, BehaviorSubject, merge, of, EMPTY } from 'rxjs';
+import { map, debounceTime, distinctUntilChanged, tap, switchMap, filter } from 'rxjs/operators';
 
 import { SearchService } from '@app/search/services/search.service';
+
+import { AggregateAutocompleteResponse } from '@app/search/interfaces/aggregate-autocomplete-response';
 
 @Component({
   selector: 'ob-search-input',
@@ -13,47 +13,54 @@ import { SearchService } from '@app/search/services/search.service';
   styleUrls: ['./search-input.component.scss']
 })
 export class SearchInputComponent {
-  private autocompletePending$ = new Subject<boolean>();
+  @Output() search = new EventEmitter<string>();
+  @Output() clear = new EventEmitter<void>();
+
+  private autocompleteLoadingSubject$ = new BehaviorSubject<boolean>(false);
+  private autocompleteTermSubject$ = new BehaviorSubject<string>('');
+  private autocompleteResponseSubject$ = new BehaviorSubject<AggregateAutocompleteResponse>(null);
+
+  private autocompleteLoading$ = this.autocompleteLoadingSubject$.asObservable();
+  private autocompleteTerm$ = this.autocompleteTermSubject$.asObservable();
+  private autocompleteResponse$ = merge(
+    this.autocompleteResponseSubject$.asObservable(),
+    this.autocompleteTermSubject$
+      .pipe(
+        debounceTime(300),
+        distinctUntilChanged(),
+        filter(q => !!q),
+        tap(() => this.autocompleteLoadingSubject$.next(true)),
+        switchMap(q => this.searchService.getAggregateAutocomplete(q)),
+        tap(autocompleteResponse => this.autocompleteResponseSubject$.next(autocompleteResponse)),
+        tap(() => this.autocompleteLoadingSubject$.next(false))
+      )
+  );
 
   label = 'Registered BC Corporation Search';
   placeholder = 'Start typing to search the OrgBook database';
 
-  autocomplete$ = this.searchService.autocompleteSearchAction$
+  vm$ = combineLatest([
+    this.autocompleteLoading$,
+    this.autocompleteTerm$,
+    this.autocompleteResponse$
+  ])
     .pipe(
-      debounceTime(300),
-      distinctUntilChanged(),
-      tap(() => this.autocompletePending$.next(true)),
-      switchMap(q => {
-        if (!q) {
-          return of({} as AggregateAutocompleteResponse);
-        }
-        return this.searchService.getAggregateAutocomplete(q);
-      }),
-      tap(() => this.autocompletePending$.next(false)),
+      map(([loading, autocompleteTerm, autocompleteResponse]) => ({ loading, autocompleteTerm, autocompleteResponse }))
     );
-
-  autocompleteLoading$ = this.autocompletePending$.asObservable();
-
-  vm$ = combineLatest([this.autocompleteLoading$, this.autocomplete$])
-    .pipe(
-      map(([loading, autocompleteResponse]) => ({ loading, autocompleteResponse }))
-    );
-
-  search: any = {};
 
   constructor(private searchService: SearchService) { }
 
   onAutocomplete(q: string): void {
-    this.searchService.autocomplete(q);
+    this.autocompleteTermSubject$.next(q);
   }
 
-  onSearch(name: string): void {
-    this.searchService.search(name);
+  onSearch(term: string): void {
+    this.search.emit(term);
   }
 
-  onClearSearch(): void {
-    this.search.value = '';
-    this.searchService.clearSearch();
+  onClear(): void {
+    this.autocompleteTermSubject$.next('');
+    this.autocompleteResponseSubject$.next(null);
+    this.clear.emit();
   }
-
 }

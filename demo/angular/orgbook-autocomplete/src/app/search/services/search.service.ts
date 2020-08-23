@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 
-import { Observable, BehaviorSubject } from 'rxjs';
+import { Observable, BehaviorSubject, merge, of } from 'rxjs';
+import { debounceTime, distinctUntilChanged, tap, switchMap, filter } from 'rxjs/operators';
 
 import { AggregateAutocompleteResponse } from '../interfaces/aggregate-autocomplete-response';
 import { TopicResponse } from '../interfaces/topic-response';
@@ -9,45 +10,35 @@ import { TopicResponse } from '../interfaces/topic-response';
 @Injectable({
   providedIn: 'root'
 })
-export class SearchService {
-  private autocompleteSearchTerm$ = new BehaviorSubject<string>('');
-  private topicSearchTerm$ = new BehaviorSubject<string>('');
-  private topicPageUrl$ = new BehaviorSubject<string>('');
+export class SearchService {  
+  private topicTermSubject$ = new BehaviorSubject<string>('');
+  private topicPageUrlSubject$ = new BehaviorSubject<string>('');
 
-  autocompleteSearchAction$ = this.autocompleteSearchTerm$.asObservable();
-  topicSearchAction$ = this.topicSearchTerm$.asObservable();
-  topicPageAction$ = this.topicPageUrl$.asObservable();
+  topicTerm$ = this.topicTermSubject$.asObservable();
+  topicPageUrl$ = this.topicPageUrlSubject$.asObservable();
 
   constructor(private http: HttpClient) { }
-
-  /**
-   * autocomplete
-   */
-  public autocomplete(term: string): void {
-    this.autocompleteSearchTerm$.next(term.trim());
-  }
 
   /**
    * search
    */
   public search(term: string): void {
-    this.topicSearchTerm$.next(term.trim());
+    this.topicTermSubject$.next(term.trim());
   }
 
   /**
    * page
    */
   public page(url: string): void {
-    this.topicPageUrl$.next(url);
+    this.topicPageUrlSubject$.next(url);
   }
 
   /**
    * clearSearch
    */
-  public clearSearch(): void{
-    this.autocompleteSearchTerm$.next('');
-    this.topicSearchTerm$.next('');
-    this.topicPageUrl$.next('');
+  public clearSearch(): void {
+    this.topicTermSubject$.next('');
+    this.topicPageUrlSubject$.next('');
   }
 
   /**

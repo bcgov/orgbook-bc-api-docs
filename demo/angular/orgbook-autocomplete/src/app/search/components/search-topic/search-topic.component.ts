@@ -1,4 +1,5 @@
 import { Component, Input } from '@angular/core';
+import { Router } from '@angular/router';
 
 import { CredentialTopicSearch } from '@app/credential/interfaces/credential-topic-search';
 
@@ -10,12 +11,9 @@ import { CredentialTopicSearch } from '@app/credential/interfaces/credential-top
 export class SearchTopicComponent {
   @Input() topic: CredentialTopicSearch;
 
-  /**
-   * detail
-   */
-  public detail(topic: CredentialTopicSearch): void {
-    console.log(topic);
-    throw new Error('Method has not been implemented yet!');
+  constructor(private router: Router) { }
 
+  detail(selected: CredentialTopicSearch): void {
+    this.router.navigate(['/topics', selected.topic.source_id]);
   }
 }

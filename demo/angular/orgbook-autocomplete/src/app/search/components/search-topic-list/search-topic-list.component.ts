@@ -17,7 +17,7 @@ export class SearchTopicListComponent {
 
   topicLoading$ = this.topicPending$.asObservable();
 
-  topic$ = this.searchService.topicSearchAction$
+  topicSearch$ = this.searchService.topicTerm$
     .pipe(
       debounceTime(300),
       distinctUntilChanged(),
@@ -31,7 +31,7 @@ export class SearchTopicListComponent {
       tap(() => this.topicPending$.next(false)),
     );
 
-  topicPage$ = this.searchService.topicPageAction$
+  topicPage$ = this.searchService.topicPageUrl$
     .pipe(
       tap(() => this.topicPending$.next(true)),
       switchMap(url => {
@@ -43,7 +43,7 @@ export class SearchTopicListComponent {
       tap(() => this.topicPending$.next(false)),
     );
 
-  vm$ = combineLatest([ this.topicLoading$, merge(this.topic$, this.topicPage$) ])
+  vm$ = combineLatest([ this.topicLoading$, merge(this.topicSearch$, this.topicPage$) ])
     .pipe(
       map(([ loading, topicResponse ]) => ({ loading, topicResponse }))
     );

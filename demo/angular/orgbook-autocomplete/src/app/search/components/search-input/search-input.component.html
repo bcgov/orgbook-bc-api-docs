@@ -5,9 +5,10 @@
         <ng-template #autocompleteReady>
             <mat-icon matPrefix>search</mat-icon>
         </ng-template>
-        <input type="text" name="search" id="search" [placeholder]="placeholder" (input)="onAutocomplete(search?.value)"
-            (keyup.enter)="onSearch(search?.value)" matInput [matAutocomplete]="auto" [(ngModel)]="search.value">
-        <button *ngIf="search?.value" mat-button matSuffix mat-icon-button aria-label="Clear" (click)="onClearSearch()">
+        <input type="text" #search name="search" id="search" [placeholder]="placeholder"
+            (input)="onAutocomplete(search?.value)" (keyup.enter)="onSearch(search?.value)" matInput
+            [matAutocomplete]="auto" [value]="vm?.autocompleteTerm">
+        <button *ngIf="search?.value" mat-button matSuffix mat-icon-button aria-label="Clear" (click)="onClear()">
             <mat-icon>close</mat-icon>
         </button>
     </mat-form-field>
