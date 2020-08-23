@@ -1,6 +1,5 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
 
 import { TranslateModule } from '@ngx-translate/core';
 
@@ -17,13 +16,11 @@ import { CredentialAttributeValuePipe } from './pipes/credential-attribute-value
   ],
   imports: [
     CommonModule,
-    FormsModule,
     AngularMaterialModule,
     TranslateModule
   ],
   exports: [
     CommonModule,
-    FormsModule,
     AngularMaterialModule,
     TranslateModule,
     CredentialAttributeTagPipe,
