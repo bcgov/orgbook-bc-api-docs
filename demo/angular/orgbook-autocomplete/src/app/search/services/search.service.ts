@@ -1,8 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 
-import { Observable, BehaviorSubject, merge, of } from 'rxjs';
-import { debounceTime, distinctUntilChanged, tap, switchMap, filter } from 'rxjs/operators';
+import { Observable } from 'rxjs';
 
 import { AggregateAutocompleteResponse } from '../interfaces/aggregate-autocomplete-response';
 import { TopicResponse } from '../interfaces/topic-response';
@@ -10,36 +9,8 @@ import { TopicResponse } from '../interfaces/topic-response';
 @Injectable({
   providedIn: 'root'
 })
-export class SearchService {  
-  private topicTermSubject$ = new BehaviorSubject<string>('');
-  private topicPageUrlSubject$ = new BehaviorSubject<string>('');
-
-  topicTerm$ = this.topicTermSubject$.asObservable();
-  topicPageUrl$ = this.topicPageUrlSubject$.asObservable();
-
+export class SearchService {
   constructor(private http: HttpClient) { }
-
-  /**
-   * search
-   */
-  public search(term: string): void {
-    this.topicTermSubject$.next(term.trim());
-  }
-
-  /**
-   * page
-   */
-  public page(url: string): void {
-    this.topicPageUrlSubject$.next(url);
-  }
-
-  /**
-   * clearSearch
-   */
-  public clearSearch(): void {
-    this.topicTermSubject$.next('');
-    this.topicPageUrlSubject$.next('');
-  }
 
   /**
    * getAggregateAutocomplete
@@ -73,4 +44,5 @@ export class SearchService {
   public getTopicPage(url: string): Observable<TopicResponse> {
     return this.http.get<TopicResponse>(url);
   }
+
 }

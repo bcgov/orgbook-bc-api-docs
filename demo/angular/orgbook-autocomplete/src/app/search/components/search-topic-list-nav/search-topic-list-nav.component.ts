@@ -1,8 +1,6 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, Output, EventEmitter } from '@angular/core';
 
 import { TopicResponse } from '@app/search/interfaces/topic-response';
-
-import { SearchService } from '@app/search/services/search.service';
 
 @Component({
   selector: 'ob-search-topic-list-nav',
@@ -13,7 +11,7 @@ export class SearchTopicListNavComponent {
   @Input() topicResponse: TopicResponse;
   @Input() loading: boolean;
 
-  constructor(private searchService: SearchService) { }
+  @Output() page = new EventEmitter<string>();
 
   private get firstIndex(): number {
     return this.topicResponse && this.topicResponse.first_index || 0;
@@ -42,7 +40,7 @@ export class SearchTopicListNavComponent {
     if (!url) {
       return;
     }
-    this.searchService.page(url);
+    this.page.emit(url);
   }
 
   /**
@@ -52,7 +50,7 @@ export class SearchTopicListNavComponent {
     if (!url) {
       return;
     }
-    this.searchService.page(url);
+    this.page.emit(url);
   }
 
 }

@@ -1,2 +1,5 @@
-<ob-search-input (search)="onSearch($event)" (clear)="onClear()"></ob-search-input>
-<ob-search-topic-list></ob-search-topic-list>
+<ng-container *ngIf="vm$ | async as vm">
+    <ob-search-input (search)="onSearch($event)" (clear)="onClear()" [term]="vm?.term"></ob-search-input>
+    <ob-search-topic-list (page)="onPage($event)" [loading]="vm?.loading" [topicResponse]="vm?.topicResponse">
+    </ob-search-topic-list>
+</ng-container>

@@ -1,7 +1,7 @@
-import { Component, EventEmitter, Output } from '@angular/core';
+import { Component, EventEmitter, Output, Input } from '@angular/core';
 
-import { combineLatest, BehaviorSubject, merge, of, EMPTY } from 'rxjs';
-import { map, debounceTime, distinctUntilChanged, tap, switchMap, filter } from 'rxjs/operators';
+import { combineLatest, BehaviorSubject, merge } from 'rxjs';
+import { map, debounceTime, distinctUntilChanged, tap, switchMap, filter, startWith } from 'rxjs/operators';
 
 import { SearchService } from '@app/search/services/search.service';
 
@@ -13,12 +13,15 @@ import { AggregateAutocompleteResponse } from '@app/search/interfaces/aggregate-
   styleUrls: ['./search-input.component.scss']
 })
 export class SearchInputComponent {
+  @Input() term: string;
+
   @Output() search = new EventEmitter<string>();
   @Output() clear = new EventEmitter<void>();
 
   private autocompleteLoadingSubject$ = new BehaviorSubject<boolean>(false);
   private autocompleteTermSubject$ = new BehaviorSubject<string>('');
   private autocompleteResponseSubject$ = new BehaviorSubject<AggregateAutocompleteResponse>(null);
+  private autocompleteSearchSubject$ = new BehaviorSubject<string>('');
 
   private autocompleteLoading$ = this.autocompleteLoadingSubject$.asObservable();
   private autocompleteTerm$ = this.autocompleteTermSubject$.asObservable();
@@ -35,6 +38,12 @@ export class SearchInputComponent {
         tap(() => this.autocompleteLoadingSubject$.next(false))
       )
   );
+  private autocompleteSearch$ = this.autocompleteSearchSubject$
+    .pipe(
+      distinctUntilChanged(),
+      filter(q => !!q),
+      tap(term => this.search.emit(term))
+    );
 
   label = 'Registered BC Corporation Search';
   placeholder = 'Start typing to search the OrgBook database';
@@ -42,7 +51,8 @@ export class SearchInputComponent {
   vm$ = combineLatest([
     this.autocompleteLoading$,
     this.autocompleteTerm$,
-    this.autocompleteResponse$
+    this.autocompleteResponse$,
+    this.autocompleteSearch$.pipe(startWith(''))
   ])
     .pipe(
       map(([loading, autocompleteTerm, autocompleteResponse]) => ({ loading, autocompleteTerm, autocompleteResponse }))
@@ -55,10 +65,11 @@ export class SearchInputComponent {
   }
 
   onSearch(term: string): void {
-    this.search.emit(term);
+    this.autocompleteSearchSubject$.next(term);
   }
 
   onClear(): void {
+    this.term = '';
     this.autocompleteTermSubject$.next('');
     this.autocompleteResponseSubject$.next(null);
     this.clear.emit();
