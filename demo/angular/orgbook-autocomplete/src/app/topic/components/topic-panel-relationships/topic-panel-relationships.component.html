@@ -1,0 +1,6 @@
+<mat-expansion-panel [expanded]="relationships" [disabled]="!relationships">
+    <mat-expansion-panel-header>
+        <mat-panel-title>Relationship Panel</mat-panel-title>
+    </mat-expansion-panel-header>
+    {{ relationships | json }}
+</mat-expansion-panel>

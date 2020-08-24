@@ -33,7 +33,7 @@ export class UrlService {
   /**
    * setUrlState
    */
-  public setUrlState(url: string) {
+  public setUrlState(url: string): void {
     this.location.replaceState(url);
     this.router.navigateByUrl(this.location.path());
   }

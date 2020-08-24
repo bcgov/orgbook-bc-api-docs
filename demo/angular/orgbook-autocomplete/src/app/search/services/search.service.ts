@@ -4,6 +4,7 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
 import { AggregateAutocompleteResponse } from '../interfaces/aggregate-autocomplete-response';
+import { CredentialResponse } from '../interfaces/credential-response';
 import { TopicResponse } from '../interfaces/topic-response';
 
 @Injectable({
@@ -44,5 +45,20 @@ export class SearchService {
   public getTopicPage(url: string): Observable<TopicResponse> {
     return this.http.get<TopicResponse>(url);
   }
+
+  /**
+   * getCredential
+   */
+  public getCredential(name: string): Observable<CredentialResponse> {
+    const queryParams = new HttpParams({
+      fromObject: { name, inactive: 'false', latest: 'true', revoked: 'false' }
+    });
+
+    const options = { params: queryParams };
+
+    return this.http.get<CredentialResponse>('/search/topic', options);
+  }
+
+  
 
 }

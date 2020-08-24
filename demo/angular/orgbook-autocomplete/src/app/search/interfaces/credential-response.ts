@@ -1,6 +1,6 @@
-import { CredentialTopicSearch } from './credential-topic-search';
+import { CredentialSearch } from './credential-search';
 
-export interface TopicResponse {
+export interface CredentialResponse {
     total: number;
     page_size: number;
     page: number;
@@ -8,5 +8,5 @@ export interface TopicResponse {
     last_index: number;
     next: string;
     previous: string;
-    results: CredentialTopicSearch[];
+    results: CredentialSearch[];
 }

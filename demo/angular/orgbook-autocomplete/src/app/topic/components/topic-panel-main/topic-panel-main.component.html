@@ -1,0 +1,6 @@
+<mat-expansion-panel [expanded]="topic" [disabled]="!topic">
+    <mat-expansion-panel-header>
+        <mat-panel-title>Main Panel</mat-panel-title>
+    </mat-expansion-panel-header>
+    {{ topic | json }}
+</mat-expansion-panel>

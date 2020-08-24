@@ -1,7 +1,7 @@
 import { Component, Input } from '@angular/core';
 import { Router } from '@angular/router';
 
-import { CredentialTopicSearch } from '@app/credential/interfaces/credential-topic-search';
+import { CredentialTopicSearch } from '@app/search/interfaces/credential-topic-search';
 
 @Component({
   selector: 'ob-search-topic',

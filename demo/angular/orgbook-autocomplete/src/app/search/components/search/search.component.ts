@@ -25,7 +25,7 @@ export class SearchComponent {
       switchMap(params => this.searchService.getTopicPage(`/search/topic?${this.urlService.formatUrlQuery(params)}`)),
       map(topicResponse => this.searchResponseSubject$.next(topicResponse)),
       tap(() => this.searchLoadingSubject$.next(false)),
-    )
+    );
   private searchTerm$ = merge(
     this.searchQueryParams$
       .pipe(

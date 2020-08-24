@@ -10,10 +10,6 @@ import { AppComponent } from './app.component';
 
 import { CoreModule } from './core/core.module';
 import { LayoutModule } from './layout/layout.module';
-import { CredentialModule } from './credential/credential.module';
-import { CredentialTypeModule } from './credential-type/credential-type.module';
-import { IssuerModule } from './issuer/issuer.module';
-import { SchemaModule } from './schema/schema.module';
 import { AppRoutingModule } from './app-routing.module';
 
 
@@ -31,10 +27,6 @@ export function HttpLoaderFactory(http: HttpClient): TranslateHttpLoader {
     BrowserAnimationsModule,
     CoreModule,
     LayoutModule,
-    CredentialModule,
-    CredentialTypeModule,
-    IssuerModule,
-    SchemaModule,
     TranslateModule.forRoot({
       defaultLanguage: 'en',
       loader: {
