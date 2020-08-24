@@ -62,7 +62,7 @@ export class TopicComponent {
     // tslint:disable-next-line:deprecation
     this.credentialSearch$.pipe(startWith(null)),
     // tslint:disable-next-line:deprecation
-    this.topicRelationship$.pipe(startWith(null)),
+    this.topicRelationship$.pipe(startWith(null))
   ])
     .pipe(
       map(([loading, topic, credential, relationships]) => ({ loading, topic, credential, relationships}))

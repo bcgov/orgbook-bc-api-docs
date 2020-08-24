@@ -59,6 +59,6 @@ export class SearchService {
     return this.http.get<CredentialResponse>('/search/topic', options);
   }
 
-  
+
 
 }

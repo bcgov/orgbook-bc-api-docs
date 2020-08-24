@@ -1,5 +1,6 @@
 import { Component, Input } from '@angular/core';
-import { CredentialTopicExt } from '@app/credential/interfaces/credential-topic-ext';
+
+import { CredentialResponse } from '@app/search/interfaces/credential-response';
 
 @Component({
   selector: 'ob-topic-panel-credentials',
@@ -7,5 +8,6 @@ import { CredentialTopicExt } from '@app/credential/interfaces/credential-topic-
   styleUrls: ['./topic-panel-credentials.component.scss']
 })
 export class TopicPanelCredentialsComponent {
-  @Input() credential: any;
+  // tslint:disable-next-line:no-input-rename
+  @Input('credential') credentialResponse: CredentialResponse;
 }

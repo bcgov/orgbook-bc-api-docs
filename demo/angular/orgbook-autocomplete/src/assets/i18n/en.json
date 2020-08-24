@@ -1,4 +1,9 @@
 {
+    "credential": {
+        "type": {
+            "registration.registries.ca": "Registration"
+        }
+    },
     "attribute": {
         "effective_dates": "Effective Dates",
         "effective_date-short": "Credential",
@@ -617,10 +622,6 @@
             "ACT": "Active",
             "HIS": "Historical"
         }
-    },
-    "home": {
-        "about-title": "About OrgBook BC",
-        "title": "British Columbia's Verifiable Organizations"
     },
     "jurisdiction": {
         "general": {
