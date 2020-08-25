@@ -1,0 +1,8 @@
+:host {
+    display: grid;
+    grid-template-rows: [header-start] 1fr [header-end main-top] auto [main-end footer-start] 1fr [footer-end];
+}
+
+main {
+    display: contents;
+}

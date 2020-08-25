@@ -1,0 +1,12 @@
+<div class="left">
+    <button mat-raised-button (click)="onPreviousPage(topicResponse.previous)"
+        [disabled]="loading || !topicResponse?.previous">Previous</button>
+</div>
+<div class="center">
+    <mat-spinner *ngIf="loading" [diameter]=24></mat-spinner>
+    <small>Displaying {{ first }} - {{ last }} of {{ total }}</small>
+</div>
+<div class="right">
+    <button mat-raised-button (click)="onNextPage(topicResponse.next)"
+        [disabled]="loading || !topicResponse?.next">Next</button>
+</div>

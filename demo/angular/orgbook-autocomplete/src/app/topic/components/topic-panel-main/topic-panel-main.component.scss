@@ -1,0 +1,13 @@
+.content {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+
+    .attribute {
+        margin: 1rem;
+
+        .label {
+            font-weight: bold;
+        }
+    }
+}

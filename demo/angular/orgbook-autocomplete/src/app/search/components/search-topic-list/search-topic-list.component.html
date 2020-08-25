@@ -1,0 +1,11 @@
+<mat-progress-bar mode="indeterminate" *ngIf="loading"></mat-progress-bar>
+<ob-search-help-card *ngIf="topicResponse?.total === 0"></ob-search-help-card>
+<ng-container *ngIf="topicResponse?.results?.length">
+    <div class="list">
+        <ob-search-topic *ngFor="let topic of topicResponse?.results" [topic]="topic"></ob-search-topic>
+    </div>
+    <div class="nav" *ngIf="topicResponse?.total > topicResponse?.page_size">
+        <ob-search-topic-list-nav [topicResponse]="topicResponse" [loading]="loading" (page)="onPage($event)">
+        </ob-search-topic-list-nav>
+    </div>
+</ng-container>
