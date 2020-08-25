@@ -13,8 +13,8 @@ import { SearchService } from '@app/search/services/search.service';
   styleUrls: ['./topic.component.scss']
 })
 export class TopicComponent {
-  private topicSourceIdSubject$ = new BehaviorSubject<string>('');
-  private topicSourceTypeSubject$ = new BehaviorSubject<string>('');
+  // private topicSourceIdSubject$ = new BehaviorSubject<string>('');
+  // private topicSourceTypeSubject$ = new BehaviorSubject<string>('');
   private topicLoadingSubject$ = new BehaviorSubject<boolean>(false);
 
   private topicSourceId$ = this.route.paramMap
@@ -27,23 +27,23 @@ export class TopicComponent {
       filter(sourceId => !!sourceId),
       tap(() => this.topicLoadingSubject$.next(true)),
       switchMap(sourceId => this.topicService.getSearchTopic(sourceId)),
-      tap(topic => {
-        this.topicSourceIdSubject$.next(topic.source_id || '');
-        this.topicSourceTypeSubject$.next(topic.type || '');
-      }),
+      // tap(topic => {
+      //   this.topicSourceIdSubject$.next(topic.source_id || '');
+      //   this.topicSourceTypeSubject$.next(topic.type || '');
+      // }),
       tap(() => this.topicLoadingSubject$.next(false)),
     );
 
-  topicRelationship$ = combineLatest([
-    this.topicSourceIdSubject$,
-    this.topicSourceTypeSubject$
-  ])
-    .pipe(
-      filter(([sourceId, type]) => !!sourceId && !!type),
-      tap(() => this.topicLoadingSubject$.next(true)),
-      switchMap(([sourceId, type]) => this.topicService.getTopic(sourceId, type)),
-      tap(() => this.topicLoadingSubject$.next(false)),
-    );
+  // topicRelationship$ = combineLatest([
+  //   this.topicSourceIdSubject$,
+  //   this.topicSourceTypeSubject$
+  // ])
+  //   .pipe(
+  //     filter(([sourceId, type]) => !!sourceId && !!type),
+  //     tap(() => this.topicLoadingSubject$.next(true)),
+  //     switchMap(([sourceId, type]) => this.topicService.getTopic(sourceId, type)),
+  //     tap(() => this.topicLoadingSubject$.next(false)),
+  //   );
 
   credentialSearch$ = this.topicSourceId$
     .pipe(
@@ -62,10 +62,10 @@ export class TopicComponent {
     // tslint:disable-next-line:deprecation
     this.credentialSearch$.pipe(startWith(null)),
     // tslint:disable-next-line:deprecation
-    this.topicRelationship$.pipe(startWith(null))
+    // this.topicRelationship$.pipe(startWith(null))
   ])
     .pipe(
-      map(([loading, topic, credential, relationships]) => ({ loading, topic, credential, relationships}))
+      map(([loading, topic, credential]) => ({ loading, topic, credential}))
     );
 
   constructor(
