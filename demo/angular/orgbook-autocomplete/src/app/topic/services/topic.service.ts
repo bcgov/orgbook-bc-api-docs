@@ -5,6 +5,8 @@ import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
 import { CredentialTopicExt } from '@app/credential/interfaces/credential-topic-ext';
+import { Topic } from '@app/topic/interfaces/topic';
+
 import { SearchService } from '@app/search/services/search.service';
 
 @Injectable({
@@ -27,9 +29,22 @@ export class TopicService {
   }
 
   /**
+   * getTopicById
+   */
+  public getTopicById(topicId: number): Observable<CredentialTopicExt> {
+    return this.searchService.getTopicById(topicId)
+      .pipe(
+        map(topicResponse => {
+          const result = topicResponse.results.find(response => response.topic.id = topicId);
+          return result && result.topic;
+        })
+      );
+  }
+
+  /**
    * getTopic
    */
-  public getTopic(sourceId: string, type: string): Observable<any> {
-    return this.http.get<any>(`/topic/${type}/${sourceId}`);
+  public getTopic(sourceId: string, type: string): Observable<Topic> {
+    return this.http.get<Topic>(`/topic/${type}/${sourceId}`);
   }
 }

@@ -59,6 +59,17 @@ export class SearchService {
     return this.http.get<CredentialResponse>('/search/topic', options);
   }
 
+  /**
+   * getTopicById
+   */
+  public getTopicById(id: number): Observable<TopicResponse> {
+    const queryParams = new HttpParams({
+      fromObject: { topic_id: id.toString(), inactive: 'false', latest: 'true', revoked: 'false' }
+    });
 
+    const options = { params: queryParams };
+
+    return this.http.get<TopicResponse>('/search/topic', options);
+  }
 
 }

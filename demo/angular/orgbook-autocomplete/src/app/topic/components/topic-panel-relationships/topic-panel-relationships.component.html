@@ -1,6 +1,12 @@
-<mat-expansion-panel [expanded]="relationships" [disabled]="!relationships">
-    <mat-expansion-panel-header>
-        <mat-panel-title>Relationship Panel</mat-panel-title>
-    </mat-expansion-panel-header>
-    {{ relationships | json }}
-</mat-expansion-panel>
+<ng-container *ngIf="vm$ | async as vm">
+    <mat-expansion-panel [expanded]="!!vm?.relatedTopicIds?.length" [disabled]="!vm?.relatedTopicIds?.length">
+        <mat-expansion-panel-header>
+            <mat-panel-title>Relationships</mat-panel-title>
+        </mat-expansion-panel-header>
+        <div class="cards">
+            <ng-container *ngFor="let relatedTopicId of vm?.relatedTopicIds">
+                <ob-related-topic-card [topicId]="relatedTopicId"></ob-related-topic-card>
+            </ng-container>
+        </div>
+    </mat-expansion-panel>
+</ng-container>

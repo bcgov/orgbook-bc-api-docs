@@ -9,6 +9,7 @@ import { TopicPanelCredentialsComponent } from './components/topic-panel-credent
 import { TopicPanelRelationshipsComponent } from './components/topic-panel-relationships/topic-panel-relationships.component';
 import { CredentialCardComponent } from './components/credential-card/credential-card.component';
 import { CredentialProofDialogComponent } from './components/credential-proof-dialog/credential-proof-dialog.component';
+import { RelatedTopicCardComponent } from './components/related-topic-card/related-topic-card.component';
 
 
 
@@ -19,7 +20,8 @@ import { CredentialProofDialogComponent } from './components/credential-proof-di
     TopicPanelCredentialsComponent,
     TopicPanelRelationshipsComponent,
     CredentialCardComponent,
-    CredentialProofDialogComponent
+    CredentialProofDialogComponent,
+    RelatedTopicCardComponent
   ],
   imports: [
     TopicRoutingModule,

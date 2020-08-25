@@ -1,0 +1,21 @@
+<ng-container *ngIf="vm$ | async as vm">
+    <mat-progress-bar *ngIf="vm?.loading" mode="indeterminate"></mat-progress-bar>
+    <mat-card>
+        <mat-card-content>
+            <small *ngIf="vm?.loading else topic">Loading...</small>
+            <ng-template #topic>
+                <div>
+                    <a [routerLink]="['/topics', vm?.topicResponse?.source_id]">
+                        {{ vm?.topicResponse?.names[0].text }}
+                    </a>
+                </div>
+                <div>
+                    <small>Registered:&nbsp;</small>
+                    <small>
+                        {{ vm?.topicResponse.attributes | credentialAttributeValue:'registration_date' | date }}
+                    </small>
+                </div>
+            </ng-template>
+        </mat-card-content>
+    </mat-card>
+</ng-container>

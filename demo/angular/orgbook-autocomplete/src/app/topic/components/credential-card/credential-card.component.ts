@@ -51,7 +51,6 @@ export class CredentialCardComponent {
   }
 
   openDialog(proof: string): void {
-    console.log();
     this.dialog.open(CredentialProofDialogComponent, {
       data: JSON.stringify(proof, null, 2)
     });
