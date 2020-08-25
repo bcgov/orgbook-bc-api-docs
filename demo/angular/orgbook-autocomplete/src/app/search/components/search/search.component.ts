@@ -4,8 +4,8 @@ import { ActivatedRoute } from '@angular/router';
 import { SearchService } from '@app/search/services/search.service';
 import { UrlService } from '@app/shared/services/url.service';
 
-import { combineLatest, merge, BehaviorSubject, of } from 'rxjs';
-import { map, filter, startWith, switchMap, tap } from 'rxjs/operators';
+import { combineLatest, BehaviorSubject, of } from 'rxjs';
+import { map, startWith, switchMap, tap } from 'rxjs/operators';
 
 import { TopicResponse } from '@app/search/interfaces/topic-response';
 
@@ -25,17 +25,15 @@ export class SearchComponent {
         if (!params.name) {
           return of({} as TopicResponse);
         }
-        return this.searchService.getTopicPage(`/search/topic?${this.urlService.formatUrlQuery(params)}`)
+        return this.searchService.getTopicPage(`/search/topic?${this.urlService.formatUrlQuery(params)}`);
       }),
       map(topicResponse => this.searchResponseSubject$.next(topicResponse)),
       tap(() => this.searchLoadingSubject$.next(false)),
     );
-  private searchTerm$ = merge(
-    this.searchQueryParams$
-      .pipe(
-        map(params => params.name)
-      )
-  );
+  private searchTerm$ = this.searchQueryParams$
+    .pipe(
+      map(params => params.name)
+    );
   private searchResponse$ = this.searchResponseSubject$.asObservable();
   private searchLoading$ = this.searchLoadingSubject$.asObservable();
 

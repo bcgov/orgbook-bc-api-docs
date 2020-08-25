@@ -24,7 +24,7 @@ export class RelatedTopicCardComponent {
       tap(() => this.topicLoadingSubject$.next(true)),
       switchMap(id => this.topicService.getTopicById(id)),
       tap(() => this.topicLoadingSubject$.next(false)),
-    )
+    );
 
   vm$ = combineLatest([
     this.topicLoadingSubject$,
@@ -33,7 +33,7 @@ export class RelatedTopicCardComponent {
   ])
   .pipe(
     map(([loading, topicResponse]) => ({ loading, topicResponse }))
-  )
+  );
 
   constructor(private topicService: TopicService) { }
 }

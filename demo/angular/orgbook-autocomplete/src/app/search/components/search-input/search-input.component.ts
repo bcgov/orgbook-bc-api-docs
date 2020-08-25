@@ -34,7 +34,7 @@ export class SearchInputComponent {
         tap(() => this.autocompleteLoadingSubject$.next(true)),
         switchMap(q => {
           if (!q) {
-            return of({} as AggregateAutocompleteResponse)
+            return of({} as AggregateAutocompleteResponse);
           }
           return this.searchService.getAggregateAutocomplete(q);
         }),
