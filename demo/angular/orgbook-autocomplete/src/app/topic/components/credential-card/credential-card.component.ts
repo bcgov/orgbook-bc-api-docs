@@ -1,5 +1,7 @@
 import { Component, Input } from '@angular/core';
 
+import { MatDialog } from '@angular/material/dialog';
+
 import { CredentialSearch } from '@app/search/interfaces/credential-search';
 
 import { BehaviorSubject, combineLatest } from 'rxjs';
@@ -8,6 +10,8 @@ import { map, filter, startWith, tap, switchMap } from 'rxjs/operators';
 import { environment as env } from '@env/environment';
 
 import { CredentialService } from '@app/credential/services/credential.service';
+
+import { CredentialProofDialogComponent } from '../credential-proof-dialog/credential-proof-dialog.component';
 
 @Component({
   selector: 'ob-credential-card',
@@ -37,13 +41,19 @@ export class CredentialCardComponent {
     this.verified$.pipe(startWith(null))
   ])
     .pipe(
-      tap(console.log),
       map(([credential, verifying, verified]) => ({ credential, verifying, verified }))
     );
 
-  constructor(private credentialService: CredentialService) { }
+  constructor(private credentialService: CredentialService, private dialog: MatDialog) { }
 
   getLogoUrl(id: number): string {
     return `${env.apiUrl}/issuer/${id}/logo`;
+  }
+
+  openDialog(proof: string): void {
+    console.log();
+    this.dialog.open(CredentialProofDialogComponent, {
+      data: JSON.stringify(proof, null, 2)
+    });
   }
 }

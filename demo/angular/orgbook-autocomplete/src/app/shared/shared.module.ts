@@ -6,13 +6,15 @@ import { TranslateModule } from '@ngx-translate/core';
 import { AngularMaterialModule } from '../angular-material/angular-material.module';
 import { CredentialAttributeTagPipe } from './pipes/credential-attribute-tag.pipe';
 import { CredentialAttributeValuePipe } from './pipes/credential-attribute-value.pipe';
+import { CredentialTypeTagPipe } from './pipes/credential-type-tag.pipe';
 
 
 
 @NgModule({
   declarations: [
     CredentialAttributeTagPipe,
-    CredentialAttributeValuePipe
+    CredentialAttributeValuePipe,
+    CredentialTypeTagPipe
   ],
   imports: [
     CommonModule,
@@ -24,6 +26,8 @@ import { CredentialAttributeValuePipe } from './pipes/credential-attribute-value
     AngularMaterialModule,
     TranslateModule,
     CredentialAttributeTagPipe,
-    CredentialAttributeValuePipe  ]
+    CredentialAttributeValuePipe,
+    CredentialTypeTagPipe
+  ]
 })
 export class SharedModule { }
