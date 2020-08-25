@@ -1,6 +1,39 @@
 <mat-expansion-panel [expanded]="topic" [disabled]="!topic">
     <mat-expansion-panel-header>
-        <mat-panel-title>Main Panel</mat-panel-title>
+        <mat-panel-title>{{ topic?.names[0]?.text }}</mat-panel-title>
     </mat-expansion-panel-header>
-    {{ topic | json }}
+    <div class="content">
+        <div class="attribute" *ngFor="let attribute of topic?.attributes">
+            <ng-container [ngSwitch]="attribute.type">
+                <ng-container *ngSwitchCase="'registration_date'">
+                    <div class="label">{{ 'attribute.registration_date' | translate }}</div>
+                    <div class="value">{{ attribute?.value | date }}</div>
+                </ng-container>
+                <ng-container *ngSwitchCase="'entity_name_effective'">
+                    <div class="label">{{ 'attribute.entity_name_effective' | translate }}</div>
+                    <div class="value">{{ attribute?.value | date }}</div>
+                </ng-container>
+                <ng-container *ngSwitchCase="'entity_status'">
+                    <div class="label">{{ 'attribute.entity_status' | translate }}</div>
+                    <div class="value">{{ 'category.entity_status.' + attribute?.value | translate }}</div>
+                </ng-container>
+                <ng-container *ngSwitchCase="'entity_status_effective'">
+                    <div class="label">{{ 'attribute.entity_status_effective' | translate }}</div>
+                    <div class="value">{{ attribute?.value | date }}</div>
+                </ng-container>
+                <ng-container *ngSwitchCase="'entity_type'">
+                    <div class="label">{{ 'attribute.entity_type' | translate }}</div>
+                    <div class="value">{{ 'category.entity_type.' + attribute?.value | translate }}</div>
+                </ng-container>
+                <ng-container *ngSwitchCase="'home_jurisdiction'">
+                    <div class="label">{{ 'attribute.home_jurisdiction' | translate }}</div>
+                    <div class="value">{{ attribute?.value }}</div>
+                </ng-container>
+                <ng-container *ngSwitchCase="'reason_description'">
+                    <div class="label">{{ 'attribute.reason_description' | translate }}</div>
+                    <div class="value">{{ 'category.reason_description.' + attribute?.value | translate}}</div>
+                </ng-container>
+            </ng-container>
+        </div>
+    </div>
 </mat-expansion-panel>
