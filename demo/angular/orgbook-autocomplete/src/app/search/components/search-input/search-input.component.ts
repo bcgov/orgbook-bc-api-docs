@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Output, Input } from '@angular/core';
 
-import { combineLatest, BehaviorSubject, merge } from 'rxjs';
+import { combineLatest, BehaviorSubject, merge, of } from 'rxjs';
 import { map, debounceTime, distinctUntilChanged, tap, switchMap, filter, startWith } from 'rxjs/operators';
 
 import { SearchService } from '@app/search/services/search.service';
@@ -31,16 +31,19 @@ export class SearchInputComponent {
       .pipe(
         debounceTime(300),
         distinctUntilChanged(),
-        filter(q => !!q),
         tap(() => this.autocompleteLoadingSubject$.next(true)),
-        switchMap(q => this.searchService.getAggregateAutocomplete(q)),
+        switchMap(q => {
+          if (!q) {
+            return of({} as AggregateAutocompleteResponse)
+          }
+          return this.searchService.getAggregateAutocomplete(q);
+        }),
         tap(autocompleteResponse => this.autocompleteResponseSubject$.next(autocompleteResponse)),
         tap(() => this.autocompleteLoadingSubject$.next(false))
       )
   );
   private autocompleteSearch$ = this.autocompleteSearchSubject$
     .pipe(
-      distinctUntilChanged(),
       filter(q => !!q),
       tap(term => this.search.emit(term))
     );
