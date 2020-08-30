@@ -13,20 +13,20 @@ import { AggregateAutocompleteResponse } from '@app/search/interfaces/aggregate-
   styleUrls: ['./search-input.component.scss']
 })
 export class SearchInputComponent {
-  @Input() term: string;
+  @Input() set term(q: string) {
+    this.onAutocomplete(q);
+  };
 
   @Output() search = new EventEmitter<string>();
   @Output() clear = new EventEmitter<void>();
 
   private autocompleteLoadingSubject$ = new BehaviorSubject<boolean>(false);
   private autocompleteTermSubject$ = new BehaviorSubject<string>('');
-  private autocompleteResponseSubject$ = new BehaviorSubject<AggregateAutocompleteResponse>(null);
   private autocompleteSearchSubject$ = new BehaviorSubject<string>('');
 
   private autocompleteLoading$ = this.autocompleteLoadingSubject$.asObservable();
   private autocompleteTerm$ = this.autocompleteTermSubject$.asObservable();
   private autocompleteResponse$ = merge(
-    this.autocompleteResponseSubject$.asObservable(),
     this.autocompleteTermSubject$
       .pipe(
         debounceTime(300),
@@ -38,7 +38,6 @@ export class SearchInputComponent {
           }
           return this.searchService.getAggregateAutocomplete(q);
         }),
-        tap(autocompleteResponse => this.autocompleteResponseSubject$.next(autocompleteResponse)),
         tap(() => this.autocompleteLoadingSubject$.next(false))
       )
   );
@@ -53,8 +52,8 @@ export class SearchInputComponent {
 
   vm$ = combineLatest([
     this.autocompleteLoading$,
-    this.autocompleteTerm$,
-    this.autocompleteResponse$,
+    this.autocompleteTerm$.pipe(startWith('')),
+    this.autocompleteResponse$.pipe(startWith({} as AggregateAutocompleteResponse)),
     this.autocompleteSearch$.pipe(startWith(''))
   ])
     .pipe(
@@ -73,8 +72,6 @@ export class SearchInputComponent {
 
   onClear(): void {
     this.term = '';
-    this.autocompleteTermSubject$.next('');
-    this.autocompleteResponseSubject$.next(null);
     this.clear.emit();
   }
 }
