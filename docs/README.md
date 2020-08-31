@@ -3,18 +3,18 @@
 ## Table of Contents
 
 - [OrgBook API (v3) Documentation](#orgbook-api-v3-documentation)
-  - [Table of Contents](#table-of-contents)
-    - [DIY OrgBook BC Search Tutorial](#diy-orgbook-bc-search-tutorial)
-      - [1. Getting Started](#1-getting-started)
-      - [2. Performing an Autocomplete Search](#2-performing-an-autocomplete-search)
-      - [3. Performing a Topic Search](#3-performing-a-topic-search)
-    - [API Endpoints](#api-endpoints)
-      - [Credential](#credential)
-      - [Credential Type](#credential-type)
-      - [Issuer](#issuer)
-      - [Schema](#schema)
-      - [Search](#search)
-      - [Topic](#Topic)
+ - [Table of Contents](#table-of-contents)
+   - [DIY OrgBook BC Search Tutorial](#diy-orgbook-bc-search-tutorial)
+     - [1. Getting Started](#1-getting-started)
+     - [2.  Implementing Autocomplete](#2-implementing-autocomplete)
+     - [3. Implementing a Topic Search](#3-implementing-a-topic-search)
+   <!-- - [API Endpoints](#api-endpoints)
+    - [Credential](#credential)
+    - [Credential Type](#credential-type)
+    - [Issuer](#issuer)
+    - [Schema](#schema)
+    - [Search](#search)
+    - [Topic](#Topic) -->
 
 ## DIY OrgBook BC Search Tutorial
 
@@ -32,9 +32,9 @@ ___
 💡 The demo leverages Angular Material web components and thus leaves the heavy lifting of the UI to the library.
 ___
 
-### 2. Performing an Autocomplete Search
+### 2. Implementing Autocomplete
 
-Likely the first API endpoint you will call is `/search/autocomplete`, which takes a query parameter `q`: a query string that will match the most closely related organization names in OrgBook BC. The endpoint URL (using `'abc'` as the example query string) should be formatted like:
+Autcomplete adds immediate benefits to your application as it provides an easy way to pre-emptively narrow down organization searches. The first API endpoint you will call is `/search/autocomplete`, which takes a query parameter `q`: a query string that will match the most closely related organization names in OrgBook BC. The endpoint URL (using `'abc'` as the example query string) should be formatted like:
 
 ```
 /search/autocomplete?q=abc&inactive=false&revoked=false
@@ -68,8 +68,7 @@ export interface AggregateAutocomplete {
 }
 ```
 
-Results are mostly returned in batches of 10 in descending search `score` order. More specific query strings will result in fewer results returned with higher search `score`s. Non-matching query strings will return empty results.
- 
+Results are mostly returned in batches of up to 10 in descending search `score` order. More specific query strings will result in fewer results returned with higher search `score`s. Non-matching query strings will return empty results.
 The main fields you will be interested are:
 * `type`: The data field that autocomplete search is based on (example: 'name').
 * `value`: The value of the data field that autocomplete search is based on (example: 'ABC LTD.').
@@ -135,14 +134,14 @@ private autocompleteResponse$ = merge(
 The results of this Observable stream are subscribed to in the [HTML template](/demo/angular/orgbook-autocomplete/src/app/search/components/search-input/search-input.component.html) and displayed:
 
 ```
-  vm$ = combineLatest([
-    ...
-    this.autocompleteResponse$,
-    ...
-  ])
-    .pipe(
-      map(([..., autocompleteResponse]) => ({ ..., autocompleteResponse }))
-    );
+vm$ = combineLatest([
+  ...
+  this.autocompleteResponse$,
+  ...
+])
+  .pipe(
+    map(([..., autocompleteResponse]) => ({ ..., autocompleteResponse }))
+  );
 ```
 
 ```
@@ -150,7 +149,7 @@ The results of this Observable stream are subscribed to in the [HTML template](/
   ...
   <mat-autocomplete #auto="matAutocomplete" ...>
     <ng-container *ngIf="vm?.autocompleteResponse">
-        <mat-option *ngFor="let entry of vm?.autocompleteResponse?.results" 
+        <mat-option *ngFor="let entry of vm?.autocompleteResponse?.results"
           [value]="entry.value">
             {{ entry?.value }}
         </mat-option>
@@ -163,9 +162,106 @@ The results of this Observable stream are subscribed to in the [HTML template](/
 
 ___
 
-### 3. Performing a Topic Search
+### 3. Implementing a Topic Search
 
-## API Endpoints
+With autocomplete implemented, it's now time to incorporate full search functionality for an organization in OrgBook BC. Calling the `/search/topic` endpoint returns comprehensive information about OrgBook BC entities, including information about entity credentials and related organization (although other endpoints provide this information as well). This is the endpoint that will likely serve the majority of needs for a basic search and takes a number of query parameters, the main one of which is `name`: a query string that will match the most closely related organization names in OrgBook BC. The endpoint URL (using `'abc'` as the example query string) should be formatted like:
+
+```
+/search/topic?name=abc&inactive=false&latest=true&revoked=false
+```
+
+In similar fashion to `/search/autocomplete`, the `inactive` query parameter denotes whether names of discontinued entities should be returned in the results. The `revoked` query parameter denotes whether entities with invalid credentials should be returned in the results. Since this endpoint also returns entity credentials, the `latest` query parameter denotes whether only the most recent credentials should be returned. By default, only currently operating organizations in BC with the latest valid BC Registries credentials are queried for.
+
+The API response will have the following interface definition:
+
+```
+export interface TopicResponse {
+    total: number;
+    page_size: number;
+    page: number;
+    first_index: number;
+    last_index: number;
+    next: string;
+    previous: string;
+    results: CredentialTopicSearch[];
+}
+```
+
+In similar fashion to `/search/autocomplete`, results are returned in pages of up to 10 similarly matching entities to the name query (the number of results in the current response are indicated in the `page_size` field). The `total` field will indicate whether there are more results available than what's in the current page, and if so, `next` and `previous` URLs will be included in the response for accessing the next or previous pages of results, respectively. More specific query strings will result in fewer results and pages returned. Non-matching query strings will return empty pages.
+
+The `results` field is a list of closely or exactly matching entities in OrgBook BC, and has the following type definition:
+
+```
+export interface CredentialTopicSearch {
+    id: number;
+    create_timestamp: Date;
+    update_timestamp: Date;
+    effective_date: Date;
+    inactive: boolean;
+    latest: boolean;
+    revoked: boolean;
+    revoked_date: Date;
+    credential_id: string;
+    credential_set: CredentialSet;
+    credential_type: CredentialType;
+    attributes: CredentialAttribute[];
+    names: CredentialName[];
+    topic: CredentialTopicExt;
+    related_topics: CredentialNamedTopic[];
+}
+```
+
+_**Note:** The result here is actually a credential that is being returned by the API._
+
+The `inactive`, `latest`, `revoked` and `revoked_date` fields are self explanatory. `effective_date` indicates when the credential was activated.
+
+_**Note:** `effective_date` is not the same as incorporation/registration date. It simply denotes the last time BC Registries created a credential for this entity._
+
+Information about the organization is found in the `topic` field, which has the following type definition:
+
+```
+export interface CredentialTopicExt {
+    id: number;
+    create_timestamp: Date;
+    update_timestamp: Date;
+    source_id: string;
+    type: string;
+    names: CredentialName[];
+    local_name: CredentialName;
+    remote_name: CredentialName;
+    addresses: CredentialAddress[];
+    attributes: TopicAttribute[];
+}
+```
+
+You'll notice that it contains many of the same fields as the top-level response, with some additions, such as `source_id` (the unique business number generated for the organization when it was registered in British Columbia), `addresses` and `local_name`.
+
+The `names` field contains the operating business names and has the following type definition (with `type` typically being 'entity_name'):
+
+```
+export interface CredentialName {
+    id: number;
+    text: string;
+    language: string;
+    credential_id: string;
+    type: string;
+}
+```
+
+The `attributes` field contains a list of informational attributes about the entity such as 'registration_date', 'entity_name_effective', 'entity_status', 'entity_status_effective', 'entity_type', 'home_jurisdiction', and 'reason_description'. It has the following type definition:
+
+```
+export interface TopicAttribute {
+    id: number;
+    type: string;
+    format: string;
+    value: string;
+    credential_id: string;
+    credential_type_id: string;
+}
+```
+
+<!-- ## API Endpoints
 
 ### Credential
 
@@ -177,4 +273,4 @@ ___
 
 ### Search
 
-### Topic
+### Topic -->
