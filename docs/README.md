@@ -261,6 +261,131 @@ export interface TopicAttribute {
 }
 ```
 
+___
+💡 In the demo, the `getTopic` method performs a `GET` request to the `/search/topic` endpoint. The service method in the demo is implemented as follows (it looks very similar to `getAggregateAutocomplete`):
+
+```
+public getTopic(name: string): Observable<TopicResponse> {
+  const queryParams = new HttpParams({
+    fromObject: { name, inactive: 'false', latest: 'true', revoked: 'false' }
+  });
+
+  const options = { params: queryParams };
+
+  return this.http.get<TopicResponse>('/search/topic', options);
+}
+```
+
+The `getTopic` method is called whenever a user either presses the `Enter` key on their keyboard when the input is in focus, or when a name is selected from the autocomplete list:
+
+```
+<mat-form-field appearance="outline">
+  ...
+  <input type="text" #search name="search" id="search"
+    ...
+    (keyup.enter)="onSearch(search?.value)"
+    matInput[matAutocomplete]="auto" ...>
+  ...
+</mat-form-field>
+<mat-autocomplete #auto="matAutocomplete"
+  (optionSelected)="onSearch($event?.option?.value)">
+  ...
+</mat-autocomplete>
+```
+
+The `onSearch` method in this case sets the browser's state with the query URL, allowing the user to bookmark the search or execute the same search on page refreshes. This same approach is used for paging results.
+
+```
+onSearch(name: string): void {
+  const searchQuery = this.urlService.formatUrlQuery({
+    name, inactive: 'false', latest: 'true', revoked: 'false'
+  });
+  this.urlService.setUrlState(`/search?${searchQuery}`);
+}
+```
+
+Once the browser's state is set the query parameters are read and fed into an Observable, triggering the actual search request to the API:
+
+```
+private search$ = this.route.queryParams
+  .pipe(
+    ...
+    switchMap(params => {
+      if (!params.name) {
+        return of({} as TopicResponse);
+      }
+      return this.searchService.getTopicPage(`/search/topic?${this.urlService.formatUrlQuery(params)}`);
+    }),
+    ...
+  );
+```
+
+The results of this Observable stream are subscribed to in the [HTML template](/demo/angular/orgbook-autocomplete/src/app/search/components/search-input/search.component.html) and displayed:
+
+```
+vm$ = combineLatest([
+  ...
+  this.search$.pipe(startWith({})),
+  ...
+])
+  .pipe(
+    map(([..., topicResponse, ...]) => ({ ..., topicResponse, ... }))
+  );
+```
+
+```
+<ng-container *ngIf="vm$ | async as vm">
+  ...
+  <ob-search-topic-list
+    (page)="onPage($event)"
+    [loading]="vm?.loading"
+    [topicResponse]="vm?.topicResponse">
+  </ob-search-topic-list>
+</ng-container>
+```
+
+From this point on, the results are formatted into a list for easy viewing.
+
+Paging is set up in a similar fashion to topic searching. The url is extracted from the search results in the [`SearchTopicListNavComponent`](/demo/angular/orgbook-autocomplete/src/app/search/components/search-topic-list-nav/search-topic-list-nav.component.ts) and emitted up to the [`SearchComponent`](/demo/angular/orgbook-autocomplete/src/app/search/components/search/search.component.ts). The URL is set in the browsers state which triggers the next or previous search request:
+
+```
+...
+  <button mat-raised-button
+    (click)="onPreviousPage(topicResponse.previous)" ...>
+    Previous
+  </button>
+...
+  <button mat-raised-button
+    (click)="onNextPage(topicResponse.next)" ...>
+    Next
+  </button>
+...
+```
+
+```
+public onPreviousPage(url: string): void {
+  if (!url) {
+    return;
+  }
+  this.page.emit(url);
+}
+...
+public onNextPage(url: string): void {
+  if (!url) {
+    return;
+  }
+  this.page.emit(url);
+}
+```
+
+```
+onPage(url: string): void {
+  const searchQuery = this.urlService.extractUrlQuery(url);
+  this.urlService.setUrlState(`/search?${searchQuery}`);
+}
+```
+___
+
 <!-- ## API Endpoints
 
 ### Credential
