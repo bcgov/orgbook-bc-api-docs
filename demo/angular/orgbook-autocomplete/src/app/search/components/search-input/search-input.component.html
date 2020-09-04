@@ -7,7 +7,7 @@
         </ng-template>
         <input type="text" #search name="search" id="search" [placeholder]="placeholder"
             (input)="onAutocomplete(search?.value)" (keyup.enter)="onSearch(search?.value)" matInput
-            [matAutocomplete]="auto" [value]="term || vm?.autocompleteTerm">
+            [matAutocomplete]="auto" [value]="vm?.autocompleteTerm">
         <button *ngIf="search?.value" mat-button matSuffix mat-icon-button aria-label="Clear" (click)="onClear()">
             <mat-icon>close</mat-icon>
         </button>

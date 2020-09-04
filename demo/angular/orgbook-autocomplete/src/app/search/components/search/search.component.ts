@@ -18,7 +18,7 @@ export class SearchComponent {
   private searchLoadingSubject$ = new BehaviorSubject<boolean>(false);
   private searchTerm$ = this.route.queryParams
     .pipe(
-      map(params => params.name)
+      map(params => params.name || '')
     );
   private search$ = this.route.queryParams
     .pipe(
@@ -34,7 +34,7 @@ export class SearchComponent {
 
   vm$ = combineLatest([
     this.searchTerm$.pipe(startWith('')),
-    this.search$.pipe(startWith({})),
+    this.search$.pipe(startWith({} as TopicResponse)),
     this.searchLoadingSubject$,
   ])
     .pipe(
