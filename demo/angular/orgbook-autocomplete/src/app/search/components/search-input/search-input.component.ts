@@ -15,7 +15,7 @@ import { AggregateAutocompleteResponse } from '@app/search/interfaces/aggregate-
 export class SearchInputComponent {
   @Input() set term(q: string) {
     this.onAutocomplete(q);
-  };
+  }
 
   @Output() search = new EventEmitter<string>();
   @Output() clear = new EventEmitter<void>();
