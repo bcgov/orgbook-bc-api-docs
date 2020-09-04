@@ -164,7 +164,7 @@ ___
 
 ### 3. Implementing a Topic Search
 
-With autocomplete implemented, it's now time to incorporate full search functionality for an organization in OrgBook BC. Calling the `/search/topic` endpoint returns comprehensive information about OrgBook BC entities, including information about entity credentials and related organization (although other endpoints provide this information as well). This is the endpoint that will likely serve the majority of needs for a basic search and takes a number of query parameters, the main one of which is `name`: a query string that will match the most closely related organization names in OrgBook BC. The endpoint URL (using `'abc'` as the example query string) should be formatted like:
+With autocomplete implemented, it's now time to incorporate full search functionality for an organization in OrgBook BC. Calling the `/search/topic` endpoint returns comprehensive information about OrgBook BC entities, including information about entity credentials and related organizations (although other endpoints provide this information as well). This is the endpoint that will likely serve the majority of needs for a basic search and takes a number of query parameters, the main one of which is `name`: a query string that will match the most closely related organization names in OrgBook BC. The endpoint URL (using `'abc'` as the example query string) should be formatted like:
 
 ```
 /search/topic?name=abc&inactive=false&latest=true&revoked=false
