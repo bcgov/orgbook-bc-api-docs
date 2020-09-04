@@ -15,10 +15,12 @@ import { TopicResponse } from '@app/search/interfaces/topic-response';
   styleUrls: ['./search.component.scss']
 })
 export class SearchComponent {
-  private searchResponseSubject$ = new BehaviorSubject<TopicResponse>({} as TopicResponse);
   private searchLoadingSubject$ = new BehaviorSubject<boolean>(false);
-  private searchQueryParams$ = this.route.queryParams;
-  private search$ = this.searchQueryParams$
+  private searchTerm$ = this.route.queryParams
+    .pipe(
+      map(params => params.name || '')
+    );
+  private search$ = this.route.queryParams
     .pipe(
       tap(() => this.searchLoadingSubject$.next(true)),
       switchMap(params => {
@@ -27,21 +29,13 @@ export class SearchComponent {
         }
         return this.searchService.getTopicPage(`/search/topic?${this.urlService.formatUrlQuery(params)}`);
       }),
-      map(topicResponse => this.searchResponseSubject$.next(topicResponse)),
       tap(() => this.searchLoadingSubject$.next(false)),
     );
-  private searchTerm$ = this.searchQueryParams$
-    .pipe(
-      map(params => params.name)
-    );
-  private searchResponse$ = this.searchResponseSubject$.asObservable();
-  private searchLoading$ = this.searchLoadingSubject$.asObservable();
 
   vm$ = combineLatest([
     this.searchTerm$.pipe(startWith('')),
-    this.searchResponse$.pipe(startWith({})),
-    this.searchLoading$,
-    this.search$.pipe(startWith({}))
+    this.search$.pipe(startWith({} as TopicResponse)),
+    this.searchLoadingSubject$,
   ])
     .pipe(
       map(([term, topicResponse, loading]) => ({ term, topicResponse, loading }))
@@ -64,7 +58,6 @@ export class SearchComponent {
   }
 
   onClear(): void {
-    this.searchResponseSubject$.next({} as TopicResponse);
     this.urlService.setUrlState(`/search`);
   }
 }
