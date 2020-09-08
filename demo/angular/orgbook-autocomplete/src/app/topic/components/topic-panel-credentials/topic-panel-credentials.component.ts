@@ -8,6 +8,5 @@ import { CredentialResponse } from '@app/search/interfaces/credential-response';
   styleUrls: ['./topic-panel-credentials.component.scss']
 })
 export class TopicPanelCredentialsComponent {
-  // tslint:disable-next-line:no-input-rename
-  @Input('credential') credentialResponse: CredentialResponse;
+  @Input() credentialResponse: CredentialResponse;
 }

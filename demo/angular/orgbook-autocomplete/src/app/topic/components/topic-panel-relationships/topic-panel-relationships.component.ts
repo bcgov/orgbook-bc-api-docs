@@ -11,6 +11,8 @@ import { map, tap } from 'rxjs/operators';
   styleUrls: ['./topic-panel-relationships.component.scss']
 })
 export class TopicPanelRelationshipsComponent {
+  @Input() relatedTopicIds: number[];
+
   private relatedTopicIdsSubject$ = new BehaviorSubject<number[]>([]);
 
   @Input() set relationships(r: Topic) {

@@ -33,12 +33,12 @@ export class SearchComponent {
     );
 
   vm$ = combineLatest([
+    this.searchLoadingSubject$,
     this.searchTerm$.pipe(startWith('')),
     this.search$.pipe(startWith({} as TopicResponse)),
-    this.searchLoadingSubject$,
   ])
     .pipe(
-      map(([term, topicResponse, loading]) => ({ term, topicResponse, loading }))
+      map(([loading, term, topicResponse]) => ({ loading, term, topicResponse }))
     );
 
   constructor(

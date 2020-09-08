@@ -1,14 +1,33 @@
 <div class="back">
     <a [routerLink]="'/search'">Back to Search</a>
-</div> 
+</div>
 
-<ng-container *ngIf="vm$ | async as vm">
-    <mat-progress-bar *ngIf="vm?.loading else loaded" mode="indeterminate"></mat-progress-bar>
-    <ng-template #loaded>
-        <mat-accordion multi>
+<ng-template #loading>
+    <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+</ng-template>
+
+<ng-container *ngIf="vm$ | async as vm else loading">
+    <mat-accordion multi>
+        <mat-expansion-panel [expanded]="!!vm?.topic?.id" [disabled]="!vm?.topic?.id">
+            <mat-expansion-panel-header>
+                <mat-panel-title>Topic</mat-panel-title>
+                <mat-panel-description>{{ vm?.topic?.names[0]?.text }}</mat-panel-description>
+            </mat-expansion-panel-header>
             <ob-topic-panel-main [topic]="vm?.topic"></ob-topic-panel-main>
-            <ob-topic-panel-credentials [credential]="vm?.credential"></ob-topic-panel-credentials>
-            <!-- <ob-topic-panel-relationships [relationships]="vm?.relationships"></ob-topic-panel-relationships> -->
-        </mat-accordion>
-    </ng-template>
+        </mat-expansion-panel>
+        <mat-expansion-panel [expanded]="!!vm?.credentialResponse?.total" [disabled]="!vm?.credentialResponse?.total">
+            <mat-expansion-panel-header>
+                <mat-panel-title>Credentials</mat-panel-title>
+            </mat-expansion-panel-header>
+            <ob-topic-panel-credentials [credentialResponse]="vm?.credentialResponse"></ob-topic-panel-credentials>
+        </mat-expansion-panel>
+        <mat-expansion-panel [expanded]="!!vm?.relationships?.related_to?.length"
+            [disabled]="!vm?.relationships?.related_to?.length">
+            <mat-expansion-panel-header>
+                <mat-panel-title>Relationships</mat-panel-title>
+            </mat-expansion-panel-header>
+            <ob-topic-panel-relationships [relationships]="vm?.relationships?.related_to">
+            </ob-topic-panel-relationships>
+        </mat-expansion-panel>
+    </mat-accordion>
 </ng-container>
