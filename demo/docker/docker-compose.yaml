@@ -1,0 +1,10 @@
+version: '3'
+
+services:
+    orgbook-angular:
+        build:
+            context: ../angular/orgbook-autocomplete/
+            args:
+                - ORGBOOK_HOST=${ORGBOOK_HOST}
+        ports:
+            - 8000:80
