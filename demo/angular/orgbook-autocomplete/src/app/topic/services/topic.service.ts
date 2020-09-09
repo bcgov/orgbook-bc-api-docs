@@ -2,18 +2,21 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 
 import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { map, catchError, tap } from 'rxjs/operators';
 
 import { CredentialTopicExt } from '@app/credential/interfaces/credential-topic-ext';
 import { Topic } from '@app/topic/interfaces/topic';
 
 import { SearchService } from '@app/search/services/search.service';
+import { BaseService } from '@app/shared/services/base.service';
 
 @Injectable({
   providedIn: 'root'
 })
-export class TopicService {
-  constructor(private http: HttpClient, private searchService: SearchService) { }
+export class TopicService extends BaseService {
+  constructor(private http: HttpClient, private searchService: SearchService) {
+    super();
+  }
 
   /**
    * getSearchTopic
@@ -24,7 +27,8 @@ export class TopicService {
         map(topicResponse => {
           const result = topicResponse.results.find(response => response.topic.source_id = sourceId);
           return result && result.topic;
-        })
+        }),
+        catchError(this.handleError<CredentialTopicExt>('getSearchTopic', { names: [] } as CredentialTopicExt))
       );
   }
 
@@ -37,7 +41,8 @@ export class TopicService {
         map(topicResponse => {
           const result = topicResponse.results.find(response => response.topic.id = topicId);
           return result && result.topic;
-        })
+        }),
+        catchError(this.handleError<CredentialTopicExt>('getTopicById', { names: [] } as CredentialTopicExt))
       );
   }
 
@@ -45,6 +50,9 @@ export class TopicService {
    * getTopic
    */
   public getTopic(sourceId: string, type: string): Observable<Topic> {
-    return this.http.get<Topic>(`/topic/${type}/${sourceId}`);
+    return this.http.get<Topic>(`/topic/${type}/${sourceId}`)
+      .pipe(
+        catchError(this.handleError<Topic>('getTopic', {} as Topic))
+      );
   }
 }

@@ -1,6 +1,8 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 
+import { BaseService } from '@app/shared/services/base.service';
+
 import { Observable, of } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 
@@ -11,8 +13,10 @@ import { TopicResponse } from '../interfaces/topic-response';
 @Injectable({
   providedIn: 'root'
 })
-export class SearchService {
-  constructor(private http: HttpClient) { }
+export class SearchService extends BaseService {
+  constructor(private http: HttpClient) {
+    super();
+  }
 
   /**
    * getAggregateAutocomplete
@@ -66,7 +70,7 @@ export class SearchService {
 
     const options = { params: queryParams };
 
-    return this.http.get<CredentialResponse>('/search/topic', options)
+    return this.http.get<CredentialResponse>('/search/credential', options)
       .pipe(
         catchError(this.handleError<CredentialResponse>('getCredential', {} as CredentialResponse))
       );
@@ -87,12 +91,4 @@ export class SearchService {
         catchError(this.handleError<TopicResponse>('getTopicById', { total: 0 } as TopicResponse))
       );
   }
-
-  private handleError<T>(operation = 'operation', result?: T): (error: any) => Observable<T> {
-    return (error: any): Observable<T> => {
-      console.error(`${operation} failed: ${error.message}`);
-      return of(result as T);
-    };
-  }
-
 }
