@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
+import { catchError } from 'rxjs/operators';
 
 import { AggregateAutocompleteResponse } from '../interfaces/aggregate-autocomplete-response';
 import { CredentialResponse } from '../interfaces/credential-response';
@@ -23,7 +24,10 @@ export class SearchService {
 
     const options = { params: queryParams };
 
-    return this.http.get<AggregateAutocompleteResponse>('/search/autocomplete', options);
+    return this.http.get<AggregateAutocompleteResponse>('/search/autocomplete', options)
+      .pipe(
+        catchError(this.handleError<AggregateAutocompleteResponse>('getAggregateAutocomplete', {} as AggregateAutocompleteResponse))
+      );
   }
 
   /**
@@ -36,14 +40,20 @@ export class SearchService {
 
     const options = { params: queryParams };
 
-    return this.http.get<TopicResponse>('/search/topic', options);
+    return this.http.get<TopicResponse>('/search/topic', options)
+      .pipe(
+        catchError(this.handleError<TopicResponse>('getTopic', { total: 0 } as TopicResponse))
+      );
   }
 
   /**
    * getTopicPage
    */
   public getTopicPage(url: string): Observable<TopicResponse> {
-    return this.http.get<TopicResponse>(url);
+    return this.http.get<TopicResponse>(url)
+      .pipe(
+        catchError(this.handleError<TopicResponse>('getTopicPage', { total: 0 } as TopicResponse))
+      );
   }
 
   /**
@@ -56,7 +66,10 @@ export class SearchService {
 
     const options = { params: queryParams };
 
-    return this.http.get<CredentialResponse>('/search/topic', options);
+    return this.http.get<CredentialResponse>('/search/topic', options)
+      .pipe(
+        catchError(this.handleError<CredentialResponse>('getCredential', {} as CredentialResponse))
+      );
   }
 
   /**
@@ -69,7 +82,17 @@ export class SearchService {
 
     const options = { params: queryParams };
 
-    return this.http.get<TopicResponse>('/search/topic', options);
+    return this.http.get<TopicResponse>('/search/topic', options)
+      .pipe(
+        catchError(this.handleError<TopicResponse>('getTopicById', { total: 0 } as TopicResponse))
+      );
+  }
+
+  private handleError<T>(operation = 'operation', result?: T): (error: any) => Observable<T> {
+    return (error: any): Observable<T> => {
+      console.error(`${operation} failed: ${error.message}`);
+      return of(result as T);
+    };
   }
 
 }

@@ -28,7 +28,7 @@ export class TopicComponent {
         if (!sourceId) {
           return of({} as CredentialTopicExt);
         }
-        return this.topicService.getSearchTopic(sourceId)
+        return this.topicService.getSearchTopic(sourceId);
       }),
     );
 
@@ -36,7 +36,7 @@ export class TopicComponent {
     .pipe(
       switchMap(topic => {
         if (!(topic && topic.source_id && topic.type)) {
-          return of({} as Topic)
+          return of({} as Topic);
         }
         return this.topicService.getTopic(topic.source_id, topic.type);
       }),
@@ -48,7 +48,7 @@ export class TopicComponent {
         if (!sourceId) {
           return of({} as CredentialResponse);
         }
-        return this.searchService.getCredential(sourceId)
+        return this.searchService.getCredential(sourceId);
       }),
     );
 

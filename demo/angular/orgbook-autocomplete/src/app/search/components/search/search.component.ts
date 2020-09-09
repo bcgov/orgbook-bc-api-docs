@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 
 import { SearchService } from '@app/search/services/search.service';
@@ -12,7 +12,8 @@ import { TopicResponse } from '@app/search/interfaces/topic-response';
 @Component({
   selector: 'ob-search',
   templateUrl: './search.component.html',
-  styleUrls: ['./search.component.scss']
+  styleUrls: ['./search.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class SearchComponent {
   private searchLoadingSubject$ = new BehaviorSubject<boolean>(false);
@@ -38,6 +39,7 @@ export class SearchComponent {
     this.search$.pipe(startWith({} as TopicResponse)),
   ])
     .pipe(
+      tap(console.log),
       map(([loading, term, topicResponse]) => ({ loading, term, topicResponse }))
     );
 
