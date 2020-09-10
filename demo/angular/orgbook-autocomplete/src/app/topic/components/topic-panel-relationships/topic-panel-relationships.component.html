@@ -1,3 +1,20 @@
-<div class="cards">
-    <ob-related-topic-card *ngFor="let relatedTopicId of relatedTopicIds" [topicId]="relatedTopicId"></ob-related-topic-card>
-</div>
+<mat-list role="list">
+    <cdk-virtual-scroll-viewport #scroll itemSize="50">
+        <mat-list-item role="listitem" *cdkVirtualFor="let relatedTopic of relatedTopicDataSource">
+            <ng-container *ngIf="!relatedTopic else relatedTopicReady">
+                <mat-spinner [diameter]=24></mat-spinner>
+                <span>Loading...</span>
+            </ng-container>
+            <ng-template #relatedTopicReady>
+                <ng-container *ngIf="(relatedTopic?.attributes | credentialAttributeValue:'entity_status') === 'HIS' else link">
+                    <span>{{ relatedTopic?.names[0]?.text }}</span>
+                    <span>&nbsp;</span>
+                    <span>({{ relatedTopic?.attributes | credentialAttributeTag:'entity_status' | translate }})</span>
+                </ng-container>
+                <ng-template #link>
+                    <a [routerLink]="['/topics', relatedTopic?.source_id]">{{ relatedTopic?.names[0]?.text }}</a>
+                </ng-template>
+            </ng-template>
+        </mat-list-item>
+    </cdk-virtual-scroll-viewport>
+</mat-list>

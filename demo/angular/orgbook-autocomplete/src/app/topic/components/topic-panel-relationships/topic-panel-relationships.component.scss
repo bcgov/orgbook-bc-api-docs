@@ -1,5 +1,7 @@
-.cards {
-    display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
+cdk-virtual-scroll-viewport {
+    height: 12.5rem;
+}
+
+mat-spinner {
+    margin: 0rem 0.25rem;
 }

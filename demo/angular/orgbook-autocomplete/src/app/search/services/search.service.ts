@@ -79,9 +79,15 @@ export class SearchService extends BaseService {
   /**
    * getTopicById
    */
-  public getTopicById(id: number): Observable<TopicResponse> {
+  public getTopicById(id: number, params: any = {}): Observable<TopicResponse> {
     const queryParams = new HttpParams({
-      fromObject: { topic_id: id.toString(), inactive: 'false', latest: 'true', revoked: 'false' }
+      fromObject: {
+        topic_id: id.toString(),
+        inactive: 'false',
+        latest: 'true',
+        revoked: 'false',
+        ...params
+      }
     });
 
     const options = { params: queryParams };

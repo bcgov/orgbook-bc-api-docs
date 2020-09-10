@@ -35,8 +35,8 @@ export class TopicService extends BaseService {
   /**
    * getTopicById
    */
-  public getTopicById(topicId: number): Observable<CredentialTopicExt> {
-    return this.searchService.getTopicById(topicId)
+  public getTopicById(topicId: number, params: any = {}): Observable<CredentialTopicExt> {
+    return this.searchService.getTopicById(topicId, params)
       .pipe(
         map(topicResponse => {
           const result = topicResponse.results.find(response => response.topic.id = topicId);
