@@ -1,5 +1,12 @@
-cdk-virtual-scroll-viewport {
-    height: 12.5rem;
+mat-list {
+    max-height: 12.5rem;
+    overflow: scroll;
+}
+
+mat-list-item.loading {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
 }
 
 mat-spinner {

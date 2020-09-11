@@ -1,8 +1,11 @@
-import { Component, Input } from '@angular/core';
-import { DataSource, CollectionViewer } from '@angular/cdk/collections';
+import { Component, Input, ViewChild, NgZone, AfterViewInit, OnDestroy } from '@angular/core';
+import { CdkScrollable } from '@angular/cdk/scrolling';
+
+import { Subscription, BehaviorSubject, forkJoin, combineLatest } from 'rxjs';
+import { tap, map, filter, withLatestFrom, switchMap, first, startWith } from 'rxjs/operators';
 
 import { CredentialTopicExt } from '@app/credential/interfaces/credential-topic-ext';
-import { Observable, Subscription, BehaviorSubject, forkJoin } from 'rxjs';
+
 import { TopicService } from '@app/topic/services/topic.service';
 
 @Component({
@@ -10,67 +13,67 @@ import { TopicService } from '@app/topic/services/topic.service';
   templateUrl: './topic-panel-relationships.component.html',
   styleUrls: ['./topic-panel-relationships.component.scss']
 })
-export class TopicPanelRelationshipsComponent {
-  @Input() set relatedTopicIds(ids: number[]) {
-    this.relatedTopicDataSource = new RelatedTopicDataSource(ids, this.topicService);
-  }
-
-  relatedTopicDataSource: RelatedTopicDataSource;
-
-  constructor(private topicService: TopicService) { }
-}
-
-export class RelatedTopicDataSource extends DataSource<CredentialTopicExt> {
-  private topicService: TopicService;
+export class TopicPanelRelationshipsComponent implements AfterViewInit, OnDestroy {
   private pageSize = 5;
-  private cachedIds = [] as number[];
-  private cachedData = [] as CredentialTopicExt[];
-  private cachedPages = new Set<number>();
   private subscription = new Subscription();
-  private data$: BehaviorSubject<CredentialTopicExt[]>;
+  private relatedTopicsLoadingSubject$ = new BehaviorSubject<boolean>(false);
+  private relatedTopicsIdsSubject$ = new BehaviorSubject<number[]>(null);
+  private data$ = new BehaviorSubject<CredentialTopicExt[]>(null);
 
-  constructor(topicIds: number[] = [], topicService: TopicService) {
-    super();
-    this.topicService = topicService;
-    this.cachedIds = topicIds;
-    this.cachedData = Array.from({ length: topicIds.length });
-    this.data$ = new BehaviorSubject<CredentialTopicExt[]>(this.cachedData);
-  }
-  private getPageForIndex(index: number): number {
-    return Math.floor(index / this.pageSize);
+  @Input() set relatedTopicIds(ids: number[]) {
+    this.relatedTopicsIdsSubject$.next(Array.from(ids));
   }
 
-  private getPage(page: number): void {
-    if (this.cachedPages.has(page)) {
-      return;
-    }
-    this.cachedPages.add(page);
-    const topicIds = this.cachedIds.slice(page * this.pageSize, (page + 1) * this.pageSize);
-    forkJoin(topicIds.map(id => this.topicService.getTopicById(id, { inactive: 'any' })))
-      .subscribe(topics => {
-        this.cachedData.splice(page * this.pageSize, this.pageSize, ...topics);
-        this.data$.next(this.cachedData);
-      });
+  @ViewChild(CdkScrollable) private list: CdkScrollable;
+
+  private first$ = this.relatedTopicsIdsSubject$
+    .pipe(
+      tap(() => this.relatedTopicsLoadingSubject$.next(true)),
+      switchMap(() => forkJoin(this.next(this.pageSize)
+        .map(id => this.topicService.getTopicById(id, { inactive: 'any' })))),
+      tap(credentials => this.cacheNext(credentials)),
+      tap(() => this.relatedTopicsLoadingSubject$.next(false))
+    );
+
+  vm$ = combineLatest([
+    this.relatedTopicsLoadingSubject$,
+    this.first$.pipe(startWith([] as CredentialTopicExt[])),
+    this.data$.pipe(startWith([] as CredentialTopicExt[])),
+  ])
+    .pipe(
+      map(([loading, first, data]) => ({ loading, data }))
+    );
+
+  constructor(private ngZone: NgZone, private topicService: TopicService) { }
+
+  ngAfterViewInit() {
+    this.subscription.add(this.list.elementScrolled()
+      .pipe(
+        withLatestFrom(this.relatedTopicsLoadingSubject$),
+        filter(([e, loading]) => !loading),
+        filter(() => !!this.relatedTopicsIdsSubject$.getValue().length),
+        filter(() => this.list.measureScrollOffset('bottom') === 0),
+        tap(() => this.ngZone.run(() => this.relatedTopicsLoadingSubject$.next(true))),
+        switchMap(() => forkJoin(this.next(this.pageSize)
+          .map(id => this.topicService.getTopicById(id, { inactive: 'any' })))),
+        tap(credentials => this.ngZone.run(() => this.cacheNext(credentials))),
+        tap(() => this.ngZone.run(() => this.relatedTopicsLoadingSubject$.next(false))),
+      )
+      .subscribe());
   }
 
-  /**
-   * connect
-   */
-  connect(collectionViewer: CollectionViewer): Observable<CredentialTopicExt[] | readonly CredentialTopicExt[]> {
-    this.subscription.add(collectionViewer.viewChange.subscribe(range => {
-      const start = this.getPageForIndex(range.start);
-      const end = this.getPageForIndex(range.end - 1);
-      for (let i = start; i <= end; i++) {
-        this.getPage(i);
-      }
-    }));
-    return this.data$;
-  }
-
-  /**
-   * disconnect
-   */
-  disconnect(): void {
+  ngOnDestroy() {
     this.subscription.unsubscribe();
   }
+
+  private next(n: number = 0): number[] {
+    const ids = this.relatedTopicsIdsSubject$.getValue() || [];
+    return ids.splice(0, n);
+  }
+
+  private cacheNext(next: CredentialTopicExt[]) {
+    const cached = this.data$.getValue() || [];
+    this.data$.next(cached.concat(next));
+  }
+
 }

@@ -11,21 +11,23 @@
                 <mat-expansion-panel-header>
                     <mat-panel-title>Topic</mat-panel-title>
                 </mat-expansion-panel-header>
-                <ob-topic-panel-main [topic]="vm?.topic"></ob-topic-panel-main>
+                <ob-topic-panel-main *ngIf="vm?.topic" [topic]="vm?.topic"></ob-topic-panel-main>
             </mat-expansion-panel>
             <mat-expansion-panel [expanded]="!!vm?.credentialResponse?.total"
                 [disabled]="!vm?.credentialResponse?.total">
                 <mat-expansion-panel-header>
                     <mat-panel-title>Credentials</mat-panel-title>
                 </mat-expansion-panel-header>
-                <ob-topic-panel-credentials [credentialResponse]="vm?.credentialResponse"></ob-topic-panel-credentials>
+                <ob-topic-panel-credentials *ngIf="vm?.credentialResponse"
+                    [credentialResponse]="vm?.credentialResponse"></ob-topic-panel-credentials>
             </mat-expansion-panel>
             <mat-expansion-panel [expanded]="!!vm?.relationships?.related_to?.length"
                 [disabled]="!vm?.relationships?.related_to?.length">
                 <mat-expansion-panel-header>
                     <mat-panel-title>Relationships</mat-panel-title>
                 </mat-expansion-panel-header>
-                <ob-topic-panel-relationships [relatedTopicIds]="vm?.relationships?.related_to">
+                <ob-topic-panel-relationships *ngIf="vm?.relationships?.related_to"
+                    [relatedTopicIds]="vm?.relationships?.related_to">
                 </ob-topic-panel-relationships>
             </mat-expansion-panel>
         </mat-accordion>
