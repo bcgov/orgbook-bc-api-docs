@@ -37,7 +37,7 @@ export class CredentialCardComponent {
   vm$ = combineLatest([
     this.verifyLoadingSubject$,
     this.verified$.pipe(startWith({} as Credential)),
-    this.credentialSubject$,
+    this.credentialSubject$.pipe(startWith({} as CredentialSearch)),
   ])
     .pipe(
       map(([verifying, verified, credential]) => ({ verifying, verified, credential }))

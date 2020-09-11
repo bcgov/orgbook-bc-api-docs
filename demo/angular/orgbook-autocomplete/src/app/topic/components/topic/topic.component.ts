@@ -1,8 +1,8 @@
 import { Component } from '@angular/core';
 import { ActivatedRoute, ParamMap } from '@angular/router';
 
-import { combineLatest, of, BehaviorSubject } from 'rxjs';
-import { map, switchMap, tap } from 'rxjs/operators';
+import { combineLatest, of, BehaviorSubject, forkJoin } from 'rxjs';
+import { map, switchMap, tap, startWith } from 'rxjs/operators';
 
 import { TopicService } from '@app/topic/services/topic.service';
 import { SearchService } from '@app/search/services/search.service';
@@ -17,6 +17,7 @@ import { Topic } from '@app/topic/interfaces/topic';
   styleUrls: ['./topic.component.scss']
 })
 export class TopicComponent {
+  private topicLoadingSubject$ = new BehaviorSubject<boolean>(false);
   private topicByIdSubject$ = new BehaviorSubject<CredentialTopicExt>(null);
   private topicSourceId$ = this.route.paramMap
     .pipe(
@@ -33,13 +34,15 @@ export class TopicComponent {
     );
   private topicById$ = this.topicSearch$
     .pipe(
+      tap(() => this.topicLoadingSubject$.next(true)),
       switchMap(topic => {
         if (!(topic && topic.source_id && topic.type)) {
           return of({ names: [] } as CredentialTopicExt);
         }
         return this.topicService.getTopicById(topic.id);
       }),
-      tap(topic => this.topicByIdSubject$.next(topic))
+      tap(topic => this.topicByIdSubject$.next(topic)),
+      tap(() => this.topicLoadingSubject$.next(false))
     );
   private topicRelationships$ = this.topicByIdSubject$
     .pipe(
@@ -60,9 +63,14 @@ export class TopicComponent {
       })
     );
 
-  vm$ = combineLatest([this.topicById$, this.credentialSearch$, this.topicRelationships$])
+  vm$ = combineLatest([
+    this.topicLoadingSubject$,
+    this.topicById$.pipe(startWith({} as CredentialTopicExt)),
+    this.credentialSearch$.pipe(startWith({} as CredentialResponse)),
+    this.topicRelationships$.pipe(startWith({} as Topic))
+  ])
     .pipe(
-      map(([topic, credentialResponse, relationships]) => ({ topic, credentialResponse, relationships }))
+      map(([loading, topic, credentialResponse, relationships]) => ({ loading, topic, credentialResponse, relationships })),
     );
 
   constructor(
