@@ -2,7 +2,7 @@ import { Component, Input, ViewChild, NgZone, AfterViewInit, OnDestroy } from '@
 import { CdkScrollable } from '@angular/cdk/scrolling';
 
 import { Subscription, BehaviorSubject, forkJoin, combineLatest } from 'rxjs';
-import { tap, map, filter, withLatestFrom, switchMap, first, startWith } from 'rxjs/operators';
+import { tap, map, filter, startWith, exhaustMap, switchMap } from 'rxjs/operators';
 
 import { CredentialTopicExt } from '@app/credential/interfaces/credential-topic-ext';
 
@@ -49,12 +49,10 @@ export class TopicPanelRelationshipsComponent implements AfterViewInit, OnDestro
   ngAfterViewInit() {
     this.subscription.add(this.list.elementScrolled()
       .pipe(
-        withLatestFrom(this.relatedTopicsLoadingSubject$),
-        filter(([e, loading]) => !loading),
         filter(() => !!this.relatedTopicsIdsSubject$.getValue().length),
         filter(() => this.list.measureScrollOffset('bottom') === 0),
         tap(() => this.ngZone.run(() => this.relatedTopicsLoadingSubject$.next(true))),
-        switchMap(() => forkJoin(this.next(this.pageSize)
+        exhaustMap(() => forkJoin(this.next(this.pageSize)
           .map(id => this.topicService.getTopicById(id, { inactive: 'any' })))),
         tap(credentials => this.ngZone.run(() => this.cacheNext(credentials))),
         tap(() => this.ngZone.run(() => this.relatedTopicsLoadingSubject$.next(false))),

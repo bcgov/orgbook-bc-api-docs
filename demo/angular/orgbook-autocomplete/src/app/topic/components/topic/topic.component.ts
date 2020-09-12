@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { ActivatedRoute, ParamMap } from '@angular/router';
 
-import { combineLatest, of, BehaviorSubject, forkJoin } from 'rxjs';
+import { combineLatest, of, BehaviorSubject } from 'rxjs';
 import { map, switchMap, tap, startWith } from 'rxjs/operators';
 
 import { TopicService } from '@app/topic/services/topic.service';
@@ -23,18 +23,16 @@ export class TopicComponent {
     .pipe(
       map((params: ParamMap) => params.get('sourceId'))
     );
-  private topicSearch$ = this.topicSourceId$
+  private topicById$ = this.topicSourceId$
     .pipe(
-      switchMap(sourceId => {
+      tap(() => this.topicLoadingSubject$.next(true)),
+      tap(() => this.topicByIdSubject$.next(null)),
+      switchMap((sourceId) => {
         if (!sourceId) {
           return of({} as CredentialTopicExt);
         }
         return this.topicService.getSearchTopic(sourceId);
-      })
-    );
-  private topicById$ = this.topicSearch$
-    .pipe(
-      tap(() => this.topicLoadingSubject$.next(true)),
+      }),
       switchMap(topic => {
         if (!(topic && topic.source_id && topic.type)) {
           return of({ names: [] } as CredentialTopicExt);
@@ -78,5 +76,4 @@ export class TopicComponent {
     private searchService: SearchService,
     private topicService: TopicService
   ) { }
-
 }
