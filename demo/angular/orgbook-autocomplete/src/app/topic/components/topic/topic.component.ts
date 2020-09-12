@@ -63,12 +63,15 @@ export class TopicComponent {
 
   vm$ = combineLatest([
     this.topicLoadingSubject$,
+    this.topicSourceId$,
     this.topicById$.pipe(startWith({} as CredentialTopicExt)),
     this.credentialSearch$.pipe(startWith({} as CredentialResponse)),
     this.topicRelationships$.pipe(startWith({} as Topic))
   ])
     .pipe(
-      map(([loading, topic, credentialResponse, relationships]) => ({ loading, topic, credentialResponse, relationships })),
+      map(([loading, sourceId, topic, credentialResponse, relationships]) => ({
+        loading, sourceId, topic, credentialResponse, relationships
+      })),
     );
 
   constructor(

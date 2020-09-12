@@ -5,31 +5,34 @@
 <ng-container *ngIf="vm$ | async as vm">
     <mat-progress-bar *ngIf="vm?.loading else loaded" mode="indeterminate"></mat-progress-bar>
     <ng-template #loaded>
-        <h1 *ngIf="vm?.topic?.names as names">{{ names[0]?.text }}</h1>
-        <mat-accordion *ngIf="vm?.topic?.id" multi>
-            <mat-expansion-panel [expanded]="!!vm?.topic?.id" [disabled]="!vm?.topic?.id">
-                <mat-expansion-panel-header>
-                    <mat-panel-title>Topic</mat-panel-title>
-                </mat-expansion-panel-header>
-                <ob-topic-panel-main *ngIf="vm?.topic" [topic]="vm?.topic"></ob-topic-panel-main>
-            </mat-expansion-panel>
-            <mat-expansion-panel [expanded]="!!vm?.credentialResponse?.total"
-                [disabled]="!vm?.credentialResponse?.total">
-                <mat-expansion-panel-header>
-                    <mat-panel-title>Credentials</mat-panel-title>
-                </mat-expansion-panel-header>
-                <ob-topic-panel-credentials *ngIf="vm?.credentialResponse"
-                    [credentialResponse]="vm?.credentialResponse"></ob-topic-panel-credentials>
-            </mat-expansion-panel>
-            <mat-expansion-panel [expanded]="!!vm?.relationships?.related_to?.length"
-                [disabled]="!vm?.relationships?.related_to?.length">
-                <mat-expansion-panel-header>
-                    <mat-panel-title>Relationships</mat-panel-title>
-                </mat-expansion-panel-header>
-                <ob-topic-panel-relationships *ngIf="vm?.relationships?.related_to"
-                    [relatedTopicIds]="vm?.relationships?.related_to">
-                </ob-topic-panel-relationships>
-            </mat-expansion-panel>
-        </mat-accordion>
+        <ob-topic-help-card *ngIf="!vm?.topic?.id" [sourceId]="vm?.sourceId"></ob-topic-help-card>
+        <ng-container *ngIf="vm?.topic?.id">
+            <h1 *ngIf="vm?.topic?.names as names">{{ names[0]?.text }}</h1>
+            <mat-accordion multi>
+                <mat-expansion-panel [expanded]="!!vm?.topic?.id" [disabled]="!vm?.topic?.id">
+                    <mat-expansion-panel-header>
+                        <mat-panel-title>Topic</mat-panel-title>
+                    </mat-expansion-panel-header>
+                    <ob-topic-panel-main *ngIf="vm?.topic" [topic]="vm?.topic"></ob-topic-panel-main>
+                </mat-expansion-panel>
+                <mat-expansion-panel [expanded]="!!vm?.credentialResponse?.total"
+                    [disabled]="!vm?.credentialResponse?.total">
+                    <mat-expansion-panel-header>
+                        <mat-panel-title>Credentials</mat-panel-title>
+                    </mat-expansion-panel-header>
+                    <ob-topic-panel-credentials *ngIf="vm?.credentialResponse"
+                        [credentialResponse]="vm?.credentialResponse"></ob-topic-panel-credentials>
+                </mat-expansion-panel>
+                <mat-expansion-panel [expanded]="!!vm?.relationships?.related_to?.length"
+                    [disabled]="!vm?.relationships?.related_to?.length">
+                    <mat-expansion-panel-header>
+                        <mat-panel-title>Relationships</mat-panel-title>
+                    </mat-expansion-panel-header>
+                    <ob-topic-panel-relationships *ngIf="vm?.relationships?.related_to"
+                        [relatedTopicIds]="vm?.relationships?.related_to">
+                    </ob-topic-panel-relationships>
+                </mat-expansion-panel>
+            </mat-accordion>
+        </ng-container>
     </ng-template>
 </ng-container>
