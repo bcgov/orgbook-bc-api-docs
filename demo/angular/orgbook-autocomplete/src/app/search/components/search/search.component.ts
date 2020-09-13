@@ -7,7 +7,7 @@ import { UrlService } from '@app/shared/services/url.service';
 import { combineLatest, BehaviorSubject, of } from 'rxjs';
 import { map, startWith, switchMap, tap } from 'rxjs/operators';
 
-import { TopicResponse } from '@app/search/interfaces/topic-response';
+import { TopicFacetsResponse } from '@app/search/interfaces/topic-facets-response';
 
 @Component({
   selector: 'ob-search',
@@ -25,9 +25,9 @@ export class SearchComponent {
       tap(() => this.searchLoadingSubject$.next(true)),
       switchMap(params => {
         if (!params.name) {
-          return of({} as TopicResponse);
+          return of({} as TopicFacetsResponse);
         }
-        return this.searchService.getTopicPage(`/search/topic?${this.urlService.formatUrlQuery(params)}`);
+        return this.searchService.getTopicFacetsPage(`/search/topic/facets?${this.urlService.formatUrlQuery(params)}`);
       }),
       tap(() => this.searchLoadingSubject$.next(false))
     );
@@ -35,10 +35,10 @@ export class SearchComponent {
   vm$ = combineLatest([
     this.searchLoadingSubject$,
     this.searchTerm$.pipe(startWith('')),
-    this.search$.pipe(startWith({} as TopicResponse)),
+    this.search$.pipe(startWith({} as TopicFacetsResponse)),
   ])
     .pipe(
-      map(([loading, term, topicResponse]) => ({ loading, term, topicResponse }))
+      map(([loading, term, topicFacetsResponse]) => ({ loading, term, ...topicFacetsResponse }))
     );
 
   constructor(

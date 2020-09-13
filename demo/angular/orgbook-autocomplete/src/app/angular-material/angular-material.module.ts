@@ -3,6 +3,7 @@ import { NgModule } from '@angular/core';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
+import { MatChipsModule } from '@angular/material/chips';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { MatIconModule } from '@angular/material/icon';
@@ -20,6 +21,7 @@ import { ScrollingModule } from '@angular/cdk/scrolling';
     MatAutocompleteModule,
     MatButtonModule,
     MatCardModule,
+    MatChipsModule,
     MatDialogModule,
     MatExpansionModule,
     MatIconModule,
@@ -34,6 +36,7 @@ import { ScrollingModule } from '@angular/cdk/scrolling';
     MatAutocompleteModule,
     MatButtonModule,
     MatCardModule,
+    MatChipsModule,
     MatDialogModule,
     MatExpansionModule,
     MatIconModule,

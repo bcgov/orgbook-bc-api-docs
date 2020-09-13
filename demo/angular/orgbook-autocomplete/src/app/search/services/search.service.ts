@@ -3,12 +3,13 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 
 import { BaseService } from '@app/shared/services/base.service';
 
-import { Observable, of } from 'rxjs';
+import { Observable } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 
 import { AggregateAutocompleteResponse } from '../interfaces/aggregate-autocomplete-response';
 import { CredentialResponse } from '../interfaces/credential-response';
 import { TopicResponse } from '../interfaces/topic-response';
+import { TopicFacetsResponse } from '../interfaces/topic-facets-response';
 
 @Injectable({
   providedIn: 'root'
@@ -51,12 +52,38 @@ export class SearchService extends BaseService {
   }
 
   /**
+   * getTopicFacets
+   */
+  public getTopicFacets(name: string): Observable<TopicFacetsResponse> {
+    const queryParams = new HttpParams({
+      fromObject: { name, inactive: 'false', latest: 'true', revoked: 'false' }
+    });
+
+    const options = { params: queryParams };
+
+    return this.http.get<TopicFacetsResponse>('/search/topic/facets', options)
+      .pipe(
+        catchError(this.handleError<TopicFacetsResponse>('getTopicFacets', { } as TopicFacetsResponse))
+      );
+  }
+
+  /**
    * getTopicPage
    */
   public getTopicPage(url: string): Observable<TopicResponse> {
     return this.http.get<TopicResponse>(url)
       .pipe(
         catchError(this.handleError<TopicResponse>('getTopicPage', { total: 0 } as TopicResponse))
+      );
+  }
+
+  /**
+   * getTopicFacetsPage
+   */
+  public getTopicFacetsPage(url: string): Observable<TopicFacetsResponse> {
+    return this.http.get<TopicFacetsResponse>(url)
+      .pipe(
+        catchError(this.handleError<TopicFacetsResponse>('getTopicFacetsPage', { } as TopicFacetsResponse))
       );
   }
 

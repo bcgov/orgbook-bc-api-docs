@@ -46,7 +46,7 @@ export class TopicPanelRelationshipsComponent implements AfterViewInit, OnDestro
 
   constructor(private ngZone: NgZone, private topicService: TopicService) { }
 
-  ngAfterViewInit() {
+  ngAfterViewInit(): void {
     this.subscription.add(this.list.elementScrolled()
       .pipe(
         filter(() => !!this.relatedTopicsIdsSubject$.getValue().length),
@@ -60,7 +60,7 @@ export class TopicPanelRelationshipsComponent implements AfterViewInit, OnDestro
       .subscribe());
   }
 
-  ngOnDestroy() {
+  ngOnDestroy(): void {
     this.subscription.unsubscribe();
   }
 
@@ -69,7 +69,7 @@ export class TopicPanelRelationshipsComponent implements AfterViewInit, OnDestro
     return ids.splice(0, n);
   }
 
-  private cacheNext(next: CredentialTopicExt[]) {
+  private cacheNext(next: CredentialTopicExt[]): void {
     const cached = this.data$.getValue() || [];
     this.data$.next(cached.concat(next));
   }

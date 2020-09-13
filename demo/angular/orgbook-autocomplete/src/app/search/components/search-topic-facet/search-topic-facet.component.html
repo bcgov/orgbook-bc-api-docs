@@ -1,1 +1,9 @@
-<p>search-topic-facet works!</p>
+<mat-chip-list>
+    <div>
+        <ng-container [ngSwitch]="facetFieldType">
+            <span *ngSwitchCase="'category'">{{ facetField.value | translate }}</span>
+            <span *ngSwitchDefault>{{ facetField.text }}</span>
+        </ng-container>
+        <mat-chip>{{ facetField?.count }}</mat-chip>
+    </div>
+</mat-chip-list>
