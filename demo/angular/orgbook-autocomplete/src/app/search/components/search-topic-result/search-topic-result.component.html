@@ -1,0 +1,4 @@
+<mat-progress-bar mode="indeterminate" *ngIf="loading else loaded"></mat-progress-bar>
+<ng-template #loaded>
+    <ng-content></ng-content>
+</ng-template>
