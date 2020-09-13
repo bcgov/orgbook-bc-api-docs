@@ -1,15 +1,8 @@
 <mat-accordion multi>
     <mat-expansion-panel *ngFor="let fieldType of facets?.fields | keyvalue" expanded>
-        <mat-expansion-panel-header>
-            <ng-container [ngSwitch]="fieldType.key">
-                <div *ngSwitchCase="'category'">Status</div>
-                <div *ngSwitchCase="'credential_type_id'">Credential Type</div>
-                <div *ngSwitchCase="'issuer_id'">Issuer</div>
-            </ng-container>
-        </mat-expansion-panel-header>
+        <mat-expansion-panel-header>{{ fieldType.key | translate }}</mat-expansion-panel-header>
         <ng-container *ngFor="let field of fieldType?.value">
-            <ob-search-topic-facet *ngIf="field?.count" [facetFieldType]="fieldType.key" [facetField]="field">
-            </ob-search-topic-facet>
+            <ob-search-topic-facet *ngIf="field?.count" [facetField]="field"></ob-search-topic-facet>
         </ng-container>
     </mat-expansion-panel>
 </mat-accordion>

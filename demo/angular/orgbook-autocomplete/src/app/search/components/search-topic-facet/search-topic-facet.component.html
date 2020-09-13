@@ -1,9 +1,6 @@
+<span class="field-tag">{{ facetField?.tag | translate }}</span>
 <mat-chip-list>
-    <div>
-        <ng-container [ngSwitch]="facetFieldType">
-            <span *ngSwitchCase="'category'">{{ facetField.value | translate }}</span>
-            <span *ngSwitchDefault>{{ facetField.text }}</span>
-        </ng-container>
-        <mat-chip>{{ facetField?.count }}</mat-chip>
-    </div>
+    <mat-chip>
+        <small>{{ facetField?.count }}</small>
+    </mat-chip>
 </mat-chip-list>

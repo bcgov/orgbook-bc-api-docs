@@ -1,10 +1,6 @@
 {
-    "credential": {
-        "type": {
-            "registration.registries.ca": "Registration"
-        }
-    },
     "attribute": {
+        "credential_type": "Credential Type",
         "effective_dates": "Effective Dates",
         "effective_date-short": "Credential",
         "entity_name_assumed_effective": "Assumed Name Effective Date",
@@ -14,6 +10,7 @@
         "entity_status_effective": "Status Effective Date",
         "entity_status_effective-short": "Status Effective",
         "entity_type": "Registration Type",
+        "issuer": "Issuer",
         "home_jurisdiction": "Home Jurisdiction",
         "name_short": "Name",
         "reason_description": "Credential Reason",
@@ -24,6 +21,18 @@
         "relationship_description": "Description",
         "relationship_status": "Status",
         "relationship_status_effective": "Status Effective"
+    },
+    "issuer": {
+        "BC Corporate Registry": "BC Corporate Registry",
+        "Liquor and Cannabis Regulation Branch": "Liquor and Cannabis Regulation Branch"
+    },
+    "credential": {
+        "type": {
+            "registration.registries.ca": "Registration",
+            "relationship.registries.ca": "Relationship",
+            "Cannabis Retail Store Licence": "Cannabis Retail Store Licence",
+            "Cannabis Marketing Licence": "Cannabis Marketing Licence"
+        }
     },
     "category": {
         "address_type": {

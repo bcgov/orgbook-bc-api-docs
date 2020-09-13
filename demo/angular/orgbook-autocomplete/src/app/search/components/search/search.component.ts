@@ -8,6 +8,10 @@ import { combineLatest, BehaviorSubject, of } from 'rxjs';
 import { map, startWith, switchMap, tap } from 'rxjs/operators';
 
 import { TopicFacetsResponse } from '@app/search/interfaces/topic-facets-response';
+import { TopicFacets } from '@app/search/interfaces/topic-facets';
+import { TopicFacetFields } from '@app/search/interfaces/topic-facet-fields';
+import { TopicFacetField } from '@app/search/interfaces/topic-facet-field';
+import { ProcessedTopicFacetFields } from '@app/search/interfaces/processed-topic-facet-fields';
 
 @Component({
   selector: 'ob-search',
@@ -29,6 +33,18 @@ export class SearchComponent {
         }
         return this.searchService.getTopicFacetsPage(`/search/topic/facets?${this.urlService.formatUrlQuery(params)}`);
       }),
+      map((topicFacetsResponse) => {
+        if (!topicFacetsResponse.facets) {
+          return topicFacetsResponse;
+        }
+        return {
+          ...topicFacetsResponse,
+          facets: {
+            ...topicFacetsResponse.facets,
+            ...this.processFacets(topicFacetsResponse.facets)
+          }
+        };
+      }),
       tap(() => this.searchLoadingSubject$.next(false))
     );
 
@@ -46,6 +62,67 @@ export class SearchComponent {
     private searchService: SearchService,
     private urlService: UrlService
   ) { }
+
+  private processFacets(facets: TopicFacets): { fields: ProcessedTopicFacetFields } {
+    return { fields: this.processFacetFields(facets.fields) };
+  }
+
+  private processFacetFields(fields: TopicFacetFields): ProcessedTopicFacetFields {
+    return {
+      ...this.processFieldCategories(fields.category),
+      ...this.processFieldCredentialTypes(fields.credential_type_id),
+      ...this.processFieldIssuers(fields.issuer_id)
+    };
+  }
+
+  private processFieldCategories(categories: TopicFacetField[]): ProcessedTopicFacetFields {
+    return categories.reduce((categoryGroup, facetCategory) => {
+      const category = facetCategory.value.split('::');
+      const [categoryName, categoryValue] = category;
+      if (!(categoryName && categoryValue)) {
+        return categoryGroup;
+      }
+      const name = `attribute.${categoryName}`;
+      const categoryEntry = categoryGroup[name] || [];
+      categoryEntry.push({
+        ...facetCategory,
+        tag: `category.${categoryName}.${categoryValue}`
+      });
+      return { ...categoryGroup, [name]: categoryEntry };
+    }, {});
+  }
+
+  private processFieldCredentialTypes(credentialTypes: TopicFacetField[]): ProcessedTopicFacetFields {
+    return credentialTypes.reduce((typeGroup, facetType) => {
+      const typeName = facetType.text
+      if (!typeName) {
+        return typeGroup;
+      }
+      const name = 'attribute.credential_type';
+      const typeEntry = typeGroup[name] || [];
+      typeEntry.push({
+        ...facetType,
+        tag: `credential.type.${typeName}`
+      });
+      return { ...typeGroup, [name]: typeEntry };
+    }, {});
+  }
+
+  private processFieldIssuers(issuers: TopicFacetField[]): ProcessedTopicFacetFields {
+    return issuers.reduce((issuerGroup, facetIssuer) => {
+      const typeName = facetIssuer.text
+      if (!typeName) {
+        return issuerGroup;
+      }
+      const name = 'attribute.issuer';
+      const issuerEntry = issuerGroup[name] || [];
+      issuerEntry.push({
+        ...facetIssuer,
+        tag: `issuer.${typeName}`
+      });
+      return { ...issuerGroup, [name]: issuerEntry };
+    }, {});
+  }
 
   onSearch(name: string): void {
     const searchQuery = this.urlService.formatUrlQuery({ name, inactive: 'false', latest: 'true', revoked: 'false' });
