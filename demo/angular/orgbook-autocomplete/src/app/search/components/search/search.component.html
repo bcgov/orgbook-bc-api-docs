@@ -1,7 +1,7 @@
 <ng-container *ngIf="vm$ | async as vm">
     <ob-search-input [term]="vm?.term" (search)="onSearch($event)" (clear)="onClear()"></ob-search-input>
     <ob-search-topic-result [loading]="vm?.loading">
-        <ob-search-topic-facet-list [facets]="vm?.facets" (facetSelected)="onFacetSelected($event)">
+        <ob-search-topic-facet-list [facets]="vm?.facets" (facet)="onFacet($event)">
         </ob-search-topic-facet-list>
         <ob-search-topic-list [loading]="vm?.loading" [topicResponse]="vm?.objects" (page)="onPage($event)">
         </ob-search-topic-list>

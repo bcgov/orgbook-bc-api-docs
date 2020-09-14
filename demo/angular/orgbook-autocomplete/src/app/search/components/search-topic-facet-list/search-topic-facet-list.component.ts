@@ -10,12 +10,12 @@ import { TopicFacets } from '@app/search/interfaces/topic-facets';
 export class SearchTopicFacetListComponent {
   @Input() facets: TopicFacets;
 
-  @Output() facetSelected = new EventEmitter<any>();
+  @Output() facet = new EventEmitter<any>();
 
   /**
    * onFacetSelected
    */
-  public onFacetSelected(query): void {
-    this.facetSelected.emit(query);
+  public onFacet(query): void {
+    this.facet.emit(query);
   }
 }

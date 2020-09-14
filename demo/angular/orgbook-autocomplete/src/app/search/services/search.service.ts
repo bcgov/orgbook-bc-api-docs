@@ -28,10 +28,10 @@ export class SearchService extends BaseService {
   }
 
   /**
-   * 
+   *
    */
   public extendDefault(options: any = {}): any {
-    return { ...this.defaultQueryParameters, ...options }
+    return { ...this.defaultQueryParameters, ...options };
   }
 
   /**

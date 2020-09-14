@@ -79,7 +79,7 @@ export class SearchComponent {
   private processFieldCategories(categories: TopicFacetField[]): ProcessedTopicFacetFields {
     const formatQueryParam = (categoryName: string, categoryValue: string) => {
       if (categoryName === 'entity_status') {
-        return { 'inactive': String(categoryValue === 'HIS') }
+        return { inactive: String(categoryValue === 'HIS') };
       }
       return { [`category:${categoryName}`]: categoryValue };
     };
@@ -103,7 +103,7 @@ export class SearchComponent {
 
   private processFieldCredentialTypes(credentialTypes: TopicFacetField[]): ProcessedTopicFacetFields {
     return credentialTypes.reduce((typeGroup, facetType) => {
-      const typeName = facetType.text
+      const typeName = facetType.text;
       if (!typeName) {
         return typeGroup;
       }
@@ -120,7 +120,7 @@ export class SearchComponent {
 
   private processFieldIssuers(issuers: TopicFacetField[]): ProcessedTopicFacetFields {
     return issuers.reduce((issuerGroup, facetIssuer) => {
-      const typeName = facetIssuer.text
+      const typeName = facetIssuer.text;
       if (!typeName) {
         return issuerGroup;
       }
@@ -149,7 +149,8 @@ export class SearchComponent {
     this.urlService.setUrlState(`/search`);
   }
 
-  onFacetSelected(query): void {
-    this.onSearch({ ...this.route.snapshot.queryParams, ...query });
+  onFacet(query): void {
+    const queryParams = this.route.snapshot.queryParams;
+    this.onSearch({ ...queryParams, ...query });
   }
 }
