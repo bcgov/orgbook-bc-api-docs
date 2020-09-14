@@ -15,8 +15,23 @@ import { TopicFacetsResponse } from '../interfaces/topic-facets-response';
   providedIn: 'root'
 })
 export class SearchService extends BaseService {
+  public defaultQueryParameters = {
+    inactive: '',
+    latest: 'true',
+    revoked: 'false',
+    issuer_id: '',
+    credential_type_id: ''
+  };
+
   constructor(private http: HttpClient) {
     super();
+  }
+
+  /**
+   * 
+   */
+  public extendDefault(options: any = {}): any {
+    return { ...this.defaultQueryParameters, ...options }
   }
 
   /**
@@ -24,7 +39,7 @@ export class SearchService extends BaseService {
    */
   public getAggregateAutocomplete(q: string): Observable<AggregateAutocompleteResponse> {
     const queryParams = new HttpParams({
-      fromObject: { q, inactive: 'false', revoked: 'false' }
+      fromObject: this.extendDefault({ q })
     });
 
     const options = { params: queryParams };
@@ -40,7 +55,7 @@ export class SearchService extends BaseService {
    */
   public getTopic(name: string): Observable<TopicResponse> {
     const queryParams = new HttpParams({
-      fromObject: { name, inactive: 'false', latest: 'true', revoked: 'false' }
+      fromObject: this.extendDefault({ name })
     });
 
     const options = { params: queryParams };
@@ -56,14 +71,14 @@ export class SearchService extends BaseService {
    */
   public getTopicFacets(name: string): Observable<TopicFacetsResponse> {
     const queryParams = new HttpParams({
-      fromObject: { name, inactive: 'false', latest: 'true', revoked: 'false' }
+      fromObject: this.extendDefault({ name })
     });
 
     const options = { params: queryParams };
 
     return this.http.get<TopicFacetsResponse>('/search/topic/facets', options)
       .pipe(
-        catchError(this.handleError<TopicFacetsResponse>('getTopicFacets', { } as TopicFacetsResponse))
+        catchError(this.handleError<TopicFacetsResponse>('getTopicFacets', {} as TopicFacetsResponse))
       );
   }
 
@@ -83,7 +98,7 @@ export class SearchService extends BaseService {
   public getTopicFacetsPage(url: string): Observable<TopicFacetsResponse> {
     return this.http.get<TopicFacetsResponse>(url)
       .pipe(
-        catchError(this.handleError<TopicFacetsResponse>('getTopicFacetsPage', { } as TopicFacetsResponse))
+        catchError(this.handleError<TopicFacetsResponse>('getTopicFacetsPage', {} as TopicFacetsResponse))
       );
   }
 
@@ -92,7 +107,7 @@ export class SearchService extends BaseService {
    */
   public getCredential(name: string): Observable<CredentialResponse> {
     const queryParams = new HttpParams({
-      fromObject: { name, inactive: 'false', latest: 'true', revoked: 'false' }
+      fromObject: this.extendDefault({ name })
     });
 
     const options = { params: queryParams };
@@ -108,13 +123,7 @@ export class SearchService extends BaseService {
    */
   public getTopicById(id: number, params: any = {}): Observable<TopicResponse> {
     const queryParams = new HttpParams({
-      fromObject: {
-        topic_id: id.toString(),
-        inactive: 'false',
-        latest: 'true',
-        revoked: 'false',
-        ...params
-      }
+      fromObject: { topic_id: id.toString(), ...this.extendDefault(params) }
     });
 
     const options = { params: queryParams };

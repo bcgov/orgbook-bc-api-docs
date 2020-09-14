@@ -19,6 +19,7 @@ import { ProcessedTopicFacetFields } from '@app/search/interfaces/processed-topi
   styleUrls: ['./search.component.scss']
 })
 export class SearchComponent {
+  private skipCategories = [ 'reason_description' ];
   private searchLoadingSubject$ = new BehaviorSubject<boolean>(false);
   private searchTerm$ = this.route.queryParams
     .pipe(
@@ -76,17 +77,25 @@ export class SearchComponent {
   }
 
   private processFieldCategories(categories: TopicFacetField[]): ProcessedTopicFacetFields {
+    const formatQueryParam = (categoryName: string, categoryValue: string) => {
+      if (categoryName === 'entity_status') {
+        return { 'inactive': String(categoryValue === 'HIS') }
+      }
+      return { [`category:${categoryName}`]: categoryValue };
+    };
+
     return categories.reduce((categoryGroup, facetCategory) => {
       const category = facetCategory.value.split('::');
       const [categoryName, categoryValue] = category;
-      if (!(categoryName && categoryValue)) {
+      if (!(categoryName && categoryValue) || this.skipCategories.includes(categoryName)) {
         return categoryGroup;
       }
       const name = `attribute.${categoryName}`;
       const categoryEntry = categoryGroup[name] || [];
       categoryEntry.push({
         ...facetCategory,
-        tag: `category.${categoryName}.${categoryValue}`
+        tag: `category.${categoryName}.${categoryValue}`,
+        queryParam: formatQueryParam(categoryName, categoryValue)
       });
       return { ...categoryGroup, [name]: categoryEntry };
     }, {});
@@ -102,7 +111,8 @@ export class SearchComponent {
       const typeEntry = typeGroup[name] || [];
       typeEntry.push({
         ...facetType,
-        tag: `credential.type.${typeName}`
+        tag: `credential.type.${typeName}`,
+        queryParam: { credential_type_id: facetType.value }
       });
       return { ...typeGroup, [name]: typeEntry };
     }, {});
@@ -118,14 +128,15 @@ export class SearchComponent {
       const issuerEntry = issuerGroup[name] || [];
       issuerEntry.push({
         ...facetIssuer,
-        tag: `issuer.${typeName}`
+        tag: `issuer.${typeName}`,
+        queryParam: { issuer_id: facetIssuer.value }
       });
       return { ...issuerGroup, [name]: issuerEntry };
     }, {});
   }
 
-  onSearch(name: string): void {
-    const searchQuery = this.urlService.formatUrlQuery({ name, inactive: 'false', latest: 'true', revoked: 'false' });
+  onSearch(query: any = {}): void {
+    const searchQuery = this.urlService.formatUrlQuery(this.searchService.extendDefault(query));
     this.urlService.setUrlState(`/search?${searchQuery}`);
   }
 
@@ -136,5 +147,9 @@ export class SearchComponent {
 
   onClear(): void {
     this.urlService.setUrlState(`/search`);
+  }
+
+  onFacetSelected(query): void {
+    this.onSearch({ ...this.route.snapshot.queryParams, ...query });
   }
 }

@@ -1,6 +1,6 @@
 <span class="field-tag">{{ facetField?.tag | translate }}</span>
 <mat-chip-list>
-    <mat-chip>
+    <mat-chip (click)="onFacetSelected()">
         <small>{{ facetField?.count }}</small>
     </mat-chip>
 </mat-chip-list>
