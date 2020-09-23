@@ -1,64 +1,54 @@
 # OrgBook API (v3) Documentation
 
-## Table of Contents
+Documentation for OrgBook API usage.
 
-- [OrgBook API (v3) Documentation](#orgbook-api-v3-documentation)
- - [Table of Contents](#table-of-contents)
-   - [DIY OrgBook BC Search Tutorial](#diy-orgbook-bc-search-tutorial)
-     - [1. Getting Started](#1-getting-started)
-     - [2.  Implementing Autocomplete](#2-implementing-autocomplete)
-     - [3. Implementing a Topic Search](#3-implementing-a-topic-search)
-   <!-- - [API Endpoints](#api-endpoints)
-    - [Credential](#credential)
-    - [Credential Type](#credential-type)
-    - [Issuer](#issuer)
-    - [Schema](#schema)
-    - [Search](#search)
-    - [Topic](#Topic) -->
+## Table of contents
+- [Common scenarios](#common-scenarios)
+  - [Name search with autocomplete](#name-search-with-autocomplete)
+  - [Basic organization search](#basic-organization-search)
+  - [Faceted organization search](#faceted-organization-search)
+  - [Verifiable organization credential retrieval](#verifiable-organization-credential-retrieval)
+  - [Credential issuer search](#credential-issuer-search)
+  - [Credential type search](#credential-type-search)
 
-## DIY OrgBook BC Search Tutorial
+## Common scenarios
 
-This tutorial will take you through the very steps needed to start building your own autocomplete-enabled search component for verified, legally-registered organizations within British Columbia using the OrgBook BC Open API, in your web application. The tutorial will use code examples taken from the demo Angular application implemented in this repository, however the basic concepts will apply agnostic of the web framework you choose to use (or not). Please see the documentation [here](/demo/angular/README.md) if you are interested in running the demo on your own machine. Feel free to also glance through the code if you are interested in the implementation details of the demo, otherwise you can follow along in this tutorial.
+This section goes through some of the most common use cases for the OrgBook API and offers some implementation guides for each of the scenarios.
 
-_**Note:** During the tutorial, you will see developer tips (💡) that provide implementation notes/details about the demo application, or general tips and tricks to improve your own implementation._
+_If you would like to see how some of these features are implemented in a real application, feel free to check out the  [Angular demo](/demo/README.md)._
 
-### 1. Getting Started
+### Name search with autocomplete
 
-Building an autocomplete search component is a fairly simple process and really only requires a few, key,  OrgBook API resource endpoints (`/search/autocomplete` and `/search/topic`). The remaining endpoints provide auxiliary functionality to your applications.
+This is likely to be the most popular use case of the OrgBook API, giving you the ability to create a name lookup feature in your application for legally registered organizations, with autocomplete functionality.
 
-_**Note:** Endpoints are prefixed with the relevant hostname, path, and API version (ex. `https://orgbook-test.pathfinder.gov.bc.ca/api/v3/`) but are omitted for clarity in this document._
+The `/search/autocomplete` path has been created specifically for this.
 
-___
-💡 The demo leverages Angular Material web components and thus leaves the heavy lifting of the UI to the library.
-___
+`/search/autocomplete` takes a query parameter, `q`: a query string that will match the most closely related organization names in OrgBook. There are a few other query parameters (described below) that can also be provided, but are not required since default values are used when these query parameters are not included.
 
-### 2. Implementing Autocomplete
-
-Autcomplete adds immediate benefits to your application as it provides an easy way to pre-emptively narrow down organization searches. The first API endpoint you will call is `/search/autocomplete`, which takes a query parameter `q`: a query string that will match the most closely related organization names in OrgBook BC. The endpoint URL (using `'abc'` as the example query string) should be formatted like:
+Example (using `'abc'` as the query string):
 
 ```
 /search/autocomplete?q=abc&inactive=false&revoked=false
 ```
 
-The `inactive` query parameter denotes whether names of discontinued entities should be returned in the results. The `revoked` query parameter denotes whether entities with invalid credentials should be returned in the results. By default, only currently operating organizations in BC with valid BC Registries credentials are queried for.
+The `inactive` query parameter denotes whether names of discontinued entities should be returned in the results. The `revoked` query parameter denotes whether entities with invalid credentials should be returned in the results. By default, only currently operating organizations with valid credentials are queried for.
 
-The API response will have the following interface definition:
+The API response will look something like this type definition:
+
+_**Note:** the type names are arbitrary, the type definition is more important here._
 
 ```
-export interface AggregateAutocompleteResponse {
+interface AggregateAutocompleteResponse {
     total: number;
     first_index: number;
     last_index: number;
     results: AggregateAutocomplete[];
 }
 ```
-
-_**Note:** the type names are arbitrary to the demo, the type definition is more important here._
-
 What you will be most interested in is the `results` field which is a list of closely matching entity names in OrgBook BC, and has the following type definition:
 
 ```
-export interface AggregateAutocomplete {
+interface AggregateAutocomplete {
     type: string;
     value: string;
     score: number;
@@ -73,96 +63,15 @@ The main fields you will be interested are:
 * `type`: The data field that autocomplete search is based on (example: 'name').
 * `value`: The value of the data field that autocomplete search is based on (example: 'ABC LTD.').
 
-___
-💡 Each API resource in the Angular demo is accessed via an injectable service (for example, the `/search` resource is accessed via the [`SearchService`](/demo/angular/orgbook-autocomplete/src/app/search/services/search.service.ts).
+> Checkout this [example](https://stackblitz.com/edit/js-uum64f?file=index.js) on Stackblitz for a simple implementation using jQuery and plain HTML.
 
-In the demo, the `getAggregateAutocomplete` method performs a `GET` request to the `/search/autocomplete` endpoint. The service method in the demo is implemented as follows:
+### Basic organization search
+### Faceted organization search
+### Verifiable organization credential retrieval
+### Credential issuer search
+### Credential type search
 
-```
-public getAggregateAutocomplete(q: string): Observable<AggregateAutocompleteResponse> {
-  const queryParams = new HttpParams({
-    fromObject: { q, inactive: 'false', revoked: 'false' }
-  });
-
-  const options = { params: queryParams };
-
-  return this.http.get<AggregateAutocompleteResponse>('/search/autocomplete', options);
-}
-```
-
-Angular provides an [`HttpClient`](https://angular.io/api/common/http/HttpClient) that uses [RxJS Observables](https://rxjs-dev.firebaseapp.com/) under the hood for making HTTP requests and ties in with the framework's change detection algorithm. A similar method can be created using any HTTP service such as the [Fetch API](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API), [`axios`](https://github.com/axios/axios), or even [`XMLHTTPRequest`](https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest).
-
-The `getAggregateAutocomplete` method is ultimately called as a user types text into an `<input>` element in the [SearchInputComponent](/demo/angular/orgbook-autocomplete/src/app/search/components/search-input/search-input.component.ts):
-
-```
-<input type="text" #search name="search" id="search"
-  ...
-  (input)="onAutocomplete(search?.value)"
-  ...
-  matInput [matAutocomplete]="auto" ...>
-```
-
-The `onAutocomplete` method feeds user-typed text into an Observable `BehaviorSubject`:
-
-```
-onAutocomplete(q: string): void {
-  this.autocompleteTermSubject$.next(q);
-}
-```
-
-This Observable emits (multicasts) the values as they are fed into it, triggering a call to the `getAggregateAutocomplete` method:
-
-```
-private autocompleteResponse$ = merge(
-  ...
-  this.autocompleteTermSubject$
-    .pipe(
-      debounceTime(300),
-      distinctUntilChanged(),
-      ...
-      switchMap(q => {
-        if (!q) {
-          return of({} as AggregateAutocompleteResponse);
-        }
-        return this.searchService.getAggregateAutocomplete(q);
-      }),
-      ...
-    )
-);
-```
-
-The results of this Observable stream are subscribed to in the [HTML template](/demo/angular/orgbook-autocomplete/src/app/search/components/search-input/search-input.component.html) and displayed:
-
-```
-vm$ = combineLatest([
-  ...
-  this.autocompleteResponse$,
-  ...
-])
-  .pipe(
-    map(([..., autocompleteResponse]) => ({ ..., autocompleteResponse }))
-  );
-```
-
-```
-<ng-container *ngIf="vm$ | async as vm">
-  ...
-  <mat-autocomplete #auto="matAutocomplete" ...>
-    <ng-container *ngIf="vm?.autocompleteResponse">
-        <mat-option *ngFor="let entry of vm?.autocompleteResponse?.results"
-          [value]="entry.value">
-            {{ entry?.value }}
-        </mat-option>
-    </ng-container>
-  </mat-autocomplete>
-</ng-container>
-```
-
-**Pro Tip:** You can improve performance and reduce API requests by debouncing and only executing service method calls when the text input changes. In RxJS the `debounceTime` and `distinctUntilChanged` operators will effectively block an Observable stream until a specified time has elapsed since the user stopped typing or if the value has not changed from the last request (for example, if a users types `a-b-c`, triggers an API request, then deletes `b-c` but quickly types `b-c` again, a new call will not be executed). There are a number of libraries for debouncing function calls such as [`lodash`](https://lodash.com/docs/4.17.15#debounce).
-
-___
-
-### 3. Implementing a Topic Search
+<!-- ### 3. Implementing a topic search
 
 With autocomplete implemented, it's now time to incorporate full search functionality for an organization in OrgBook BC. Calling the `/search/topic` endpoint returns comprehensive information about OrgBook BC entities, including information about entity credentials and related organizations (although other endpoints provide this information as well). This is the endpoint that will likely serve the majority of needs for a basic search and takes a number of query parameters, the main one of which is `name`: a query string that will match the most closely related organization names in OrgBook BC. The endpoint URL (using `'abc'` as the example query string) should be formatted like:
 
@@ -259,143 +168,4 @@ export interface TopicAttribute {
     credential_id: string;
     credential_type_id: string;
 }
-```
-
-___
-💡 In the demo, the `getTopic` method performs a `GET` request to the `/search/topic` endpoint. The service method in the demo is implemented as follows (it looks very similar to `getAggregateAutocomplete`):
-
-```
-public getTopic(name: string): Observable<TopicResponse> {
-  const queryParams = new HttpParams({
-    fromObject: { name, inactive: 'false', latest: 'true', revoked: 'false' }
-  });
-
-  const options = { params: queryParams };
-
-  return this.http.get<TopicResponse>('/search/topic', options);
-}
-```
-
-The `getTopic` method is called whenever a user either presses the `Enter` key on their keyboard when the input is in focus, or when a name is selected from the autocomplete list:
-
-```
-<mat-form-field appearance="outline">
-  ...
-  <input type="text" #search name="search" id="search"
-    ...
-    (keyup.enter)="onSearch(search?.value)"
-    matInput[matAutocomplete]="auto" ...>
-  ...
-</mat-form-field>
-<mat-autocomplete #auto="matAutocomplete"
-  (optionSelected)="onSearch($event?.option?.value)">
-  ...
-</mat-autocomplete>
-```
-
-The `onSearch` method in this case sets the browser's state with the query URL, allowing the user to bookmark the search or execute the same search on page refreshes. This same approach is used for paging results.
-
-```
-onSearch(name: string): void {
-  const searchQuery = this.urlService.formatUrlQuery({
-    name, inactive: 'false', latest: 'true', revoked: 'false'
-  });
-  this.urlService.setUrlState(`/search?${searchQuery}`);
-}
-```
-
-Once the browser's state is set the query parameters are read and fed into an Observable, triggering the actual search request to the API:
-
-```
-private search$ = this.route.queryParams
-  .pipe(
-    ...
-    switchMap(params => {
-      if (!params.name) {
-        return of({} as TopicResponse);
-      }
-      return this.searchService.getTopicPage(`/search/topic?${this.urlService.formatUrlQuery(params)}`);
-    }),
-    ...
-  );
-```
-
-The results of this Observable stream are subscribed to in the [HTML template](/demo/angular/orgbook-autocomplete/src/app/search/components/search-input/search.component.html) and displayed:
-
-```
-vm$ = combineLatest([
-  ...
-  this.search$.pipe(startWith({})),
-  ...
-])
-  .pipe(
-    map(([..., topicResponse, ...]) => ({ ..., topicResponse, ... }))
-  );
-```
-
-```
-<ng-container *ngIf="vm$ | async as vm">
-  ...
-  <ob-search-topic-list
-    (page)="onPage($event)"
-    [loading]="vm?.loading"
-    [topicResponse]="vm?.topicResponse">
-  </ob-search-topic-list>
-</ng-container>
-```
-
-From this point on, the results are formatted into a list for easy viewing.
-
-Paging is set up in a similar fashion to topic searching. The url is extracted from the search results in the [`SearchTopicListNavComponent`](/demo/angular/orgbook-autocomplete/src/app/search/components/search-topic-list-nav/search-topic-list-nav.component.ts) and emitted up to the [`SearchComponent`](/demo/angular/orgbook-autocomplete/src/app/search/components/search/search.component.ts). The URL is set in the browsers state which triggers the next or previous search request:
-
-```
-...
-  <button mat-raised-button
-    (click)="onPreviousPage(topicResponse.previous)" ...>
-    Previous
-  </button>
-...
-  <button mat-raised-button
-    (click)="onNextPage(topicResponse.next)" ...>
-    Next
-  </button>
-...
-```
-
-```
-public onPreviousPage(url: string): void {
-  if (!url) {
-    return;
-  }
-  this.page.emit(url);
-}
-...
-public onNextPage(url: string): void {
-  if (!url) {
-    return;
-  }
-  this.page.emit(url);
-}
-```
-
-```
-onPage(url: string): void {
-  const searchQuery = this.urlService.extractUrlQuery(url);
-  this.urlService.setUrlState(`/search?${searchQuery}`);
-}
-```
-___
-
-<!-- ## API Endpoints
-
-### Credential
-
-### Credential Type
-
-### Issuer
-
-### Schema
-
-### Search
-
-### Topic -->
+``` -->

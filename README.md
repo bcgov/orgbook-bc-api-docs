@@ -26,6 +26,7 @@ The publicly available search directory can be found [here](https://www.orgbook.
 The OrgBook API offers a number of features, that make it simple to integrate a fully featured verifiable organization data search into applications. Some of these features include, but are not limited to:
 
 - Autocomplete name search
+- Basic organization search
 - Faceted organization search
 - Verifiable organization credential retrieval
 - Credential issuer search
