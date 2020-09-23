@@ -28,7 +28,7 @@ The OrgBook API offers a number of features, that make it simple to integrate a 
 - Autocomplete name search
 - Basic organization search
 - Faceted organization search
-- Verifiable organization credential retrieval
+- Organization credential verification
 - Credential issuer search
 - Credential type search
 
