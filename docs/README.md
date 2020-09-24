@@ -7,9 +7,9 @@ Documentation for OrgBook API usage.
   - [Name search with autocomplete](#name-search-with-autocomplete)
   - [Basic organization search](#basic-organization-search)
   - [Faceted organization search](#faceted-organization-search)
-  <!-- - [Organization credential verification](#organization-credential-verification)
-  - [Credential issuer search](#credential-issuer-search)
-  - [Credential type search](#credential-type-search) -->
+  <!-- - [Organization credential verification](#organization-credential-verification) -->
+  <!-- - [Credential issuer search](#credential-issuer-search) -->
+  <!-- - [Credential type search](#credential-type-search) -->
 
 ## Common scenarios
 
@@ -217,7 +217,7 @@ For example the following attribute list tells us that the organization is an ac
 
 Faceted search augments basic search functionality by providing a mechanism to narrow down search results through the application of various filters, similar to what you would see on an e-commerce site like an online clothing store. _See [this](https://en.wikipedia.org/wiki/Faceted_search) Wikipedia article about faceted search._
 
-The `/search/topic/facets` path has been created specifically for this and works exaclty the same as `search/topic` with the only difference being that the response is augmented with facets.
+The `/search/topic/facets` path has been created specifically for this and works exactly the same as `search/topic` with the only difference being that the response is augmented with facets.
 
 #### Request
 
@@ -295,8 +295,8 @@ For example, suppose the following facets were returned from a topic search:
 }
 ```
 
-The current search results would contain all entity types that match or closely match an organization of iterest. Appending the field name as a query parameter and the value as the query parameter value to the topic search (for example, `?category=entity_type::GP`) would narrow down search results only to organizations that are General Partnerships.
+The current search results would contain all entity types that match or closely match an organization of interest. Appending the field name as a query parameter and the value as the query parameter value to the topic search (for example, `?category=entity_type::GP`) would narrow down search results only to organizations that are General Partnerships.
 
-<!-- ### Organization credential verification
-### Credential issuer search
-### Credential type search -->
+<!-- ### Organization credential verification -->
+<!-- ### Credential issuer search -->
+<!-- ### Credential type search -->

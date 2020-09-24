@@ -1,6 +1,6 @@
 # OrgBook API
 
-Various developer tools and documentaion for using the OrgBook API as part of the Verifiable Organizations Network.
+Various developer tools and documentation for using the OrgBook API as part of the Verifiable Organizations Network.
 
 ## Table of contents
 
@@ -17,13 +17,13 @@ Various developer tools and documentaion for using the OrgBook API as part of th
 
 ### What is the OrgBook?
 
-OrgBook has been developed by the Government of Birtish Columbia as a searchable public directory of open verifiable data about organizations legally registered in the province. Orgbook is leveraging novel blockchain-based technology, powered by the web, to help move BC into a digital economy.
+OrgBook has been developed by the Government of British Columbia as a searchable public directory of open verifiable data about organizations legally registered in the province. Orgbook is leveraging novel blockchain-based technology, powered by the web, to help move BC into a digital economy.
 
 The publicly available search directory can be found [here](https://www.orgbook.gov.bc.ca/en/home), however an API has also been made available to allow developers to integrate verifiable organization data search into their own applications. This repository serves as the central source of information and tools for the OrgBook API.
 
 ### What does the OrgBook API offer?
 
-The OrgBook API offers a number of features, that make it simple to integrate a fully featured verifiable organization data search into applications. Some of these features include, but are not limited to:
+The OrgBook API offers a number of features that make it simple to integrate a fully featured verifiable organization data search into applications. Some of these features include, but are not limited to:
 
 - Autocomplete name search
 - Basic organization search
@@ -54,4 +54,4 @@ To see the OrgBook API in action please see the [Angular demo](./demo/README.md)
 
 Please see the [contributions guide](CONTRIBUTING.md) for the repo.
 
-You may also create an issue if you would like to suggest additional resrouces to include in this repository.
+You may also create an issue if you would like to suggest additional resources to include in this repository.
