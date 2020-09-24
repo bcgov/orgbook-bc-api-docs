@@ -1,5 +1,14 @@
-.cards {
+mat-list {
+    max-height: 12.5rem;
+    overflow: scroll;
+}
+
+mat-list-item.loading {
     display: flex;
     flex-direction: row;
-    flex-wrap: wrap;
+    justify-content: center;
+}
+
+mat-spinner {
+    margin: 0rem 0.25rem;
 }

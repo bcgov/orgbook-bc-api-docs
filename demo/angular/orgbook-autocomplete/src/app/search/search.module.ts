@@ -9,6 +9,9 @@ import { SearchTopicListComponent } from './components/search-topic-list/search-
 import { SearchInputComponent } from './components/search-input/search-input.component';
 import { SearchTopicComponent } from './components/search-topic/search-topic.component';
 import { SearchTopicListNavComponent } from './components/search-topic-list-nav/search-topic-list-nav.component';
+import { SearchTopicFacetListComponent } from './components/search-topic-facet-list/search-topic-facet-list.component';
+import { SearchTopicFacetComponent } from './components/search-topic-facet/search-topic-facet.component';
+import { SearchTopicResultComponent } from './components/search-topic-result/search-topic-result.component';
 
 
 
@@ -19,7 +22,10 @@ import { SearchTopicListNavComponent } from './components/search-topic-list-nav/
     SearchTopicListComponent,
     SearchInputComponent,
     SearchTopicComponent,
-    SearchTopicListNavComponent
+    SearchTopicListNavComponent,
+    SearchTopicFacetListComponent,
+    SearchTopicFacetComponent,
+    SearchTopicResultComponent
   ],
   imports: [
     SharedModule,

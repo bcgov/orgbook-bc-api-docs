@@ -1,11 +1,15 @@
 import { Component } from '@angular/core';
 import { ActivatedRoute, ParamMap } from '@angular/router';
 
-import { combineLatest, BehaviorSubject } from 'rxjs';
-import { map, startWith, filter, tap, switchMap } from 'rxjs/operators';
+import { combineLatest, of, BehaviorSubject } from 'rxjs';
+import { map, switchMap, tap, startWith } from 'rxjs/operators';
 
 import { TopicService } from '@app/topic/services/topic.service';
 import { SearchService } from '@app/search/services/search.service';
+
+import { CredentialTopicExt } from '@app/credential/interfaces/credential-topic-ext';
+import { CredentialResponse } from '@app/search/interfaces/credential-response';
+import { Topic } from '@app/topic/interfaces/topic';
 
 @Component({
   selector: 'ob-topic',
@@ -13,59 +17,61 @@ import { SearchService } from '@app/search/services/search.service';
   styleUrls: ['./topic.component.scss']
 })
 export class TopicComponent {
-  // private topicSourceIdSubject$ = new BehaviorSubject<string>('');
-  // private topicSourceTypeSubject$ = new BehaviorSubject<string>('');
   private topicLoadingSubject$ = new BehaviorSubject<boolean>(false);
-
+  private topicByIdSubject$ = new BehaviorSubject<CredentialTopicExt>(null);
   private topicSourceId$ = this.route.paramMap
     .pipe(
-      map((params: ParamMap) => params.get('sourceId')),
+      map((params: ParamMap) => params.get('sourceId'))
     );
-
-  topicSearch$ = this.topicSourceId$
+  private topicById$ = this.topicSourceId$
     .pipe(
-      filter(sourceId => !!sourceId),
       tap(() => this.topicLoadingSubject$.next(true)),
-      switchMap(sourceId => this.topicService.getSearchTopic(sourceId)),
-      // tap(topic => {
-      //   this.topicSourceIdSubject$.next(topic.source_id || '');
-      //   this.topicSourceTypeSubject$.next(topic.type || '');
-      // }),
-      tap(() => this.topicLoadingSubject$.next(false)),
+      tap(() => this.topicByIdSubject$.next(null)),
+      switchMap((sourceId) => {
+        if (!sourceId) {
+          return of({} as CredentialTopicExt);
+        }
+        return this.topicService.getSearchTopic(sourceId);
+      }),
+      switchMap(topic => {
+        if (!(topic && topic.source_id && topic.type)) {
+          return of({ names: [] } as CredentialTopicExt);
+        }
+        return this.topicService.getTopicById(topic.id);
+      }),
+      tap(topic => this.topicByIdSubject$.next(topic)),
+      tap(() => this.topicLoadingSubject$.next(false))
     );
-
-  // topicRelationship$ = combineLatest([
-  //   this.topicSourceIdSubject$,
-  //   this.topicSourceTypeSubject$
-  // ])
-  //   .pipe(
-  //     filter(([sourceId, type]) => !!sourceId && !!type),
-  //     tap(() => this.topicLoadingSubject$.next(true)),
-  //     switchMap(([sourceId, type]) => this.topicService.getTopic(sourceId, type)),
-  //     tap(() => this.topicLoadingSubject$.next(false)),
-  //   );
-
-  credentialSearch$ = this.topicSourceId$
+  private topicRelationships$ = this.topicByIdSubject$
     .pipe(
-      filter(sourceId => !!sourceId),
-      tap(() => this.topicLoadingSubject$.next(true)),
-      switchMap(sourceId => this.searchService.getCredential(sourceId)),
-      tap(() => this.topicLoadingSubject$.next(false)),
+      switchMap(topic => {
+        if (!(topic && topic.source_id && topic.type)) {
+          return of({} as Topic);
+        }
+        return this.topicService.getTopic(topic.source_id, topic.type);
+      })
     );
-
-  topicLoading$ = this.topicLoadingSubject$.asObservable();
+  private credentialSearch$ = this.topicByIdSubject$
+    .pipe(
+      switchMap(topic => {
+        if (!(topic && topic.source_id && topic.type)) {
+          return of({} as CredentialResponse);
+        }
+        return this.searchService.getCredential(topic.source_id);
+      })
+    );
 
   vm$ = combineLatest([
-    this.topicLoading$,
-    // tslint:disable-next-line:deprecation
-    this.topicSearch$.pipe(startWith(null)),
-    // tslint:disable-next-line:deprecation
-    this.credentialSearch$.pipe(startWith(null)),
-    // tslint:disable-next-line:deprecation
-    // this.topicRelationship$.pipe(startWith(null))
+    this.topicLoadingSubject$,
+    this.topicSourceId$,
+    this.topicById$.pipe(startWith({} as CredentialTopicExt)),
+    this.credentialSearch$.pipe(startWith({} as CredentialResponse)),
+    this.topicRelationships$.pipe(startWith({} as Topic))
   ])
     .pipe(
-      map(([loading, topic, credential]) => ({ loading, topic, credential}))
+      map(([loading, sourceId, topic, credentialResponse, relationships]) => ({
+        loading, sourceId, topic, credentialResponse, relationships
+      })),
     );
 
   constructor(
@@ -73,5 +79,4 @@ export class TopicComponent {
     private searchService: SearchService,
     private topicService: TopicService
   ) { }
-
 }

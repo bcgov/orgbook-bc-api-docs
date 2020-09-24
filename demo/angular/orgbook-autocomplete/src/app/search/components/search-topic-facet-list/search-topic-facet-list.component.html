@@ -1,0 +1,9 @@
+<mat-accordion multi>
+    <mat-expansion-panel *ngFor="let fieldType of facets?.fields | keyvalue" expanded>
+        <mat-expansion-panel-header>{{ fieldType.key | translate }}</mat-expansion-panel-header>
+        <ng-container *ngFor="let field of fieldType?.value">
+            <ob-search-topic-facet *ngIf="field?.count" [facetField]="field" (facet)="onFacet($event)">
+            </ob-search-topic-facet>
+        </ng-container>
+    </mat-expansion-panel>
+</mat-accordion>

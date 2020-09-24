@@ -17,7 +17,7 @@ export class SearchInputComponent {
     this.onAutocomplete(q);
   }
 
-  @Output() search = new EventEmitter<string>();
+  @Output() search = new EventEmitter<any>();
   @Output() clear = new EventEmitter<void>();
 
   private autocompleteLoadingSubject$ = new BehaviorSubject<boolean>(false);
@@ -44,7 +44,7 @@ export class SearchInputComponent {
   private autocompleteSearch$ = this.autocompleteSearchSubject$
     .pipe(
       filter(q => !!q),
-      tap(term => this.search.emit(term))
+      tap(name => this.search.emit({ name }))
     );
 
   label = 'Registered BC Corporation Search';

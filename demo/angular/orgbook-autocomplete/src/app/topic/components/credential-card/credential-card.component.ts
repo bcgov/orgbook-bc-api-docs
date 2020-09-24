@@ -19,8 +19,8 @@ import { CredentialProofDialogComponent } from '../credential-proof-dialog/crede
   styleUrls: ['./credential-card.component.scss']
 })
 export class CredentialCardComponent {
-  private credentialSubject$ = new BehaviorSubject<CredentialSearch>(null);
   private verifyLoadingSubject$ = new BehaviorSubject<boolean>(false);
+  private credentialSubject$ = new BehaviorSubject<CredentialSearch>(null);
 
   @Input() set credential(c: CredentialSearch) {
     this.credentialSubject$.next(c);
@@ -35,13 +35,12 @@ export class CredentialCardComponent {
     );
 
   vm$ = combineLatest([
-    this.credentialSubject$,
     this.verifyLoadingSubject$,
-    // tslint:disable-next-line:deprecation
-    this.verified$.pipe(startWith(null))
+    this.verified$.pipe(startWith({} as Credential)),
+    this.credentialSubject$.pipe(startWith({} as CredentialSearch)),
   ])
     .pipe(
-      map(([credential, verifying, verified]) => ({ credential, verifying, verified }))
+      map(([verifying, verified, credential]) => ({ verifying, verified, credential }))
     );
 
   constructor(private credentialService: CredentialService, private dialog: MatDialog) { }
