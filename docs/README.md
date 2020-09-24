@@ -7,9 +7,9 @@ Documentation for OrgBook API usage.
   - [Name search with autocomplete](#name-search-with-autocomplete)
   - [Basic organization search](#basic-organization-search)
   - [Faceted organization search](#faceted-organization-search)
-  - [Organization credential verification](#organization-credential-verification)
+  <!-- - [Organization credential verification](#organization-credential-verification)
   - [Credential issuer search](#credential-issuer-search)
-  - [Credential type search](#credential-type-search)
+  - [Credential type search](#credential-type-search) -->
 
 ## Common scenarios
 
@@ -132,7 +132,7 @@ interface CredentialTopicSearch {
 
 The `inactive`, `latest`, `revoked` and `revoked_date` fields are self explanatory. `effective_date` indicates when the credential was activated.
 
-_**Note:** `effective_date` is not the same as incorporation/registration date. It simply denotes the last time a credential for this entity in OrgBook._
+_**Note:** `effective_date` is not the same as incorporation/registration date. It simply denotes the last time a credential was created for this entity in OrgBook._
 
 Organization data is found in the `topic` field, which has the following type definition:
 
@@ -151,7 +151,7 @@ interface CredentialTopicExt {
 }
 ```
 
-You'll notice that it contains many of the same fields as the top-level response, with some additions, such as `source_id` (the unique business number generated for the organization when it was registered), `addresses` and `local_name`.
+You'll notice that it contains many of the same fields as the top-level response, with some additions, such as `source_id` (the unique registration number generated for the organization), `addresses` and `local_name`.
 
 The `names` field contains the operating business names and has the following type definition (with `type` typically being 'entity_name'):
 
@@ -165,7 +165,7 @@ interface CredentialName {
 }
 ```
 
-The `attributes` field is a list that likely contains a lot of information you are going to be interested is about the entity such as `registration_date`, `entity_name_effective`, `entity_status`, `entity_status_effective`, `entity_type`, `home_jurisdiction`, and 'reason_description'. It has the following type definition:
+The `attributes` field is a list that likely contains a lot of information you are going to be interested is about the entity such as `registration_date`, `entity_name_effective`, `entity_status`, `entity_status_effective`, `entity_type`, `home_jurisdiction`, and `reason_description`. It has the following type definition:
 
 ```
 interface TopicAttribute {
@@ -214,6 +214,89 @@ For example the following attribute list tells us that the organization is an ac
 > Checkout this [example](https://stackblitz.com/edit/js-je6ckp?file=index.js) on Stackblitz for a simple implementation using jQuery and plain HTML.
 
 ### Faceted organization search
-### Organization credential verification
+
+Faceted search augments basic search functionality by providing a mechanism to narrow down search results through the application of various filters, similar to what you would see on an e-commerce site like an online clothing store. _See [this](https://en.wikipedia.org/wiki/Faceted_search) Wikipedia article about faceted search._
+
+The `/search/topic/facets` path has been created specifically for this and works exaclty the same as `search/topic` with the only difference being that the response is augmented with facets.
+
+#### Request
+
+Example (using `'abc'` as the query string):
+
+```
+/search/topic/facets?name=abc&inactive=false&latest=true&revoked=false
+```
+
+#### Response
+
+The API response will have the following type definition, where `objects` is the same as the response body of `/search/topic` (see above):
+
+```
+interface TopicFacetsResponse {
+  facets: TopicFacets;
+  objects: TopicResponse;
+}
+```
+
+The `facets` field has the following type definition, of which, `fields` are lists of objects that describe topics, grouped together by query parameters that can be added to a topic search.
+
+```
+interface TopicFacets {
+  fields: TopicFacetFields;
+  dates: TopicFacetDates;
+  queries: TopicFacetQueries;
+}
+```
+
+For example, the `category` facet field contains a number of objects with properties such as `entity_type`, `entity_status`, etc:
+
+```
+{
+  category: [ ... ];
+  credential_type_id: [ ... ];
+  issuer_id: [ ... ];
+}
+```
+
+Field objects have the following type definition:
+
+```
+export interface TopicFacetField {
+    value: string;
+    count: number;
+    text: string;
+}
+```
+
+The `value` field denotes the specific term to add to the `/search/topic` or `/search/topic/facets` paths to narrow a topic search down. The `count` field denotes how many topics are categorized by that term for the current topic search.
+
+For example, suppose the following facets were returned from a topic search:
+
+```
+{
+  category: [
+    {
+        "value": "entity_status::ACT",
+        "count": 480
+    },
+    {
+        "value": "entity_type::SP",
+        "count": 302
+    },
+    {
+        "value": "entity_type::BC",
+        "count": 114
+    },
+    {
+        "value": "entity_type::GP",
+        "count": 49
+    }
+  ];
+}
+```
+
+The current search results would contain all entity types that match or closely match an organization of iterest. Appending the field name as a query parameter and the value as the query parameter value to the topic search (for example, `?category=entity_type::GP`) would narrow down search results only to organizations that are General Partnerships.
+
+<!-- ### Organization credential verification
 ### Credential issuer search
-### Credential type search
+### Credential type search -->
