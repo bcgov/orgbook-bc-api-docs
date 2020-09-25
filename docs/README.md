@@ -15,7 +15,7 @@ Documentation for OrgBook API usage.
 
 This section goes through some of the most common use cases for the OrgBook API and offers some implementation guides for each of the scenarios.
 
-_If you would like to see how some of these features are implemented in a real application, feel free to check out the  [Angular demo](/demo/README.md)._
+_If you would like to see how some of these features are implemented in a real application, feel free to check out the [demo](/demo/README.md)._
 
 ### Name search with autocomplete
 
@@ -64,8 +64,8 @@ interface AggregateAutocomplete {
 
 Results are mostly returned in batches of up to 10 in descending search `score` order. More specific query strings will result in fewer results returned with higher search scores. Non-matching query strings will return empty results.
 The main fields you will be interested are:
-* `type`: The data field that autocomplete search is based on (example: 'name').
-* `value`: The value of the data field that autocomplete search is based on (example: 'ABC LTD.').
+* `type`: The data field that autocomplete search is based on (example: `'name'`).
+* `value`: The value of the data field that autocomplete search is based on (example: `'ABC LTD.'`).
 
 #### Example
 
@@ -75,7 +75,7 @@ The main fields you will be interested are:
 
 You will likely want more comprehensive information about an organization such as the type of organization, its business number, when it was registered, whether the organization is still active, even information about related organizations.
 
-The `/search/topic` path is available for basic organization searches and returns data in the form of one or more verifiable credentials about the 'topic' of interest.
+The `/search/topic` path is available for basic organization searches and returns data in the form of one or more verifiable credentials about the ___topic___ of interest.
 
 `/search/topic` takes a query parameter, `name`: a query string that will match the most closely related organization names in OrgBook. There are also optional query parameters (described below) that can be passed, and default values will be used when these query parameters are not included.
 
@@ -91,7 +91,7 @@ The `inactive` query parameter denotes whether names of discontinued entities sh
 
 #### Response
 
-The API response will have the following interface definition:
+The API response will have the following type definition:
 
 ```
 interface TopicResponse {
@@ -132,7 +132,7 @@ interface CredentialTopicSearch {
 
 The `inactive`, `latest`, `revoked` and `revoked_date` fields are self explanatory. `effective_date` indicates when the credential was activated.
 
-_**Note:** `effective_date` is not the same as incorporation/registration date. It simply denotes the last time a credential was created for this entity in OrgBook._
+_**Note:** `effective_date` is not the same as incorporation/registration date. It simply denotes the last time a credential was activated for this entity in OrgBook._
 
 Organization data is found in the `topic` field, which has the following type definition:
 
@@ -153,7 +153,7 @@ interface CredentialTopicExt {
 
 You'll notice that it contains many of the same fields as the top-level response, with some additions, such as `source_id` (the unique registration number generated for the organization), `addresses` and `local_name`.
 
-The `names` field contains the operating business names and has the following type definition (with `type` typically being 'entity_name'):
+The `names` field contains the operating business names and has the following type definition (with `type` typically being `'entity_name'`):
 
 ```
 interface CredentialName {
@@ -165,7 +165,7 @@ interface CredentialName {
 }
 ```
 
-The `attributes` field is a list that likely contains a lot of information you are going to be interested is about the entity such as `registration_date`, `entity_name_effective`, `entity_status`, `entity_status_effective`, `entity_type`, `home_jurisdiction`, and `reason_description`. It has the following type definition:
+The `attributes` field is a list that likely contains a lot of information you are going to be interested in about the entity such as `'registration_date'`, `'entity_name_effective'`, `'entity_status'`, `'entity_status_effective'`, `'entity_type'`, `'home_jurisdiction'`, and `'reason_description'`. It has the following type definition:
 
 ```
 interface TopicAttribute {
@@ -295,7 +295,7 @@ For example, suppose the following facets were returned from a topic search:
 }
 ```
 
-The current search results would contain all entity types that match or closely match an organization of interest. Appending the field name as a query parameter and the value as the query parameter value to the topic search (for example, `?category=entity_type::GP`) would narrow down search results only to organizations that are General Partnerships.
+The current search results would contain all entity types that match or closely match an organization of interest. Appending the field name as a query parameter and the value as the query parameter value to the topic search (for example, `'?category=entity_type::GP'`) would narrow down search results only to organizations that are General Partnerships.
 
 <!-- ### Organization credential verification -->
 <!-- ### Credential issuer search -->
