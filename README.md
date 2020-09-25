@@ -12,10 +12,11 @@ Various developer tools and documentation for using the OrgBook API as part of t
     - [Documentation](#documentation)
     - [Demo](#demo)
 - [Contributing](#contributing)
+- [License](#license)
 
 ## Background
 
-### What is the OrgBook?
+### What is OrgBook?
 
 OrgBook has been developed by the Government of British Columbia as a searchable public directory of open verifiable data about organizations legally registered in the province. Orgbook is leveraging novel blockchain-based technology, powered by the web, to help move BC into a digital economy.
 
@@ -46,7 +47,7 @@ This will likely be your main go-to guide. Please see the [documentation](./docs
 
 ### Demo
 
-To see the OrgBook API in action please see the [Angular demo](./demo/README.md) that has been developed featuring the use of various endpoints to create a full-featured verifiable organization data search tool.
+To see the OrgBook API in action please see a [demo](./demo/README.md) that has been developed featuring the use of various endpoints to create a full-featured verifiable organization data search tool.
 
 ## Contributing
 
@@ -55,3 +56,7 @@ To see the OrgBook API in action please see the [Angular demo](./demo/README.md)
 Please see the [contributions guide](CONTRIBUTING.md) for the repo.
 
 You may also create an issue if you would like to suggest additional resources to include in this repository.
+
+## License
+
+[Apache License Version 2.0](./LICENSE)
