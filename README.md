@@ -24,7 +24,7 @@ The publicly available search directory can be found [here](https://www.orgbook.
 
 ### What does the OrgBook API offer?
 
-The OrgBook API exposes a number of RESTful endpoints that make it simple to integrate publicly available verifiable data about registered organizations into your application. Some of the features that are available through the API include, but are not limited to:
+The OrgBook API exposes a number of RESTful endpoints that make it simple to integrate publicly available, verifiable data about registered organizations into your applications. Some of the features that are available through the API include, but are not limited to:
 
 - Autocomplete-enabled organization name search
 - Organization data retrieval, in the form of verifiable credentials (including registration number, business number, entity type, entity status, etc.)

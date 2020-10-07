@@ -1,9 +1,19 @@
 # OrgBook API (v3) Documentation
 
-Documentation for OrgBook API usage.
+This document has been created as a first reference for the OrgBook API. When you become more familiar with the basic concepts, you may want to go on to explore the [OpenAPI Specification](https://orgbook.gov.bc.ca/api/v3/) and all of the endpoints available.
+
+## Introduction
+
+### What is OrgBook?
+OrgBook is a type of [Hyperledger Aries](https://github.com/hyperledger/aries) Verifiable Credential Registry ([Aries VCR](https://github.com/bcgov/aries-vcr)). Aries VCR is simply a set of software tools that make it easy to host and issue [verifiable credentials](https://en.wikipedia.org/wiki/Verifiable_credentials) of any type. OrgBook is a specific implementation of an Aries VCR built by the Government of British Columbia, that hosts verifiable credentials about organizations registered in the province. ___The key point to remember is that (almost) everything is a credential in OrgBook.___ Everything from an organization's registration information, to its business number and its relations to other organizations within the province, is stored as a verifiable credential in OrgBook. Credentials are issued to OrgBook via a credential issuer. OrgBook can store credentials from one or more issuers.
+
+The OrgBook API is a RESTful interface to OrgBook, that has been purposefully built for developers to access and integrate the verifiable credentials (i.e. data about registered organizations) from OrgBook as part of their own applications. The following documentation outlines the most common scenarios developers are likely to use the OrgBook API for.
 
 ## Table of contents
+- [Introduction](#introduction)
 - [Common scenarios](#common-scenarios)
+  - [I want to get a list of credential issuers registered in OrgBook](#i-want-to-get-a-list-of-credential-issuers-registered-in-orgbook)
+  - [I want to get a list of available credential types in OrgBook](#i-want-to-get-a-list-of-available-credential-types-in-orgBook)
   - [Name search with autocomplete](#name-search-with-autocomplete)
   - [Basic organization search](#basic-organization-search)
   - [Faceted organization search](#faceted-organization-search)
@@ -13,9 +23,75 @@ Documentation for OrgBook API usage.
 
 ## Common scenarios
 
-This section goes through some of the most common use cases for the OrgBook API and offers some implementation guides for each of the scenarios.
+### I want to get a list of credential issuers registered in OrgBook
 
-_If you would like to see how some of these features are implemented in a real application, feel free to check out the [demo](/demo/README.md)._
+To do this, make a request to the `/issuer` endpoint. The response will look something like:
+
+```json
+{
+  "total": 2,
+  "page_size": 10,
+  "page": 1,
+  "first_index": 1,
+  "last_index": 2,
+  "next": null,
+  "previous": null,
+  "results": [
+    {
+      "id": 1,
+      "has_logo": true,
+      "create_timestamp": "2020-02-14T14:27:35.624957-08:00",
+      "update_timestamp": "2020-09-18T13:55:52.670973-07:00",
+      "did": "HR6vs6GEZ8rHaVgjg2WodM",
+      "name": "BC Corporate Registry",
+      "abbreviation": "BCReg",
+      "email": "bcregistries@gov.bc.ca",
+      "url": "https://www2.gov.bc.ca/gov/content/governments/organizational-structure/ministries-organizations/ministries/citizens-services/bc-registries-online-services",
+      "endpoint": ""
+    },
+    ...
+  ]
+}
+```
+
+The `results` field is a list of issuers that have registered with OrgBook. They may or may not have issued any credentials yet, however developers can find out what type of credentials are issued by a specific issuer by querying the `issuer/{id}/credentialtype` endpoint. In the above example, the issuer with an `id` of `1` is the BC Corporate Registry which issues credentials to OrgBook corresponding to an organization's registration in the province, among others.
+
+### I want to get a list of available credential types in OrgBook
+
+To do this, make a request to the `/credentialtype` endpoint. The response will look something like:
+
+```json
+{
+  "total": 6,
+  "page_size": 10,
+  "page": 1,
+  "first_index": 1,
+  "last_index": 6,
+  "next": null,
+  "previous": null,
+  "results": [
+    {
+      "id": 1,
+      "issuer": { ... },
+      "has_logo": true,
+      "create_timestamp": "2020-02-14T14:27:35.689210-08:00",
+      "update_timestamp": "2020-10-06T20:00:35.714822-07:00",
+      "description": "registration.registries.ca",
+      "credential_def_id": "HR6vs6GEZ8rHaVgjg2WodM:3:CL:41051:tag",
+      "last_issue_date": "2020-10-06T20:00:35.714729-07:00",
+      "url": "/bcreg/incorporation",
+      "schema": { ... }
+    },
+    ...
+  ]
+}
+```
+
+The `results` field is a list of credential types that issuers have indicated they will be issuing when they register with OrgBook. This doesn't necessarily mean there are any credentials of the indicated types in OrgBook, but simply that they may be issued at some point or another. For example, organization addresses are issued as a credential, however BC Registries has not currently made credentials of that type available in OrgBook.
+
+_Note: If you are interested in understanding the structure of address credentials, the OrgBook development team has a [non-production deployment](https://dev.orgbook.gov.bc.ca) of OrgBook with [hypothetical organizations](https://dev.orgbook.gov.bc.ca/en/organization/registration.registries.ca/BC0356343/cred/6741681) that have address credentials._
+
+OrgBook allows one to search organizations that have been issued a specific type of credential, and a good example of this can be seen in the [Advanced Search](https://orgbook.gov.bc.ca/en/advanced-search). The list of credential types is used to populate a select input, which narrows the search down to only those organizations that have been issued a credential of the selected type. For example, one might be interested in searching for organizations that have been issued a Cannabis Retail Store License.
 
 ### Name search with autocomplete
 
