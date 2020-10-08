@@ -1,186 +1,344 @@
 # OrgBook API (v3) Documentation
 
-Documentation for OrgBook API usage.
+This document has been created as a first reference for the OrgBook API. When you become more familiar with the basic concepts, you may want to go on to explore the [OpenAPI Specification](https://orgbook.gov.bc.ca/api/v3/) and all of the endpoints available.
+
+## Introduction
+
+### What is OrgBook?
+OrgBook is a type of [Hyperledger Aries](https://github.com/hyperledger/aries) Verifiable Credential Registry ([Aries VCR](https://github.com/bcgov/aries-vcr)). Aries VCR is simply a set of software tools that make it easy to host and issue [verifiable credentials](https://en.wikipedia.org/wiki/Verifiable_credentials) of any type. OrgBook is a specific implementation of an Aries VCR built by the Government of British Columbia, that hosts verifiable credentials about organizations registered in the province. ___The key point to remember is that (almost) everything is a credential in OrgBook.___ Everything from an organization's registration information, to its business number and its relations to other organizations within the province, is stored as a verifiable credential in OrgBook. Credentials are issued to OrgBook from a credential issuer. OrgBook can store credentials from one or more issuers.
+
+The OrgBook API is a RESTful interface to OrgBook. It has been purposefully built for developers to access and integrate verifiable credentials (i.e. data about registered organizations) from OrgBook into their own applications. The following documentation outlines the most common scenarios that developers are likely to use the OrgBook API for, including use cases for specific features that most will be looking to build into their applications.
 
 ## Table of contents
+- [Introduction](#introduction)
 - [Common scenarios](#common-scenarios)
-  - [Name search with autocomplete](#name-search-with-autocomplete)
-  - [Basic organization search](#basic-organization-search)
-  - [Faceted organization search](#faceted-organization-search)
-  <!-- - [Organization credential verification](#organization-credential-verification) -->
-  <!-- - [Credential issuer search](#credential-issuer-search) -->
-  <!-- - [Credential type search](#credential-type-search) -->
+  - [I want to get a list of credential issuers registered in OrgBook](#i-want-to-get-a-list-of-credential-issuers-registered-in-orgbook)
+  - [I want to get a list of available credential types in OrgBook](#i-want-to-get-a-list-of-available-credential-types-in-orgBook)
+  - [I want to build a legal name search component in my application](#i-want-to-build-a-legal-name-search-component-in-my-application)
+    - [Implementation Example 1](#implementation-example-1)
+  - [I want to auto-populate form fields with organization info](#i-want-to-auto-populate-form-fields-with-organization-info)
+    - [Step 1. Query for a topic](#step-1-query-for-a-topic)
+    - [Step 2. Query for credentials](#step-2-query-for-credentials)
+    - [Implementation Example 2](#implementation-example-2)
 
 ## Common scenarios
 
-This section goes through some of the most common use cases for the OrgBook API and offers some implementation guides for each of the scenarios.
+### I want to get a list of credential issuers registered in OrgBook
 
-_If you would like to see how some of these features are implemented in a real application, feel free to check out the [demo](/demo/README.md)._
+To do this, make a `GET` request to the `/issuer` endpoint. The response will look something like:
 
-### Name search with autocomplete
-
-This is likely to be the most popular use case of the OrgBook API, giving you the ability to create a name lookup feature in your application for legally registered organizations, with autocomplete functionality.
-
-The `/search/autocomplete` path has been created specifically for this.
-
-`/search/autocomplete` takes a query parameter, `q`: a query string that will match the most closely related organization names in OrgBook. There are optional query parameters (described below) that can be provided, however default values are used when these query parameters are not included.
-
-Example (using `'abc'` as the query string):
-
-#### Request
-
-```
-/search/autocomplete?q=abc&inactive=false&revoked=false
-```
-
-The `inactive` query parameter denotes whether names of discontinued entities should be returned in the results. The `revoked` query parameter denotes whether entities with invalid credentials should be returned in the results. By default, only currently operating organizations with valid credentials are queried for.
-
-#### Response
-
-The API response will look something like this type definition:
-
-_**Note:** the type names are arbitrary, the type definition is more important here._
-
-```
-interface AggregateAutocompleteResponse {
-  total: number;
-  first_index: number;
-  last_index: number;
-  results: AggregateAutocomplete[];
-}
-```
-What you will be most interested in is the `results` field which is a list of closely matching entity names in OrgBook BC, and has the following type definition:
-
-```
-interface AggregateAutocomplete {
-  type: string;
-  value: string;
-  score: number;
-  topic_source_id: string;
-  topic_type: string;
-  credential_id: string;
+```json
+{
+  "total": 2,
+  "page_size": 10,
+  "page": 1,
+  "first_index": 1,
+  "last_index": 2,
+  "next": null,
+  "previous": null,
+  "results": [
+    {
+      "id": 1,
+      "has_logo": true,
+      "create_timestamp": "2020-02-14T14:27:35.624957-08:00",
+      "update_timestamp": "2020-09-18T13:55:52.670973-07:00",
+      "did": "HR6vs6GEZ8rHaVgjg2WodM",
+      "name": "BC Corporate Registry",
+      "abbreviation": "BCReg",
+      "email": "bcregistries@gov.bc.ca",
+      "url": "https://www2.gov.bc.ca/gov/content/governments/organizational-structure/ministries-organizations/ministries/citizens-services/bc-registries-online-services",
+      "endpoint": ""
+    },
+    ...
+  ]
 }
 ```
 
-Results are mostly returned in batches of up to 10 in descending search `score` order. More specific query strings will result in fewer results returned with higher search scores. Non-matching query strings will return empty results.
-The main fields you will be interested are:
-* `type`: The data field that autocomplete search is based on (example: `'name'`).
-* `value`: The value of the data field that autocomplete search is based on (example: `'ABC LTD.'`).
+The results are a list of issuers that have registered with OrgBook. They may or may not have issued any credentials yet, however developers can find out what type of credentials are issued by a specific issuer, by making a `GET` request to the `issuer/{id}/credentialtype` endpoint. In the above example, the issuer with an `id` of `1` is the BC Corporate Registry which issues credentials to OrgBook corresponding to an organization's registration in the province, among others.
 
-#### Example
+### I want to get a list of available credential types in OrgBook
 
-> Checkout this [example](https://stackblitz.com/edit/js-uum64f?file=index.js) on Stackblitz for a simple implementation using jQuery and plain HTML.
+To do this, make a `GET` request to the `/credentialtype` endpoint. The response will look something like:
 
-### Basic organization search
-
-You will likely want more comprehensive information about an organization such as the type of organization, its business number, when it was registered, whether the organization is still active, even information about related organizations.
-
-The `/search/topic` path is available for basic organization searches and returns data in the form of one or more verifiable credentials about the ___topic___ of interest.
-
-`/search/topic` takes a query parameter, `name`: a query string that will match the most closely related organization names in OrgBook. There are also optional query parameters (described below) that can be passed, and default values will be used when these query parameters are not included.
-
-#### Request
-
-Example (using `'abc'` as the query string):
-
-```
-/search/topic?name=abc&inactive=false&latest=true&revoked=false
-```
-
-The `inactive` query parameter denotes whether names of discontinued entities should be returned in the results. The `revoked` query parameter denotes whether entities with invalid credentials should be returned in the results. Since this path returns verifiable credentials, the `latest` query parameter denotes whether only the most recent credential(s) should be returned. By default, only currently operating organizations with the latest valid credentials are queried for.
-
-#### Response
-
-The API response will have the following type definition:
-
-```
-interface TopicResponse {
-  total: number;
-  page_size: number;
-  page: number;
-  first_index: number;
-  last_index: number;
-  next: string;
-  previous: string;
-  results: CredentialTopicSearch[];
+```json
+{
+  "total": 6,
+  "page_size": 10,
+  "page": 1,
+  "first_index": 1,
+  "last_index": 6,
+  "next": null,
+  "previous": null,
+  "results": [
+    {
+      "id": 1,
+      "issuer": { ... },
+      "has_logo": true,
+      "create_timestamp": "2020-02-14T14:27:35.689210-08:00",
+      "update_timestamp": "2020-10-06T20:00:35.714822-07:00",
+      "description": "registration.registries.ca",
+      "credential_def_id": "HR6vs6GEZ8rHaVgjg2WodM:3:CL:41051:tag",
+      "last_issue_date": "2020-10-06T20:00:35.714729-07:00",
+      "url": "/bcreg/incorporation",
+      "schema": { ... }
+    },
+    ...
+  ]
 }
 ```
 
-Results are returned in pages of up to 10 similarly matching entities to the name query (the number of results in the current response are indicated in the `page_size` field). The `total` field will indicate whether there are more results available than what's in the current page, and if so, `next` and `previous` URLs will be included in the response for accessing the next or previous pages of results, respectively. More specific query strings will result in fewer results and pages returned. Non-matching query strings will return empty pages.
+The results are a list of credential types that issuers have indicated they will be issuing when they register with OrgBook. This doesn't necessarily mean there are any credentials of the indicated types in OrgBook, but simply that they may be issued at some point or another. For example, organization addresses are issued as a credential, however BC Registries has not currently made credentials of that type available in OrgBook.
 
-The `results` field is a list of credentials for closely or exactly matching entities in OrgBook, and has the following type definition:
+_Note: If you are interested in seeing the structure of address credentials, the OrgBook developer team has a [non-production deployment](https://dev.orgbook.gov.bc.ca) of OrgBook with [hypothetical organizations](https://dev.orgbook.gov.bc.ca/en/organization/registration.registries.ca/BC0356343/cred/6741681) that have address credentials._
 
-```
-interface CredentialTopicSearch {
-  id: number;
-  create_timestamp: Date;
-  update_timestamp: Date;
-  effective_date: Date;
-  inactive: boolean;
-  latest: boolean;
-  revoked: boolean;
-  revoked_date: Date;
-  credential_id: string;
-  credential_set: CredentialSet;
-  credential_type: CredentialType;
-  attributes: CredentialAttribute[];
-  names: CredentialName[];
-  topic: CredentialTopicExt;
-  related_topics: CredentialNamedTopic[];
+OrgBook allows one to search organizations that have been issued a specific type of credential, and a good example of this can be seen in the [Advanced Search](https://orgbook.gov.bc.ca/en/advanced-search). The list of credential types is used to populate a select input, which narrows the search down to only those organizations that have been issued a credential of the selected type. For example, one might be interested in searching for organizations that have been issued a Cannabis Retail Store License.
+
+### I want to build a legal name search component in my application
+
+Developers often want to include a search feature for legal names of registered BC organizations in their applications (usually to [auto-populate form inputs](#i-want-to-auto-populate-form-fields-with-organization-info)). It is so commonplace, that the OrgBook developer team created the `/search/autocomplete` endpoint.
+
+Make a `GET` request to the `/search/autocomplete` endpoint, passing a string of characters to the `q` query parameter in the request URL. OrgBook will try to match the string of characters to names of registered organizations. For example, if you wanted to query for the name `'Power Corp'` you would format the request like: `/search/autocomplete?q=Power%20Corp`. The response will look something like:
+
+```json
+  "total": 10,
+  "first_index": 1,
+  "last_index": 10,
+  "results": [
+    {
+      "type": "name",
+      "value": "U3 POWER CORP.",
+      "score": 122.19571,
+      "topic_source_id": "BC0772006",
+      "topic_type": "registration.registries.ca",
+      "credential_id": "c0d330b4-bf99-4cf1-9da1-9dd7207bfd88"
+    },
+    {
+      "type": "name",
+      "value": "TRITON POWER CORP.",
+      "score": 121.502174,
+      "topic_source_id": "BC0205366",
+      "topic_type": "registration.registries.ca",
+      "credential_id": "1f77e47d-94f0-4e68-9df2-9796b4d68e1a"
+    },
+    {
+      "type": "name",
+      "value": "STOTHERT POWER CORP.",
+      "score": 121.502174,
+      "topic_source_id": "BC0070832",
+      "topic_type": "registration.registries.ca",
+      "credential_id": "ec70b489-a66b-499a-ba92-d477b1c37138"
+    },
+    {
+      "type": "name",
+      "value": "BOSS POWER CORP.",
+      "score": 121.502174,
+      "topic_source_id": "BC0230487",
+      "topic_type": "registration.registries.ca",
+      "credential_id": "fd6d822a-9ec7-4abb-96e0-c2edaaff2108"
+    },
+    ...
+  ]
 }
 ```
 
-The `inactive`, `latest`, `revoked` and `revoked_date` fields are self explanatory. `effective_date` indicates when the credential was activated.
+Results are returned in batches of up to 10 closely matching organization names, each with a match `score`. The results are sorted from the highest to the lowest score, therefore closer matches will be at the top of the results. OrgBook will return fewer results with higher scores, as you provide more exactly matching query strings. If OrgBook is unable to match a query string to any organization name, it will return empty results.
 
-_**Note:** `effective_date` is not the same as incorporation/registration date. It simply denotes the last time a credential was activated for this entity in OrgBook._
+There are optional parameters that you can attach to the request:
+* The `inactive` query parameter denotes whether inactive organizations (i.e. those with a status of `'Historical'`) should be included in the results (defaults to `'false'`).
+* The `revoked` query parameter denotes whether organizations with revoked registration credentials should be returned in the results (defaults to `'false'`).
 
-Organization data is found in the `topic` field, which has the following type definition:
+#### Implementation Example 1
 
-```
-interface CredentialTopicExt {
-  id: number;
-  create_timestamp: Date;
-  update_timestamp: Date;
-  source_id: string;
-  type: string;
-  names: CredentialName[];
-  local_name: CredentialName;
-  remote_name: CredentialName;
-  addresses: CredentialAddress[];
-  attributes: TopicAttribute[];
+> Checkout this [example](https://stackblitz.com/edit/js-uum64f) on StackBlitz for a simple implementation of an autocomplete name search using jQuery UI and plain HTML.
+
+_Another simple approach could be to attach a `'keypress'` event listener to a text input. As a user types, requests are made to `/search/autocomplete` with the value of the input. You may want to employ techniques, like debouncing, to reduce the number of calls to the API server. Better yet, use an existing UI library that provides these features out of the box and simply pass autocomplete results to display._
+
+### I want to auto-populate form fields with organization info
+
+Developers often create applications that require information about registered BC organizations in their applications. For example, you could be building an application that issues a loan or a certificate only to registered BC organizations. You currently have a form with fields for an organization's name, BC Registries number, CRA business number, type, and status that need to be filled in. The OrgBook API enables you to pull this information from OrgBook credentials. You can then programmatically populate the fields in your form using the credential data.
+
+You simply need to call a few endpoints in the OrgBook API in the following order (assuming you have already performed an [autocomplete name search](#i-want-to-build-a-legal-name-search-component-in-my-application) and are using one of the results from that request, or you know the BC Registries number of the organization you require information about):
+
+#### Step 1. Query for a topic
+
+Make a `GET` request to the `/search/topic` endpoint, passing in the BC Registries number (this is the `topic_source_id` field in an autocomplete result) to the `name` query parameter in the request URL.
+
+There are optional parameters that you can attach to the request:
+* The `inactive` query parameter denotes whether inactive organizations (i.e. those with a status of `'Historical'`) should be included in the results (defaults to `'false'`).
+* The `revoked` query parameter denotes whether organizations with revoked registration credentials should be returned in the results (defaults to `'false'`).
+* The `latest` query parameter denotes whether only the most recently issued credential(s) should be returned (defaults to `'true'`).
+
+For example, if you wanted to query for information about `'U3 POWER CORP.'` you would format the request like: `/search/topic?name=BC0772006`. The response will look something like:
+
+```json
+{
+  "total": 1,
+  "page_size": 10,
+  "page": 1,
+  "first_index": 1,
+  "last_index": 1,
+  "next": null,
+  "previous": null,
+  "results": [
+    {
+      "id": 1092374,
+      "create_timestamp": "2020-09-17T19:09:38.719347-07:00",
+      "update_timestamp": "2020-09-17T19:09:38.746805-07:00",
+      "effective_date": "2006-10-17T16:58:42-07:00",
+      "inactive": false,
+      "latest": true,
+      "revoked": false,
+      "revoked_date": null,
+      "credential_id": "c0d330b4-bf99-4cf1-9da1-9dd7207bfd88",
+      "credential_set": { ... },
+      "credential_type": { ... },
+      "attributes": [ ... ],
+      "names": [ ... ],
+      "topic": {
+        "id": 787297,
+        "create_timestamp": "2020-09-17T19:09:38.681116-07:00",
+        "update_timestamp": "2020-09-17T19:09:38.681143-07:00",
+        "source_id": "BC0772006",
+        "type": "registration.registries.ca",
+        "names": [ ... ],
+        "local_name": { ... },
+        "remote_name": null,
+        "addresses": [],
+        "attributes": [ ... ]
+      },
+      "related_topics": []
+    },
+    ...
+  ]
 }
 ```
 
-You'll notice that it contains many of the same fields as the top-level response, with some additions, such as `source_id` (the unique registration number generated for the organization), `addresses` and `local_name`.
+Each of the results returned is a foundational credential for the ___topic___ you are searching for. A foundational credential is generated when an organization is first registered in OrgBook. All other credentials for this organization are then linked (related to) this credential. It is possible to receive more than 1 foundational credential back from this query (especially for those belonging to related organizations). Results are returned in pages of up to 10 closely matching entities to the name you provide in the query. Typically you would iterate through the results and find the first credential where the `source_id` under the `topic` field matches the BC Registries number you passed in the name query.
 
-The `names` field contains the operating business names and has the following type definition (with `type` typically being `'entity_name'`):
+#### Step 2. Query for credentials
 
-```
-interface CredentialName {
-  id: number;
-  text: string;
-  language: string;
-  credential_id: string;
-  type: string;
+Locate the `topic` field from the previous result and, within that, locate the `id` field. The topic id can be used to obtain all OrgBook credentials for an organization of interest.
+
+Make a `GET` request to the `/search/credential` endpoint, passing in the topic id from the topic search result to the `topic_id` query parameter in the request URL.
+
+The same optional parameters for the `/search/topic` endpoint can be attached to the request.
+
+For example, if you wanted to query for all of the credentials of `'U3 POWER CORP.'` you would format the request like: `/search/credentials?topic_id=787297`. The response looks almost identical to the topic search, except all credentials are returned for this one organization:
+
+```json
+{
+  "total": 2,
+  "page_size": 10,
+  "page": 1,
+  "first_index": 1,
+  "last_index": 2,
+  "next": null,
+  "previous": null,
+  "results": [
+    {
+      "id": 1092374,
+      "create_timestamp": "2020-09-17T19:09:38.719347-07:00",
+      "update_timestamp": "2020-09-17T19:09:38.746805-07:00",
+      "effective_date": "2006-10-17T16:58:42-07:00",
+      "inactive": false,
+      "latest": true,
+      "revoked": false,
+      "revoked_date": null,
+      "credential_id": "c0d330b4-bf99-4cf1-9da1-9dd7207bfd88",
+      "credential_set": { ... },
+      "credential_type": {
+        "id": 1,
+        "issuer": { ... },
+        "has_logo": true,
+        "create_timestamp": "2020-09-16T11:17:48.917070-07:00",
+        "update_timestamp": "2020-09-23T17:33:09.918448-07:00",
+        "description": "registration.registries.ca",
+        "credential_def_id": "9vnQTCy6NQ7mxUVhLtaPZY:3:CL:39771:default",
+        "last_issue_date": "2020-09-23T08:51:02.884222-07:00",
+        "url": "/bcreg/incorporation",
+        "schema": { ... }
+      },
+      "addresses": [],
+      "attributes": [
+        ...
+        {
+          "id": 7464375,
+          "type": "entity_status",
+          "format": "category",
+          "value": "ACT",
+          "credential_id": 1092374
+        },
+        ...
+        {
+          "id": 7464377,
+          "type": "entity_type",
+          "format": "category",
+          "value": "BC",
+          "credential_id": 1092374
+        },
+        ...
+      ],
+      "names": [
+        {
+          "id": 1067982,
+          "text": "U3 POWER CORP.",
+          "language": null,
+          "credential_id": 1092374,
+          "type": "entity_name"
+        }
+      ],
+      "topic": { ... },
+      "related_topics": []
+    },
+    {
+      "id": 2888463,
+      "create_timestamp": "2020-09-23T22:31:49.875342-07:00",
+      "update_timestamp": "2020-09-23T22:31:49.934100-07:00",
+      "effective_date": "2006-10-17T16:58:42-07:00",
+      "inactive": false,
+      "latest": true,
+      "revoked": false,
+      "revoked_date": null,
+      "credential_id": "73ae94b1-3582-41c2-8076-eceabfe20ae8",
+      "credential_set": { ... },
+      "credential_type": {
+        "id": 4,
+        "issuer": { ... },
+        "has_logo": true,
+        "create_timestamp": "2020-09-16T11:17:49.057504-07:00",
+        "update_timestamp": "2020-09-24T10:48:42.356094-07:00",
+        "description": "business_number.registries.ca",
+        "credential_def_id": "9vnQTCy6NQ7mxUVhLtaPZY:3:CL:39777:default",
+        "last_issue_date": "2020-09-24T10:48:42.355926-07:00",
+        "url": "/bcreg/address",
+        "schema": { ... }
+      },
+      "addresses": [],
+      "attributes": [
+        {
+          "id": 15367395,
+          "type": "business_number",
+          "format": "attribute",
+          "value": "000760180",
+          "credential_id": 2888463
+        }
+      ],
+      "names": [],
+      "topic": { ... },
+      "related_topics": []
+    },
+    ...
+  ]
 }
 ```
 
-The `attributes` field is a list that likely contains a lot of information you are going to be interested in about the entity such as `'registration_date'`, `'entity_name_effective'`, `'entity_status'`, `'entity_status_effective'`, `'entity_type'`, `'home_jurisdiction'`, and `'reason_description'`. It has the following type definition:
+Two credentials have been returned in the results. Locating the `credential_type` field, the `description` indicates that one of the credentials is of the type `'registration.registries.ca'` and the other is of the type `'business_number.registries.ca'`.
 
-```
-interface TopicAttribute {
-  id: number;
-  type: string;
-  format: string;
-  value: string;
-  credential_id: string;
-  credential_type_id: string;
-}
-```
+The first credential contains registration information about the organization. The list of `attributes` contains various fields, such as `'entity_status'`, `'entity_type'` and others. The registration credential attributes for this organization indicate that this is an Active, BC Company.
 
-For example the following attribute list tells us that the organization is an active Sole Proprietorship within British Columbia:
+In another unrelated example, the following attribute list tells us that the organization is an Active, Sole Proprietorship within British Columbia:
 
-```
+```json
 "attributes": [
     {
         "id": ...,
@@ -209,94 +367,10 @@ For example the following attribute list tells us that the organization is an ac
 ]
 ```
 
-#### Example
+The second credential contains information about the organization's business number, issued by the Canada Revenue Agency for tax purposes. There is only a single attribute for the `'business_number'`. The `'value'` is the business number itself.
 
-> Checkout this [example](https://stackblitz.com/edit/js-je6ckp?file=index.js) on Stackblitz for a simple implementation using jQuery and plain HTML.
+Together these credentials can be used to programmatically fill in form fields in an application.
 
-### Faceted organization search
+#### Implementation Example 2
 
-Faceted search augments basic search functionality by providing a mechanism to narrow down search results through the application of various filters, similar to what you would see on an e-commerce site like an online clothing store. _See [this](https://en.wikipedia.org/wiki/Faceted_search) Wikipedia article about faceted search._
-
-The `/search/topic/facets` path has been created specifically for this and works exactly the same as `search/topic` with the only difference being that the response is augmented with facets.
-
-#### Request
-
-Example (using `'abc'` as the query string):
-
-```
-/search/topic/facets?name=abc&inactive=false&latest=true&revoked=false
-```
-
-#### Response
-
-The API response will have the following type definition, where `objects` is the same as the response body of `/search/topic` (see above):
-
-```
-interface TopicFacetsResponse {
-  facets: TopicFacets;
-  objects: TopicResponse;
-}
-```
-
-The `facets` field has the following type definition, of which, `fields` are lists of objects that describe topics, grouped together by query parameters that can be added to a topic search.
-
-```
-interface TopicFacets {
-  fields: TopicFacetFields;
-  dates: TopicFacetDates;
-  queries: TopicFacetQueries;
-}
-```
-
-For example, the `category` facet field contains a number of objects with properties such as `entity_type`, `entity_status`, etc:
-
-```
-{
-  category: [ ... ];
-  credential_type_id: [ ... ];
-  issuer_id: [ ... ];
-}
-```
-
-Field objects have the following type definition:
-
-```
-export interface TopicFacetField {
-    value: string;
-    count: number;
-    text: string;
-}
-```
-
-The `value` field denotes the specific term to add to the `/search/topic` or `/search/topic/facets` paths to narrow a topic search down. The `count` field denotes how many topics are categorized by that term for the current topic search.
-
-For example, suppose the following facets were returned from a topic search:
-
-```
-{
-  category: [
-    {
-        "value": "entity_status::ACT",
-        "count": 480
-    },
-    {
-        "value": "entity_type::SP",
-        "count": 302
-    },
-    {
-        "value": "entity_type::BC",
-        "count": 114
-    },
-    {
-        "value": "entity_type::GP",
-        "count": 49
-    }
-  ];
-}
-```
-
-The current search results would contain all entity types that match or closely match an organization of interest. Appending the field name as a query parameter and the value as the query parameter value to the topic search (for example, `'?category=entity_type::GP'`) would narrow down search results only to organizations that are General Partnerships.
-
-<!-- ### Organization credential verification -->
-<!-- ### Credential issuer search -->
-<!-- ### Credential type search -->
+> Checkout this [example](https://stackblitz.com/edit/js-y5jxtf) on StackBlitz for a simple implementation of auto-populating a form from OrgBook credentials using jQuery UI and plain HTML.
