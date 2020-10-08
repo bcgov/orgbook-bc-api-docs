@@ -29,7 +29,7 @@ The OrgBook API exposes a number of RESTful endpoints that make it simple to int
 - Autocomplete-enabled organization name search
 - Organization data retrieval, in the form of verifiable credentials (including registration number, business number, entity type, entity status, etc.)
 - Credential issuer search
-- Credential type search,
+- Credential type search
 - Credential verification
 
 ## Getting started
