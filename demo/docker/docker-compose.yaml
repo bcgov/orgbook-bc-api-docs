@@ -7,4 +7,4 @@ services:
             args:
                 - ORGBOOK_HOST=${ORGBOOK_HOST}
         ports:
-            - 8000:80
+            - 8001:80
