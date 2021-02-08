@@ -1,4 +1,4 @@
-# OrgBook Autocomplete Demo
+# OrgBook API Demo
 
 ## Table of contents
 
@@ -42,7 +42,7 @@ To run the demo locally, you will need to have the [Angular CLI](https://cli.ang
 Navigate to the Angular application in this repository:
 
 ```
-$ cd orgbook-api/demo/angular/orgbook-autocomplete
+$ cd orgbook-api/demo/angular/orgbook-api
 ```
 
-Please see the documentation [here](./angular/orgbook-autocomplete/README.md) for instructions on running the application with the Angular CLI.
+Please see the documentation [here](./angular/orgbook-api/README.md) for instructions on running the application with the Angular CLI.

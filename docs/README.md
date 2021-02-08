@@ -20,6 +20,7 @@ The OrgBook API is a RESTful interface to OrgBook. It has been purposefully buil
     - [Step 1. Query for a topic](#step-1-query-for-a-topic)
     - [Step 2. Query for credentials](#step-2-query-for-credentials)
     - [Implementation Example 2](#implementation-example-2)
+  - [I want to search for Organizations with a specific credential](#i-want-to-search-for-organizations-with-a-specific-credential)
 
 ## Common scenarios
 
@@ -374,3 +375,17 @@ Together these credentials can be used to programmatically fill in form fields i
 #### Implementation Example 2
 
 > Checkout this [example](https://stackblitz.com/edit/js-y5jxtf) on StackBlitz for a simple implementation of auto-populating a form from OrgBook credentials using jQuery UI and plain HTML.
+
+### I want to search for Organizations with a specific credential
+
+Suppose you are the Cannabis Permit Issuer website and you want to offer a search capability on your site based on OrgBook. As such, you ONLY want to return matching results of entities that have licenses issued by your group.
+
+This is, in fact, a very simple operation so long as you know the ID of the credential type(s) you want searches to be based on.
+
+To find out what credential types are in OrgBook refer to the documentation above on: [I want to get a list of available credential types in OrgBook](#i-want-to-get-a-list-of-available-credential-types-in-orgBook).
+
+Suppose, in this case, you want to limit searches to organizations that have a Cannabis Retail Store License. The ID for this credential type in OrgBook is `4`.
+
+Now all you have to do is construct the [topic search](#step-1-query-for-a-topic) URL with the `credential_type_id` query parameter included and set to a value of `4`.
+
+For example, if you wanted to query for all organizations with a Cannabis Retail Store License you would format the request like: `/search/topic?credential_type_id=4`. The response will now only contain results that have credentials with that type. You can refine searches further, using the techniques described above.
