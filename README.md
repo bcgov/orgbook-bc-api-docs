@@ -1,3 +1,5 @@
+[![Lifecycle:Stable](https://img.shields.io/badge/Lifecycle-Stable-97ca00)]('')
+
 # OrgBook API
 
 Various developer tools and documentation for using the OrgBook API as part of the Verifiable Organizations Network.
