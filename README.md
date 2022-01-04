@@ -44,7 +44,7 @@ If you are just starting out, this should be your main go-to guide. Please see t
 
 ### Open API specification
 
-You may wish to check out the various Open API specifications (specifically [v3](https://orgbook.gov.bc.ca/api/v3/) and [v4](https://orgbook.gov.bc.ca/api/v4/) if you are interested in a deeper look into a catalogue of all the endpoints available. You are encouraged to use the most up-to-date production version (v4) of the API in your applications to avoid any issues with backward compatibility.
+You may wish to check out the various Open API specifications (specifically [v3](https://orgbook.gov.bc.ca/api/v3/) and [v4](https://orgbook.gov.bc.ca/api/v4/)) if you are interested in a deeper look into a catalogue of all the endpoints available. You are encouraged to use the most up-to-date production version (v4) of the API in your applications to avoid any issues with backward compatibility.
 
 ### Demo
 
