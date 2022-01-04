@@ -5,15 +5,15 @@ This document has been created as a first reference for the OrgBook BC API. When
 ## Introduction
 
 ### What is OrgBook BC?
-OrgBook BC is a type of [Hyperledger Aries](https://github.com/hyperledger/aries) Verifiable Credential Registry ([Aries VCR](https://github.com/bcgov/aries-vcr)). Aries VCR is a set of software tools that make it easy to host and issue [verifiable credentials](https://en.wikipedia.org/wiki/Verifiable_credentials) of any type. OrgBook BC is a specific implementation of an Aries VCR built by the Government of British Columbia, that hosts verifiable credentials about organizations registered in the province. ___The key point to remember is that (almost) everything is a credential in OrgBook BC.___ Everything from an organization's registration information, to its business number and its relations to other organizations within the province, is stored as a verifiable credential in OrgBook BC. Credentials are issued to OrgBook BC by various authorized credential issuers that register themselves with OrgBook BC.
+OrgBook BC (often shortened and referred to hereafter as OrgBook) is a type of [Hyperledger Aries](https://github.com/hyperledger/aries) Verifiable Credential Registry ([Aries VCR](https://github.com/bcgov/aries-vcr)). Aries VCR is a set of software tools that make it easy to host and issue [verifiable credentials](https://en.wikipedia.org/wiki/Verifiable_credentials) of any type. OrgBook is a specific implementation of an Aries VCR built by the Government of British Columbia, that hosts verifiable credentials about organizations registered in the province. ___The key point to remember is that (almost) everything is a credential in OrgBook.___ Everything from an organization's registration information, to its business number and its relations to other organizations within the province, is stored as a verifiable credential in OrgBook. Credentials are issued to OrgBook by various authorized credential issuers that register themselves with OrgBook.
 
-The OrgBook BC API is a RESTful interface to OrgBook BC. It has been purposefully built for developers to access and integrate verifiable credentials (i.e. data about registered organizations) from OrgBook BC into their own applications. The following documentation outlines the most common scenarios that developers are likely to use the OrgBook BC API for, including use cases for specific features that most will be looking to build into their applications.
+The OrgBook API is a RESTful interface to OrgBook. It has been purposefully built for developers to access and integrate verifiable credentials (i.e. data about registered organizations) from OrgBook into their own applications. The following documentation outlines the most common scenarios that developers are likely to use the OrgBook API for, including use cases for specific features that most will be looking to build into their applications.
 
 ## Table of contents
 - [Introduction](#introduction)
 - [Common scenarios](#common-scenarios)
-  - [I want to get a list of credential issuers registered in OrgBook BC](#i-want-to-get-a-list-of-credential-issuers-registered-in-orgbook-bc)
-  - [I want to get a list of available credential types in OrgBook BC](#i-want-to-get-a-list-of-available-credential-types-in-orgBook-bc)
+  - [I want to get a list of credential issuers registered in OrgBook](#i-want-to-get-a-list-of-credential-issuers-registered-in-orgbook)
+  - [I want to get a list of available credential types in OrgBook](#i-want-to-get-a-list-of-available-credential-types-in-orgBook)
   - [I want to build a legal name search component in my application](#i-want-to-build-a-legal-name-search-component-in-my-application)
     - [Implementation Example 1](#implementation-example-1)
   - [I want to auto-populate form fields with organization info](#i-want-to-auto-populate-form-fields-with-organization-info)
@@ -24,7 +24,7 @@ The OrgBook BC API is a RESTful interface to OrgBook BC. It has been purposefull
 
 ## Common scenarios
 
-### I want to get a list of credential issuers registered in OrgBook BC
+### I want to get a list of credential issuers registered in OrgBook
 
 To do this, make a `GET` request to the `/v4/issuer` endpoint. The response will look something like:
 
@@ -55,9 +55,9 @@ To do this, make a `GET` request to the `/v4/issuer` endpoint. The response will
 }
 ```
 
-The results are a list of credential issuers that have registered with OrgBook BC. They may or may not have issued any credentials to OrgBook BC yet. In the above example, the issuer with an `id` of `1` is the BC Corporate Registry which issues credentials to OrgBook BC that have to do with to an organization's registration in the province, among others. Developers can find out what type of credentials are issued by a specific issuer, by making a `GET` request to the `/v4/credential-type` endpoint (see below).
+The results are a list of credential issuers that have registered with OrgBook. They may or may not have issued any credentials to OrgBook yet. In the above example, the issuer with an `id` of `1` is the BC Corporate Registry which issues credentials to OrgBook that have to do with to an organization's registration in the province, among others. Developers can find out what type of credentials are issued by a specific issuer, by making a `GET` request to the `/v4/credential-type` endpoint (see below).
 
-### I want to get a list of available credential types in OrgBook BC
+### I want to get a list of available credential types in OrgBook
 
 To do this, make a `GET` request to the `/v4/credential-type` endpoint. The response will look something like:
 
@@ -155,9 +155,9 @@ To do this, make a `GET` request to the `/v4/credential-type` endpoint. The resp
 }
 ```
 
-The results are a list of credential types that are currently registered in OrgBook BC. This doesn't necessarily mean there are any credentials of the registered types in OrgBook BC, but simply that these are the types of credentials that OrgBook BC knows about and will accept from issuers. For example, organization addresses are a type of credential registered in OrgBook BC, however BC Registries (the registered credential issuer of that type) has not currently made those credentials available in OrgBook BC (i.e. they have not issued any credentials of that type to OrgBook BC).
+The results are a list of credential types that are currently registered in OrgBook. This doesn't necessarily mean there are any credentials of the registered types in OrgBook, but simply that these are the types of credentials that OrgBook knows about and will accept from issuers. For example, organization addresses are a type of credential registered in OrgBook, however BC Registries (the registered credential issuer of that type) has not currently made those credentials available in OrgBook (i.e. they have not issued any credentials of that type to OrgBook).
 
-As an update to version `v4` of the API, credential types now **optionally** have localization labels and descriptions for the credential type name (specified in the `schema_label` object) and/or credential type attributes (specified in the `claim_labels` object). These labels can be useful for multi-lingual applications or for providing human readable field names, however they must be defined by issuers when registering credential types with OrgBook BC and are therefore not always guaranteed to be present.
+As an update to version `v4` of the API, credential types now **optionally** have localization labels and descriptions for the credential type name (specified in the `schema_label` object) and/or credential type attributes (specified in the `claim_labels` object). These labels can be useful for multi-lingual applications or for providing human readable field names, however they must be defined by issuers when registering credential types with OrgBook and are therefore not always guaranteed to be present.
 
 ### I want to build a legal name search component in my application
 
@@ -206,13 +206,13 @@ Make a `GET` request to the `/v3/search/autocomplete` endpoint, passing a string
 }
 ```
 
-Results are returned in pages of up to 10 closely matching organization names, each with a match `score`. The results are sorted from the highest to the lowest score, therefore closer matches will be at the top of the results. OrgBook BC will return fewer results with higher match scores (i.e. the more closely a query string matches, the fewer names it will match to). If OrgBook BC is unable to match a query string to any organization name, it will return empty results.
+Results are returned in pages of up to 10 closely matching organization names, each with a match `score`. The results are sorted from the highest to the lowest score, therefore closer matches will be at the top of the results. OrgBook will return fewer results with higher match scores (i.e. the more closely a query string matches, the fewer names it will match to). If OrgBook is unable to match a query string to any organization name, it will return empty results.
 
 As an update to version `v3` of the API, autocomplete also supports querying/autocompletion on 9-digit CRA Business Number and BC Registration Numbers.
 
-For example, when using `'BC11` as the query string, the following results are returned:
+For example, when using `'BC11'` as the query string, the following results are returned:
 
-```
+```json
 {
   "total": 10,
   "first_index": 1,
@@ -244,7 +244,7 @@ For example, when using `'BC11` as the query string, the following results are r
 }
 ```
 
-Here we can see that not only did the query string match a company name (indicated by the `type`: `name`) but it also matched a registration number (indicated by the `type`: `topic`) The `sub_type` further indicates what credential attribute (if any) the query string matched with.
+Here we can see that not only did the query string match a company name (indicated by the `type`: `'name'`) but it also matched a registration number (indicated by the `type`: `'topic'`) The `sub_type` further indicates what credential attribute (if any) the query string matched with.
 
 There are optional parameters that you can attach to the request:
 * The `inactive` query parameter denotes whether inactive organizations (i.e. those with a status of `'Historical'`) should be included in the results (defaults to `'false'`).
@@ -264,14 +264,14 @@ You simply need to call a few endpoints in the OrgBook API in the following orde
 
 #### Step 1. Query for a topic
 
-Make a `GET` request to the `/search/topic` endpoint, passing in the BC Registries number (this is the `topic_source_id` field in an autocomplete result) to the `name` query parameter in the request URL.
+Make a `GET` request to the `/v4/search/topic` endpoint, passing in the BC Registries number (this is the `topic_source_id` field in an autocomplete result) to the `q` query parameter in the request URL.
 
 There are optional parameters that you can attach to the request:
 * The `inactive` query parameter denotes whether inactive organizations (i.e. those with a status of `'Historical'`) should be included in the results (defaults to `'false'`).
 * The `revoked` query parameter denotes whether organizations with revoked registration credentials should be returned in the results (defaults to `'false'`).
 * The `latest` query parameter denotes whether only the most recently issued credential(s) should be returned (defaults to `'true'`).
 
-For example, if you wanted to query for information about `'U3 POWER CORP.'` you would format the request like: `/search/topic?name=BC0772006`. The response will look something like:
+For example, if you wanted to query for information about `'U3 POWER CORP.'` you would format the request like: `/v4/search/topic?q=BC0772006`. The response will look something like:
 
 ```json
 {
@@ -284,160 +284,142 @@ For example, if you wanted to query for information about `'U3 POWER CORP.'` you
   "previous": null,
   "results": [
     {
-      "id": 1092374,
-      "create_timestamp": "2020-09-17T19:09:38.719347-07:00",
-      "update_timestamp": "2020-09-17T19:09:38.746805-07:00",
-      "effective_date": "2006-10-17T16:58:42-07:00",
-      "inactive": false,
-      "latest": true,
-      "revoked": false,
-      "revoked_date": null,
-      "credential_id": "c0d330b4-bf99-4cf1-9da1-9dd7207bfd88",
+      "id": 785314,
+      "source_id": "BC0772006",
+      "type": "registration.registries.ca",
+      "names": [ ... ],
+      "addresses": [],
+      "attributes": [ ... ],
       "credential_set": { ... },
       "credential_type": { ... },
-      "attributes": [ ... ],
-      "names": [ ... ],
-      "topic": {
-        "id": 787297,
-        "create_timestamp": "2020-09-17T19:09:38.681116-07:00",
-        "update_timestamp": "2020-09-17T19:09:38.681143-07:00",
-        "source_id": "BC0772006",
-        "type": "registration.registries.ca",
-        "names": [ ... ],
-        "local_name": { ... },
-        "remote_name": null,
-        "addresses": [],
-        "attributes": [ ... ]
-      },
-      "related_topics": []
-    },
-    ...
+      "inactive": false,
+      "revoked": false,
+      "effective_date": "2006-10-17T16:58:42-07:00",
+      "revoked_date": null
+    }
   ]
 }
 ```
 
-Each of the results returned is a foundational credential for the ___topic___ you are searching for. A foundational credential is generated when an organization is first registered in OrgBook. All other credentials for this organization are then linked (related to) this credential. It is possible to receive more than 1 foundational credential back from this query (especially for those belonging to related organizations). Results are returned in pages of up to 10 closely matching entities to the name you provide in the query. Typically you would iterate through the results and find the first credential where the `source_id` under the `topic` field matches the BC Registries number you passed in the name query.
+Each of the results returned is a foundational credential for the ___topic___ you are searching for. A foundational credential is generated when an organization is first registered in OrgBook. All other credentials for this organization are then linked (related to) this credential. It is possible to receive more than 1 foundational credential back from this query (especially for those belonging to related organizations). Results are returned in pages of up to 10 closely matching organizations to the query string you provide. Typically you would iterate through the results and find the first credential where the `source_id` matches the BC Registries number you passed as the query string.
 
 #### Step 2. Query for credentials
 
-Locate the `topic` field from the previous result and, within that, locate the `id` field. The topic id can be used to obtain all OrgBook credentials for an organization of interest.
+Locate the `id` field from the previous result. The topic `id` can be used to obtain all credentials for an organization of interest from OrgBook.
 
-Make a `GET` request to the `/search/credential` endpoint, passing in the topic id from the topic search result to the `topic_id` query parameter in the request URL.
+Make a `GET` request to the `/v4/topic/:id/credential-set` endpoint, substituting the `:id` URL parameter with the topic `id` from the previous topic search.
 
-The same optional parameters for the `/search/topic` endpoint can be attached to the request.
-
-For example, if you wanted to query for all of the credentials of `'U3 POWER CORP.'` you would format the request like: `/search/credentials?topic_id=787297`. The response looks almost identical to the topic search, except all credentials are returned for this one organization:
+For example, if you wanted to query for all of the credentials of `'U3 POWER CORP.'` you would format the request like: `/v4/topic/785314/credential-set`. This endpoint will return every credential issued to the organization, including revoked credentials:
 
 ```json
-{
-  "total": 2,
-  "page_size": 10,
-  "page": 1,
-  "first_index": 1,
-  "last_index": 2,
-  "next": null,
-  "previous": null,
-  "results": [
-    {
-      "id": 1092374,
-      "create_timestamp": "2020-09-17T19:09:38.719347-07:00",
-      "update_timestamp": "2020-09-17T19:09:38.746805-07:00",
-      "effective_date": "2006-10-17T16:58:42-07:00",
-      "inactive": false,
-      "latest": true,
-      "revoked": false,
-      "revoked_date": null,
-      "credential_id": "c0d330b4-bf99-4cf1-9da1-9dd7207bfd88",
-      "credential_set": { ... },
-      "credential_type": {
-        "id": 1,
-        "issuer": { ... },
-        "has_logo": true,
-        "create_timestamp": "2020-09-16T11:17:48.917070-07:00",
-        "update_timestamp": "2020-09-23T17:33:09.918448-07:00",
-        "description": "registration.registries.ca",
-        "credential_def_id": "9vnQTCy6NQ7mxUVhLtaPZY:3:CL:39771:default",
-        "last_issue_date": "2020-09-23T08:51:02.884222-07:00",
-        "url": "/bcreg/incorporation",
-        "schema": { ... }
-      },
-      "addresses": [],
-      "attributes": [
-        ...
-        {
-          "id": 7464375,
-          "type": "entity_status",
-          "format": "category",
-          "value": "ACT",
-          "credential_id": 1092374
+[
+  {
+    "id": 784566,
+    "create_timestamp": "2021-08-18T17:14:21.673415+00:00",
+    "update_timestamp": "2021-08-18T17:14:21.673430+00:00",
+    "latest_credential_id": 1092967,
+    "first_effective_date": "2006-10-17T23:58:42+00:00",
+    "last_effective_date": null,
+    "credentials": [
+      {
+        "id": 1092967,
+        "credential_type": {
+          "id": 1,
+          "issuer": { ... },
+          "has_logo": true,
+          "create_timestamp": "2021-08-17T15:20:47.965162-07:00",
+          "update_timestamp": "2022-01-04T09:31:17.517878-08:00",
+          "description": "registration.registries.ca",
+          "credential_def_id": "6D2evN7HsKjz7dy2xSaYoJ:3:CL:341:default",
+          "last_issue_date": "2022-01-04T09:31:17.517769-08:00",
+          "url": "/bcreg/incorporation",
+          "credential_title": null,
+          "highlighted_attributes": null,
+          "schema_label": { ... },
+          "schema": { ... }
         },
-        ...
-        {
-          "id": 7464377,
-          "type": "entity_type",
-          "format": "category",
-          "value": "BC",
-          "credential_id": 1092374
+        "credential_id": "d759d210-628a-4a02-9da3-506cb253ee6c",
+        "credential_def_id": "6D2evN7HsKjz7dy2xSaYoJ:3:CL:341:default",
+        "effective_date": "2006-10-17T16:58:42-07:00",
+        "inactive": false,
+        "latest": true,
+        "revoked": false,
+        "revoked_date": null,
+        "revoked_by": null,
+        "attributes": [
+          ...,
+          {
+            "id": 7468700,
+            "type": "entity_status",
+            "format": "category",
+            "value": "ACT"
+          },
+          ...,
+          {
+            "id": 7468702,
+            "type": "entity_type",
+            "format": "category",
+            "value": "BC"
+          },
+          ...
+        ],
+        "names": [ ... ]
+      }
+    ]
+  },
+  {
+    "id": 2403978,
+    "create_timestamp": "2021-08-19T07:53:47.085574+00:00",
+    "update_timestamp": "2021-08-19T07:53:47.085589+00:00",
+    "latest_credential_id": 2876919,
+    "first_effective_date": "2006-10-17T23:58:42+00:00",
+    "last_effective_date": null,
+    "credentials": [
+      {
+        "id": 2876919,
+        "credential_type": {
+          "id": 4,
+          "issuer": { ... },
+          "has_logo": true,
+          "create_timestamp": "2021-08-17T15:20:47.991055-07:00",
+          "update_timestamp": "2022-01-04T09:31:18.136136-08:00",
+          "description": "business_number.registries.ca",
+          "credential_def_id": "6D2evN7HsKjz7dy2xSaYoJ:3:CL:347:default",
+          "last_issue_date": "2022-01-04T09:31:18.136071-08:00",
+          "url": "/bcreg/address",
+          "credential_title": null,
+          "highlighted_attributes": null,
+          "schema_label": { ... },
+          "schema": { ... }
         },
-        ...
-      ],
-      "names": [
-        {
-          "id": 1067982,
-          "text": "U3 POWER CORP.",
-          "language": null,
-          "credential_id": 1092374,
-          "type": "entity_name"
-        }
-      ],
-      "topic": { ... },
-      "related_topics": []
-    },
-    {
-      "id": 2888463,
-      "create_timestamp": "2020-09-23T22:31:49.875342-07:00",
-      "update_timestamp": "2020-09-23T22:31:49.934100-07:00",
-      "effective_date": "2006-10-17T16:58:42-07:00",
-      "inactive": false,
-      "latest": true,
-      "revoked": false,
-      "revoked_date": null,
-      "credential_id": "73ae94b1-3582-41c2-8076-eceabfe20ae8",
-      "credential_set": { ... },
-      "credential_type": {
-        "id": 4,
-        "issuer": { ... },
-        "has_logo": true,
-        "create_timestamp": "2020-09-16T11:17:49.057504-07:00",
-        "update_timestamp": "2020-09-24T10:48:42.356094-07:00",
-        "description": "business_number.registries.ca",
-        "credential_def_id": "9vnQTCy6NQ7mxUVhLtaPZY:3:CL:39777:default",
-        "last_issue_date": "2020-09-24T10:48:42.355926-07:00",
-        "url": "/bcreg/address",
-        "schema": { ... }
-      },
-      "addresses": [],
-      "attributes": [
-        {
-          "id": 15367395,
-          "type": "business_number",
-          "format": "attribute",
-          "value": "000760180",
-          "credential_id": 2888463
-        }
-      ],
-      "names": [],
-      "topic": { ... },
-      "related_topics": []
-    },
-    ...
-  ]
-}
+        "credential_id": "0b77e1ea-cc29-41ce-b770-380e35e49508",
+        "credential_def_id": "6D2evN7HsKjz7dy2xSaYoJ:3:CL:347:default",
+        "effective_date": "2006-10-17T16:58:42-07:00",
+        "inactive": false,
+        "latest": true,
+        "revoked": false,
+        "revoked_date": null,
+        "revoked_by": null,
+        "attributes": [
+          {
+            "id": 15297356,
+            "type": "business_number",
+            "format": "attribute",
+            "value": "000760180"
+          }
+        ],
+        "names": [ ... ]
+      }
+    ]
+  }
+]
 ```
 
-Two credentials have been returned in the results. Locating the `credential_type` field, the `description` indicates that one of the credentials is of the type `'registration.registries.ca'` and the other is of the type `'business_number.registries.ca'`.
+Two sets of credentials have been returned in the results. Each credential set is a list of credentials of a given type. This list will contain both valid and revoked credentials in the order they were issued to OrgBook. Each credential contains the `credential_type` it corresponds to. For example, locating the `description` field in the first credential of the first set, indicates that this credential is of type `'registration.registries.ca'` type. The first credential of the second set is of the type `'business_number.registries.ca'`.
 
-The first credential contains registration information about the organization. The list of `attributes` contains various fields, such as `'entity_status'`, `'entity_type'` and others. The registration credential attributes for this organization indicate that this is an Active, BC Company.
+You will most likely only care about non-revoked credentials and will likely want to reduce or flatten the sets down to a single list of those non-revoked credentials.
+
+The first credential of interest contains registration information about the organization. The list of `attributes` contains various fields, such as `'entity_status'`, `'entity_type'` and others. The registration credential attributes for this organization indicate that this is an Active, BC Company.
 
 In another unrelated example, the following attribute list tells us that the organization is an Active, Sole Proprietorship within British Columbia:
 
@@ -470,9 +452,12 @@ In another unrelated example, the following attribute list tells us that the org
 ]
 ```
 
-The second credential contains information about the organization's business number, issued by the Canada Revenue Agency for tax purposes. There is only a single attribute for the `'business_number'`. The `'value'` is the business number itself.
+The second credential of interest contains information about the organization's business number, issued by the Canada Revenue Agency for tax purposes. There is only a single attribute for the `'business_number'`. The `'value'` is the business number itself.
 
 Together these credentials can be used to programmatically fill in form fields in an application.
+
+
+_Side note: Credential sets are also useful to generate a timeline of credentials issued/revoked to/from an organization. It is in fact what is used to generate OrgBook's credential timeline. For example, check out: https://orgbook.gov.bc.ca/entity/BC1162838._
 
 #### Implementation Example 2
 
@@ -490,4 +475,4 @@ Suppose, in this case, you want to limit searches to organizations that have a C
 
 Now all you have to do is construct the [topic search](#step-1-query-for-a-topic) URL with the `credential_type_id` query parameter included and set to a value of `4`.
 
-For example, if you wanted to query for all organizations with a Cannabis Retail Store License you would format the request like: `/search/topic?credential_type_id=4`. The response will now only contain results that have credentials with that type. You can refine searches further, using the techniques described above.
+For example, if you wanted to query for all organizations with a Cannabis Retail Store License you would format the request like: `/v4/search/topic?credential_type_id=4`. The response will now only contain results that have credentials with that type. You can refine searches further, using the techniques described above.
