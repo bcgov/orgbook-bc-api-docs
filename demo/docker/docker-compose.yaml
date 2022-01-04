@@ -1,0 +1,10 @@
+version: '3'
+
+services:
+    orgbook-angular:
+        build:
+            context: ../angular/orgbook-api/
+            args:
+                - ORGBOOK_HOST=${ORGBOOK_HOST}
+        ports:
+            - 8001:80

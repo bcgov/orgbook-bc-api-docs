@@ -1,0 +1,39 @@
+$text-right: 0.25rem;
+
+@mixin flex-row {
+    display: flex;
+    flex-direction: row;
+}
+
+@mixin flex-row-wrap {
+    @include flex-row;
+    flex-wrap: wrap;
+}
+
+@mixin margin-right {
+    margin-right: $text-right;
+}
+
+:host {
+    margin-bottom: 0.5rem;
+    width: 100%;
+}
+
+mat-card:hover {
+    cursor: pointer;
+}
+
+mat-card-content {
+    @include flex-row-wrap;
+    justify-content: flex-end;
+}
+
+.credential-status {
+    margin: 0 16px;
+
+    div:first-child {
+        @include margin-right;
+        @include flex-row-wrap;
+        align-items: center;
+    }
+}

@@ -1,0 +1,15 @@
+:host {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    max-width: 960px;
+}
+
+.list {
+    display: contents;
+}
+
+.nav {
+    display: contents;
+}
