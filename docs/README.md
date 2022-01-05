@@ -5,7 +5,7 @@ This document has been created as a first reference for the OrgBook BC API. When
 ## Introduction
 
 ### What is OrgBook BC?
-OrgBook BC (often shortened and referred to hereafter as OrgBook) is a type of [Hyperledger Aries](https://github.com/hyperledger/aries) Verifiable Credential Registry ([Aries VCR](https://github.com/bcgov/aries-vcr)). Aries VCR is a set of software tools that make it easy to host and issue [verifiable credentials](https://en.wikipedia.org/wiki/Verifiable_credentials) of any type. OrgBook is a specific implementation of an Aries VCR built by the Government of British Columbia, that hosts verifiable credentials about organizations registered in the province. ___The key point to remember is that (almost) everything is a credential in OrgBook.___ Everything from an organization's registration information, to its business number and its relations to other organizations within the province, is stored as a verifiable credential in OrgBook. Credentials are issued to OrgBook by various authorized credential issuers that register themselves with OrgBook.
+OrgBook BC (or OrgBook for short) is a type of [Hyperledger Aries](https://github.com/hyperledger/aries) Verifiable Credential Registry ([Aries VCR](https://github.com/bcgov/aries-vcr)). Aries VCR is a set of software tools that make it easy to host and issue [verifiable credentials](https://en.wikipedia.org/wiki/Verifiable_credentials) of any type. OrgBook is a specific implementation of an Aries VCR built by the Government of British Columbia, that hosts verifiable credentials about organizations registered in the province. ___The key point to remember is that (almost) everything is a credential in OrgBook.___ Everything from an organization's registration information, to its business number and its relations to other organizations within the province, is stored as a verifiable credential in OrgBook. Credentials are issued to OrgBook by various authorized credential issuers that register themselves with OrgBook.
 
 The OrgBook API is a RESTful interface to OrgBook. It has been purposefully built for developers to access and integrate verifiable credentials (i.e. data about registered organizations) from OrgBook into their own applications. The following documentation outlines the most common scenarios that developers are likely to use the OrgBook API for, including use cases for specific features that most will be looking to build into their applications.
 
@@ -307,7 +307,7 @@ Each of the results returned is a foundational credential for the ___topic___ yo
 
 Locate the `id` field from the previous result. The topic `id` can be used to obtain all credentials for an organization of interest from OrgBook.
 
-Make a `GET` request to the `/v4/topic/:id/credential-set` endpoint, substituting the `:id` URL parameter with the topic `id` from the previous topic search.
+Make a `GET` request to the `/v4/topic/{id}/credential-set` endpoint, substituting the `{id}` URL parameter with the topic `id` from the previous topic search.
 
 For example, if you wanted to query for all of the credentials of `'U3 POWER CORP.'` you would format the request like: `/v4/topic/785314/credential-set`. This endpoint will return every credential issued to the organization, including revoked credentials:
 
