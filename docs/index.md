@@ -10,7 +10,7 @@ Various developer tools and documentation for using the OrgBook BC API as part o
     - [What is OrgBook](#what-is-orgbook-bc)
     - [What does the OrgBook BC API Offer?](#what-does-the-orgbook-bc-api-offer)
 - [Getting Started](#getting-started)
-    - [Documentation](#documentation)
+    - [Guide and How-tos](#guide-and-how-tos)
     - [Open API Specification](#open-api-specification)
     - [Demo](#demo)
 - [Contributing](#contributing)
@@ -38,17 +38,17 @@ The OrgBook BC API exposes a number of RESTful endpoints that make it simple to 
 
 A number of resources have been set up in this repository as a guide to using the OrgBook BC API.
 
-### Documentation
+### Guide and How-tos
 
-If you are just starting out, this should be your main go-to guide. Please see the [documentation](./api.md) for a comprehensive overview of the OrgBook BC API along with examples and implementation instructions for the most common application use cases.
+If you are just starting out, this should be your main go-to guide. Please see the [guide](./api.md) for a comprehensive overview of the OrgBook BC API along with examples and implementation instructions for the most common application use cases.
 
 ### Open API specification
 
-You may wish to check out the various Open API specifications (specifically [v3](https://orgbook.gov.bc.ca/api/v3/) and [v4](https://orgbook.gov.bc.ca/api/v4/)) if you are interested in a deeper look into a catalogue of all the endpoints available. You are encouraged to use the most up-to-date production version (v4) of the API in your applications to avoid any issues with backward compatibility.
+You may wish to check out the various Open API specifications (specifically [v3](https://orgbook.gov.bc.ca/api/v3/) and [v4](https://orgbook.gov.bc.ca/api/v4/)) if you are interested in a deeper look into a catalogue of all the endpoints available. You are encouraged to use the most up-to-date production version ([v4](https://orgbook.gov.bc.ca/api/v4/)) of the API in your applications to avoid any issues with backward compatibility.
 
 ### Demo
 
-To see the OrgBook BC API in action, please check out the official OrgBook BC web [application](https://www.orgbook.gov.bc.ca) featuring the use of various endpoints to create a full-featured verifiable data search tool for registered BC organizations. Developers that are interested in the implementation details of OrgBook BC, are encouraged to view [this](https://github.com/bcgov/orgbook-bc-client) GitHub repository. OrgBook BC was developed using [Vue.js](https://vuejs.org).
+To see the OrgBook BC API in action, please check out the official OrgBook BC web [application](https://www.orgbook.gov.bc.ca) featuring the use of various endpoints to create a full-featured verifiable data search tool for registered BC organizations. Developers that are interested in the implementation details of OrgBook BC, are encouraged to view [this](https://github.com/bcgov/orgbook-bc-client) GitHub repository. OrgBook BC was developed with [Vue](https://vuejs.org).
 
 ## Contributing
 
