@@ -12,15 +12,15 @@ The OrgBook API is a RESTful interface to OrgBook. It has been purposefully buil
 ## Table of contents
 - [Introduction](#introduction)
 - [Common scenarios](#common-scenarios)
-  - [I want to get a list of credential issuers registered in OrgBook](#i-want-to-get-a-list-of-credential-issuers-registered-in-orgbook)
-  - [I want to get a list of available credential types in OrgBook](#i-want-to-get-a-list-of-available-credential-types-in-orgBook)
-  - [I want to build a legal name search component in my application](#i-want-to-build-a-legal-name-search-component-in-my-application)
-    - [Implementation Example 1](#implementation-example-1)
-  - [I want to auto-populate form fields with organization info](#i-want-to-auto-populate-form-fields-with-organization-info)
-    - [Step 1. Query for a topic](#step-1-query-for-a-topic)
-    - [Step 2. Query for credentials](#step-2-query-for-credentials)
-    - [Implementation Example 2](#implementation-example-2)
-  - [I want to search for Organizations with a specific credential](#i-want-to-search-for-organizations-with-a-specific-credential)
+    - [I want to get a list of credential issuers registered in OrgBook](#i-want-to-get-a-list-of-credential-issuers-registered-in-orgbook)
+    - [I want to get a list of available credential types in OrgBook](#i-want-to-get-a-list-of-available-credential-types-in-orgBook)
+    - [I want to build a legal name search component in my application](#i-want-to-build-a-legal-name-search-component-in-my-application)
+        - [Implementation Example 1](#implementation-example-1)
+    - [I want to auto-populate form fields with organization info](#i-want-to-auto-populate-form-fields-with-organization-info)
+        - [Step 1. Query for a topic](#step-1-query-for-a-topic)
+        - [Step 2. Query for credentials](#step-2-query-for-credentials)
+        - [Implementation Example 2](#implementation-example-2)
+    - [I want to search for Organizations with a specific credential](#i-want-to-search-for-organizations-with-a-specific-credential)
 
 ## Common scenarios
 
