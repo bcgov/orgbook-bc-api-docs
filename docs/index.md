@@ -40,7 +40,7 @@ A number of resources have been set up in this repository as a guide to using th
 
 ### Documentation
 
-If you are just starting out, this should be your main go-to guide. Please see the [documentation](./docs/README.md) for a comprehensive overview of the OrgBook BC API along with examples and implementation instructions for the most common application use cases.
+If you are just starting out, this should be your main go-to guide. Please see the [documentation](./api.md) for a comprehensive overview of the OrgBook BC API along with examples and implementation instructions for the most common application use cases.
 
 ### Open API specification
 
@@ -54,7 +54,7 @@ To see the OrgBook BC API in action, please check out the official OrgBook BC we
 
 **Pull requests are always welcome!**
 
-Please see the [contributions guide](CONTRIBUTING.md) for this repository.
+Please see the [contributions guide](contributing.md) for this repository.
 
 You may also create an issue if you would like to suggest additional resources to include in this repository.
 

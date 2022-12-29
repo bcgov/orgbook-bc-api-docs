@@ -1,5 +1,7 @@
-site_name: OrgBook API Docs
+site_name: OrgBook BC API
 theme:
   name: material
 nav:
- - Home: README.md
+ - Home: index.md
+ - API: api.md
+ - Contributing: contributing.md
