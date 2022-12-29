@@ -27,3 +27,6 @@ plugins:
         pt:
           name: Português
           build: true
+markdown_extensions:
+  - callouts
+  - pymdownx.superfences
