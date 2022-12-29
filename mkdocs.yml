@@ -18,3 +18,9 @@ plugins:
         en:
           name: English
           build: true
+        fr:
+          name: Français
+          build: true
+        pt_BR:
+          name: Português
+          build: true

@@ -1,6 +1,6 @@
 [![Lifecycle:Stable](https://img.shields.io/badge/Lifecycle-Stable-97ca00)]('')
 
-# OrgBook BC API
+# OrgBook BC API (FR)
 
 Various developer tools and documentation for using the OrgBook BC API as part of the Verifiable Organizations Network.
 
