@@ -21,6 +21,9 @@ plugins:
         fr:
           name: Français
           build: true
+        es:
+          name: Español
+          build: true
         pt:
           name: Português
           build: true
