@@ -5,3 +5,11 @@ nav:
  - Home: index.md
  - API: api.md
  - Contributing: contributing.md
+plugins:
+  - search:
+  - i18n:
+      default_language: en
+      languages:
+        en:
+          name: English
+          build: true
