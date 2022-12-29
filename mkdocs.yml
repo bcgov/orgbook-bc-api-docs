@@ -1,0 +1,5 @@
+site_name: OrgBook API Docs
+theme:
+  name: material
+nav:
+ - Home: README.md
