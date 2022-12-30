@@ -163,13 +163,13 @@ As an update to version `v4` of the API, credential types now _optionally_ have 
 
 ### I want to build a legal name search component in my application
 
-Developers often want to include a search feature for the legal names of registered BC organizations in their applications (usually to [auto-populate form inputs](#i-want-to-auto-populate-form-fields-with-organization-info)). It is so commonplace, that the OrgBook developer team created the `/v3/search/autocomplete` endpoint.
+Developers often want to include a search feature for the legal names of registered BC organizations in their applications (usually to [auto-populate form inputs](#i-want-to-auto-populate-form-fields-with-organization-info)). It is so commonplace, that the OrgBook developer team created the `/v4/search/autocomplete` endpoint.
 
-Make a `GET` request to the `/v3/search/autocomplete` endpoint, passing a string of characters to the `q` query parameter in the request URL. OrgBook will try to match the string of characters to names of registered organizations.
+Make a `GET` request to the `/v4/search/autocomplete` endpoint, passing a string of characters to the `q` query parameter in the request URL. OrgBook will try to match the string of characters to names of registered organizations.
 
 >! EXAMPLE: If you wanted to query for the name `'Power Corp'` you would format the request like:
 ```
-/v3/search/autocomplete?q=Power%20Corp
+/v4/search/autocomplete?q=Power%20Corp
 ```
 The response will look something like:
 ```json
@@ -215,7 +215,7 @@ The response will look something like:
 
 Results are returned in pages of up to 10 closely matching organization names, each with a match `score`. The results are sorted from the highest to the lowest score, therefore closer matches will be at the top of the results. OrgBook will return fewer results with higher match scores (i.e. the more closely a query string matches, the fewer names it will match to). If OrgBook is unable to match a query string to any organization name, it will return empty results.
 
-As an update to version `v3` of the API, autocomplete also supports querying/autocompletion on 9-digit CRA Business Number and BC Registration Numbers.
+The autocomplete endpoint also supports querying/autocompletion on 9-digit CRA Business Number and BC Registration Numbers.
 
 >! EXAMPLE: When using `'BC11'` as the query string, the following results are returned:
 >
@@ -265,7 +265,7 @@ Checkout an example on StackBlitz for a simple implementation of an autocomplete
 >
 [![Open in StackBlitz](https://developer.stackblitz.com/img/open_in_stackblitz.svg)](https://stackblitz.com/edit/js-uum64f)
 
-> TIP: Another simple approach could be to attach a `'keypress'` event listener to a text input. As a user types, requests are made to `/v3/search/autocomplete` with the value of the input. You may want to employ techniques, like debouncing, to reduce the number of calls to the API server. Better yet, use an existing UI library that provides these features out of the box and simply pass autocomplete results to display.
+> TIP: Another simple approach could be to attach a `'keypress'` event listener to a text input. As a user types, requests are made to `/v4/search/autocomplete` with the value of the input. You may want to employ techniques, like debouncing, to reduce the number of calls to the API server. Better yet, use an existing UI library that provides these features out of the box and simply pass autocomplete results to display.
 
 ### I want to auto-populate form fields with organization info
 
