@@ -28,7 +28,7 @@ The OrgBook API is a RESTful interface to OrgBook. It has been purposefully buil
 
 To do this, make a `GET` request to the `/v4/issuer` endpoint. The response will look something like:
 
->! SUMMARY: **JSON**
+>! CODE: **JSON**
 ```json
 {
   "total": 5,
@@ -62,7 +62,7 @@ The results are a list of credential issuers that have registered with OrgBook. 
 
 To do this, make a `GET` request to the `/v4/credential-type` endpoint. The response will look something like:
 
->! SUMMARY: **JSON**
+>! CODE: **JSON**
 ```json
 {
   "total": 9,
@@ -260,7 +260,7 @@ There are optional parameters that you can attach to the request:
 
 #### Implementation Example 1
 
-> TLDR: **See it in action!**
+> PLAY: **See it in action!**
 Checkout an example on StackBlitz for a simple implementation of an autocomplete name search using jQuery UI and plain HTML.
 >
 [![Open in StackBlitz](https://developer.stackblitz.com/img/open_in_stackblitz.svg)](https://stackblitz.com/edit/js-uum64f)
@@ -477,7 +477,7 @@ Together these credentials can be used to programmatically fill in form fields i
 
 #### Implementation Example 2
 
-> TLDR: **See it in action!**
+> PLAY: **See it in action!**
 Checkout an example on StackBlitz for a simple implementation of auto-populating a form from OrgBook credentials using jQuery UI and plain HTML.
 >
 [![Open in StackBlitz](https://developer.stackblitz.com/img/open_in_stackblitz.svg)](https://stackblitz.com/edit/js-y5jxtf)
