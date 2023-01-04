@@ -2,7 +2,7 @@ name: ci
 on:
   push:
     branches:
-      - mkdocs
+      - docusaurus
 permissions:
   contents: write
 jobs:
@@ -10,11 +10,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - uses: actions/setup-python@v4
+      - uses: actions/setup-node@v3
         with:
-          python-version: 3.x
-      - run: pip install \
-              mkdocs-material \
-              mkdocs-static-i18n \
-              markdown-callouts
-      - run: mkdocs gh-deploy --force
+          node-version: 16
+          cahe: yarn
+      - name: Install dependencies
+        run: yarn install --frozen-lockfile
+      - name: Build website
+        run: yarn build
