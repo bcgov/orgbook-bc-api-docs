@@ -9,7 +9,7 @@ const config = {
   title: 'OrgBook API',
   tagline: 'OrgBook API Docs',
   url: 'https://petridishdev.github.io',
-  baseUrl: '/',
+  baseUrl: '/orgbook-api',
   onBrokenLinks: 'throw',
   onBrokenMarkdownLinks: 'warn',
   // favicon: 'img/favicon.ico',
