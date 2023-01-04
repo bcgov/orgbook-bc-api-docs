@@ -4,7 +4,7 @@ slug: /
 
 # OrgBook BC API
 
-[![Lifecycle:Stable](https://img.shields.io/badge/Lifecycle-Stable-97ca00)]('')
+[![Lifecycle:Stable](https://img.shields.io/badge/Lifecycle-Stable-97ca00)](https://github.com/bcgov/orgbook-bc-api-docs)
 
 Various developer tools and documentation for using the OrgBook BC API as part of the Verifiable Organizations Network.
 
