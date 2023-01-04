@@ -20,8 +20,8 @@ jobs:
         run: yarn install --frozen-lockfile
       - name: Build website
         run: yarn build
-      - name: Upload GitHub Pages artifact
-        uses: actions/upload-pages-artifact@v1
+      # Popular action to deploy to GitHub Pages:
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
         with:
-          name: gh-pages
-          path: ./build
+          publish_dir: ./build
