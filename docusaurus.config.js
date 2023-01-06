@@ -12,7 +12,7 @@ const config = {
   baseUrl: '/orgbook-api',
   onBrokenLinks: 'throw',
   onBrokenMarkdownLinks: 'warn',
-  // favicon: 'img/favicon.ico',
+  favicon: 'img/favicon.png',
 
   // GitHub pages deployment config.
   // If you aren't using GitHub pages, you don't need these.
@@ -39,11 +39,6 @@ const config = {
           editUrl: 'https://github.com/petridishdev/orgbook-api/tree/mkdocs',
         },
         blog: false, // Disable the blog plugin
-        // blog: {
-        //   showReadingTime: true,
-        //   // Remove this to remove the "edit this page" links.
-        //   editUrl: 'https://github.com/petridishdev/orgbook-api/tree/mkdocs',
-        // },
         theme: {
           customCss: require.resolve('./src/css/custom.css'),
         },
@@ -75,17 +70,6 @@ const config = {
           src: 'img/logo-banner.svg',
         },
         items: [
-          // {
-          //   type: 'doc',
-          //   docId: 'index',
-          //   position: 'left',
-          //   label: 'Home',
-          // },
-          // {to: '/blog', label: 'Blog', position: 'left'},
-          // {
-          //   type: 'localeDropdown',
-          //   position: 'right'
-          // },
           {
             href: 'https://github.com/petridishdev/orgbook-api',
             label: 'GitHub',
@@ -105,30 +89,9 @@ const config = {
               },
             ],
           },
-          // {
-          //   title: 'Community',
-          //   items: [
-          //     {
-          //       label: 'Stack Overflow',
-          //       href: 'https://stackoverflow.com/questions/tagged/docusaurus',
-          //     },
-          //     {
-          //       label: 'Discord',
-          //       href: 'https://discordapp.com/invite/docusaurus',
-          //     },
-          //     {
-          //       label: 'Twitter',
-          //       href: 'https://twitter.com/docusaurus',
-          //     },
-          //   ],
-          // },
           {
             title: 'More',
             items: [
-              // {
-              //   label: 'Blog',
-              //   to: '/blog',
-              // },
               {
                 label: 'GitHub',
                 href: 'https://github.com/petridishdev/orgbook-api',
