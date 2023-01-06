@@ -28,7 +28,8 @@ The OrgBook API is a RESTful interface to OrgBook. It has been purposefully buil
 
 To do this, make a `GET` request to the `/v4/issuer` endpoint. The response will look something like:
 
->! CODE: **JSON**
+:::info JSON
+
 ```json
 {
   "total": 5,
@@ -56,13 +57,16 @@ To do this, make a `GET` request to the `/v4/issuer` endpoint. The response will
 }
 ```
 
-The results are a list of credential issuers that have registered with OrgBook. They may or may not have issued any credentials to OrgBook yet. In the above example, the issuer with an `id` of `1` is the BC Corporate Registry which issues credentials to OrgBook that have to do with to an organization's registration in the province, among others. Developers can find out what type of credentials are issued by a specific issuer, by making a `GET` request to the `/v4/credential-type` endpoint (see below).
+:::
+
+The results are a list of credential issuers that have registered with OrgBook. They may or may not have issued any credentials to OrgBook yet. In the above example, the issuer with an `"id"` of `1` is the BC Corporate Registry which issues credentials to OrgBook that have to do with to an organization's registration in the province, among others. Developers can find out what type of credentials are issued by a specific issuer, by making a `GET` request to the `/v4/credential-type` endpoint (see below).
 
 ### I want to get a list of available credential types in OrgBook
 
 To do this, make a `GET` request to the `/v4/credential-type` endpoint. The response will look something like:
 
->! CODE: **JSON**
+:::info JSON
+
 ```json
 {
   "total": 9,
@@ -157,9 +161,11 @@ To do this, make a `GET` request to the `/v4/credential-type` endpoint. The resp
 }
 ```
 
+:::
+
 The results are a list of credential types that are currently registered in OrgBook. This doesn't necessarily mean there are any credentials of the registered types in OrgBook, but simply that these are the types of credentials that OrgBook knows about and will accept from issuers. For example, organization addresses are a type of credential registered in OrgBook, however BC Registries (the registered credential issuer of that type) has not currently made those credentials available in OrgBook (i.e. they have not issued any credentials of that type to OrgBook).
 
-As an update to version `v4` of the API, credential types now _optionally_ have localization labels and descriptions for the credential type name (specified in the `schema_label` object) and/or credential type attributes (specified in the `claim_labels` object). These labels can be useful for multi-lingual applications or for providing human readable field names, however they must be defined by issuers when registering credential types with OrgBook and are therefore not always guaranteed to be present.
+As an update to version [v4](https://orgbook.gov.bc.ca/api/v4/) of the API, credential types now _optionally_ have localization labels and descriptions for the credential type name (specified in the `"schema_label"` object) and/or credential type attributes (specified in the `"claim_labels"` object). These labels can be useful for multi-lingual applications or for providing human readable field names, however they must be defined by issuers when registering credential types with OrgBook and are therefore not always guaranteed to be present.
 
 ### I want to build a legal name search component in my application
 
@@ -167,7 +173,9 @@ Developers often want to include a search feature for the legal names of registe
 
 Make a `GET` request to the `/v4/search/autocomplete` endpoint, passing a string of characters to the `q` query parameter in the request URL. OrgBook will try to match the string of characters to names of registered organizations.
 
->! EXAMPLE: If you wanted to query for the name `'Power Corp'` you would format the request like:
+:::tip EXAMPLE
+
+If you wanted to query for the name **'Power Corp'** you would format the request like:
 ```
 /v4/search/autocomplete?q=Power%20Corp
 ```
@@ -213,12 +221,15 @@ The response will look something like:
 }
 ```
 
-Results are returned in pages of up to 10 closely matching organization names, each with a match `score`. The results are sorted from the highest to the lowest score, therefore closer matches will be at the top of the results. OrgBook will return fewer results with higher match scores (i.e. the more closely a query string matches, the fewer names it will match to). If OrgBook is unable to match a query string to any organization name, it will return empty results.
+:::
+
+Results are returned in pages of up to 10 closely matching organization names, each with a match `"score"`. The results are sorted from the highest to the lowest score, therefore closer matches will be at the top of the results. OrgBook will return fewer results with higher match scores (i.e. the more closely a query string matches, the fewer names it will match to). If OrgBook is unable to match a query string to any organization name, it will return empty results.
 
 The autocomplete endpoint also supports querying/autocompletion on 9-digit CRA Business Number and BC Registration Numbers.
 
->! EXAMPLE: When using `'BC11'` as the query string, the following results are returned:
->
+:::tip EXAMPLE
+
+When using **'BC11'** as the query string, the following results are returned:
 ```json
 {
   "total": 10,
@@ -250,22 +261,30 @@ The autocomplete endpoint also supports querying/autocompletion on 9-digit CRA B
   ]
 }
 ```
->
-Here we can see that not only did the query string match a company name (indicated by the `type`: `'name'`) but it also matched a registration number (indicated by the `type`: `'topic'`) The `sub_type` further indicates what credential attribute (if any) the query string matched with.
+Here we can see that not only did the query string match a company name (indicated by the `"type": "name"`) but it also matched a registration number (indicated by the `"type": "topic"`) The `"sub_type"` further indicates what credential attribute (if any) the query string matched with.
+
+:::
 
 There are optional parameters that you can attach to the request:
 
-* The `inactive` query parameter denotes whether inactive organizations (i.e. those with a status of `'Historical'`) should be included in the results (defaults to `'false'`).
-* The `revoked` query parameter denotes whether organizations with revoked registration credentials should be returned in the results (defaults to `'false'`).
+* The `inactive` query parameter denotes whether inactive organizations (i.e. those with a status of **"Historical"**) should be included in the results (defaults to `false`).
+* The `revoked` query parameter denotes whether organizations with revoked registration credentials should be returned in the results (defaults to `false`).
 
 #### Implementation Example 1
 
-> PLAY: **See it in action!**
+:::note **See it in action!**
+
 Checkout an example on StackBlitz for a simple implementation of an autocomplete name search using jQuery UI and plain HTML.
->
+
 [![Open in StackBlitz](https://developer.stackblitz.com/img/open_in_stackblitz.svg)](https://stackblitz.com/edit/js-uum64f)
 
-> TIP: Another simple approach could be to attach a `'keypress'` event listener to a text input. As a user types, requests are made to `/v4/search/autocomplete` with the value of the input. You may want to employ techniques, like debouncing, to reduce the number of calls to the API server. Better yet, use an existing UI library that provides these features out of the box and simply pass autocomplete results to display.
+:::
+
+:::tip
+
+Another simple approach could be to attach a **"keypress"** event listener to a text input. As a user types, requests are made to `/v4/search/autocomplete` with the value of the input. You may want to employ techniques, like debouncing, to reduce the number of calls to the API server. Better yet, use an existing UI library that provides these features out of the box and simply pass autocomplete results to display.
+
+:::
 
 ### I want to auto-populate form fields with organization info
 
@@ -279,11 +298,13 @@ Make a `GET` request to the `/v4/search/topic` endpoint, passing in the BC Regis
 
 There are optional parameters that you can attach to the request:
 
-* The `inactive` query parameter denotes whether inactive organizations (i.e. those with a status of `'Historical'`) should be included in the results (defaults to `'false'`).
-* The `revoked` query parameter denotes whether organizations with revoked registration credentials should be returned in the results (defaults to `'false'`).
-* The `latest` query parameter denotes whether only the most recently issued credential(s) should be returned (defaults to `'true'`).
+* The `inactive` query parameter denotes whether inactive organizations (i.e. those with a status of **"Historical"**) should be included in the results (defaults to `false`).
+* The `revoked` query parameter denotes whether organizations with revoked registration credentials should be returned in the results (defaults to `false`).
+* The `latest` query parameter denotes whether only the most recently issued credential(s) should be returned (defaults to `true`).
 
->! EXAMPLE: If you wanted to query for information about `'U3 POWER CORP.'` you would format the request like: 
+:::tip EXAMPLE
+
+If you wanted to query for information about **'U3 POWER CORP.'** you would format the request like: 
 ```
 /v4/search/topic?q=BC0772006`
 ```
@@ -316,6 +337,8 @@ The response will look something like:
 }
 ```
 
+:::
+
 Each of the results returned is a foundational credential for the _topic_ you are searching for. A foundational credential is generated when an organization is first registered in OrgBook. All other credentials for this organization are then linked (related to) this credential. It is possible to receive more than 1 foundational credential back from this query (especially for those belonging to related organizations). Results are returned in pages of up to 10 closely matching organizations to the query string you provide. Typically you would iterate through the results and find the first credential where the `source_id` matches the BC Registries number you passed as the query string.
 
 #### Step 2. Query for credentials
@@ -324,7 +347,9 @@ Locate the `id` field from the previous result. The topic `id` can be used to ob
 
 Make a `GET` request to the `/v4/topic/{id}/credential-set` endpoint, substituting the `{id}` URL parameter with the topic `id` from the previous topic search.
 
->! EXAMPLE: If you wanted to query for all of the credentials of `'U3 POWER CORP.'` you would format the request like:
+:::tip EXAMPLE
+
+If you wanted to query for all of the credentials of **'U3 POWER CORP.'** you would format the request like:
 ```
 /v4/topic/785314/credential-set
 ```
@@ -432,17 +457,21 @@ This endpoint will return every credential issued to the organization, including
   }
 ]
 ```
-Two sets of credentials have been returned in the results. Each credential set is a list of credentials of a given type. This list will contain both valid and revoked credentials in the order they were issued to OrgBook. Each credential contains the `credential_type` it corresponds to. For example, locating the `description` field in the first credential of the first set, indicates that this credential is of type `'registration.registries.ca'` type. The first credential of the second set is of the type `'business_number.registries.ca'`.
->
+Two sets of credentials have been returned in the results. Each credential set is a list of credentials of a given type. This list will contain both valid and revoked credentials in the order they were issued to OrgBook. Each credential contains the `"credential_type"` it corresponds to. For example, locating the `"description"` field in the first credential of the first set, indicates that this credential is of type `"registration.registries.ca"` type. The first credential of the second set is of the type `"business_number.registries.ca"`.
+
 You will most likely only care about non-revoked credentials and will likely want to reduce or flatten the sets down to a single list of those non-revoked credentials.
->
-The first credential of interest contains registration information about the organization. The list of `attributes` contains various fields, such as `'entity_status'`, `'entity_type'` and others. The registration credential attributes for this organization indicate that this is an Active, BC Company.
->
-The second credential of interest contains information about the organization's business number, issued by the Canada Revenue Agency for tax purposes. There is only a single attribute for the `'business_number'`. The `'value'` is the business number itself.
->
+
+The first credential of interest contains registration information about the organization. The list of `"attributes"` contains various fields, such as `"entity_status"`, `"entity_type"` and others. The registration credential attributes for this organization indicate that this is an Active, BC Company.
+
+The second credential of interest contains information about the organization's business number, issued by the Canada Revenue Agency for tax purposes. There is only a single attribute for the `"business_number"`. The `"value"` is the business number itself.
+
 Together these credentials can be used to programmatically fill in form fields in an application.
 
->! EXAMPLE: In another unrelated example, the following attribute list tells us that the organization is an Active, Sole Proprietorship within British Columbia:
+:::
+
+:::tip EXAMPLE
+
+In another unrelated example, the following attribute list tells us that the organization is an Active, Sole Proprietorship within British Columbia:
 ```json
 "attributes": [
     {
@@ -472,15 +501,23 @@ Together these credentials can be used to programmatically fill in form fields i
 ]
 ```
 
+:::
 
-> TIP: Credential sets are also useful for generating a timeline of credentials issued to and/or revoked from an organization. It is in fact what is used to generate OrgBook's credential timeline. For example, check out: [https://orgbook.gov.bc.ca/entity/BC1162838](https://orgbook.gov.bc.ca/entity/BC1162838).
+:::tip
+
+Credential sets are also useful for generating a timeline of credentials issued to and/or revoked from an organization. It is in fact what is used to generate OrgBook's credential timeline. For example, check out: [https://orgbook.gov.bc.ca/entity/BC1162838](https://orgbook.gov.bc.ca/entity/BC1162838).
+
+:::
 
 #### Implementation Example 2
 
-> PLAY: **See it in action!**
+:::note **See it in action!**
+
 Checkout an example on StackBlitz for a simple implementation of auto-populating a form from OrgBook credentials using jQuery UI and plain HTML.
->
+
 [![Open in StackBlitz](https://developer.stackblitz.com/img/open_in_stackblitz.svg)](https://stackblitz.com/edit/js-y5jxtf)
+
+:::
 
 ### I want to search for Organizations with a specific credential
 
@@ -494,8 +531,12 @@ Suppose, in this case, you want to limit searches to organizations that have a C
 
 Now all you have to do is construct the [topic search](#step-1-query-for-a-topic) URL with the `credential_type_id` query parameter included and set to a value of `4`.
 
->! EXAMPLE: If you wanted to query for all organizations with a Cannabis Retail Store License you would format the request like:
+:::tip EXAMPLE
+
+If you wanted to query for all organizations with a Cannabis Retail Store License you would format the request like:
 ```
 /v4/search/topic?credential_type_id=4
 ```
 The response will now only contain results that have credentials with that type. You can refine searches further, using the techniques described above.
+
+:::
