@@ -7,7 +7,6 @@
 /* You can override the default Infima variables here. */
 :root {
   --ifm-color-primary: #1a5a96;
-  --ifm-navbar-background-color: #003366;
   --ifm-navbar-link-color: #ffffff;
   --ifm-navbar-link-hover-color: #ffffff;
   --ifm-navbar-link-active-color: #ffffff;
@@ -15,3 +14,12 @@
   --ifm-footer-link-hover-color: #ffffff;
   --ifm-footer-link-active-color: #ffffff;
 }
+
+.navbar, .navbar-sidebar__brand {
+  background-color: #003366;
+}
+
+.navbar__toggle {
+  color: #ffffff;
+}
+
