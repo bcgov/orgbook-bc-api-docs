@@ -68,7 +68,7 @@ const config = {
         title: 'OrgBook API',
         logo: {
           alt: 'OrgBook API',
-          src: 'img/logo-banner.svg',
+          src: 'img/logo.svg',
         },
         items: [
           {
