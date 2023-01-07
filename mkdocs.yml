@@ -1,0 +1,32 @@
+site_name: OrgBook BC API
+theme:
+  name: material
+  palette:
+    scheme: bcgov
+  logo: assets/img/logo-banner.svg
+extra_css:
+  - stylesheets/extra.css
+nav:
+ - Home: index.md
+ - Guide: api.md
+ - Contributing: contributing.md
+plugins:
+  - search:
+  - i18n:
+      default_language: en
+      languages:
+        en:
+          name: English
+          build: true
+        fr:
+          name: Français
+          build: true
+        es:
+          name: Español
+          build: true
+        pt:
+          name: Português
+          build: true
+markdown_extensions:
+  - callouts
+  - pymdownx.superfences
