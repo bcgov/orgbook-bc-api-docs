@@ -1,6 +1,10 @@
+![Static Badge](https://img.shields.io/badge/activity-dormant-red)
+![Static Badge](https://img.shields.io/badge/latest_orgbook_api_version-4-blue)
+![Static Badge](https://img.shields.io/badge/status-experimental-yellow)
+
 # Website
 
-This website is built using [Docusaurus 2](https://docusaurus.io/), a modern static website generator.
+This website is built using [Docusaurus 3](https://docusaurus.io/), a modern static website generator.
 
 ### Installation
 
